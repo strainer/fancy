@@ -1,0 +1,86 @@
+//---------------------------------
+Notes on subloc rounding complications:
+
+The cell sublocating function, places points within subcells according to this
+formula:
+ subcell=
+  floor((x-lw[0])/dvm[0])                    //*1
++ floor((y-lw[1])/dvm[1])*dvs[0]             //*1*x 
++ floor((z-lw[2])/dvm[2])*dvs[0]*dvs[1]      //*1*x*y
+
+Where dvm is length of a division and dvs is number
+
+[notching up]* dvm[n] avoids folding points located at the high bound into wrong dim
+it also causes allocated subcell bounds to move onward proportional to the co-ordinate
+  [*] adding a minimal practical value, ideally one ULP
+  
+  assuming this notching of the function, the implied bounds of subcells will need expanded to make sure their previously allocated area is fully eclipsed.
+  with the previous allocation done with slightly larger dvm[n], the lw[0] will
+  be slightly early which is fine, the high will be slightly early which is not.
+  
+  sound pan-allocation bounds need tweaked for naive suballocation, whether sub-allocation
+  tweaks or not, so sub allocation may-as-well not tweak.
+  only tweak necessary is to pan-allocation bound, notch its highbound up sufficiently to survive division by upto 255 in the sub-allocation, at optimal scale
+  
+  eg, hi-lo where hi and lo may be large scale, hi must increase enough that: 
+    hi'notched'-lo > hi-lo eg. 
+    20000000000000-19999999999999 < 20000000000000+ntch-19999999999999
+    
+    ntch must survive the scale of 
+    
+  approximating ulp of float value
+  formula something like: h+abs(h*0.00000001)+0.000000000000001
+  
+  if this something like is applied to pan allocation high bounds,
+  fast allocation can be used, out of bounds allocation will only possibly
+  occur at excessive large or small scales, or on external corruption
+  
+  the precision of this scheme, depends on the intended scale of iota in the vorld
+  given, approx 51 bits of integer precision in the world, positions at scale
+  2e15 2,000,000,000,000,000 have no fractional resolution
+    Lua,print((1+math.pow(2,52))-math.pow(2,52)) >1
+    Lua,print((1+math.pow(2,53))-math.pow(2,53)) >0
+  so ulp around 2^52 is about 1, to ensure increasing values
+  up to 2^52 add abs(n* 1/(2^51))
+  
+  to be sure increasing tiny values add tiniest value which increases 1.0
+  which is a minimal sphere of vorld precision
+    Lua,print((2+(1/math.pow(2,44)))-1) > 1.0000000000001
+    
+    1/math.pow(2,44) is smallest value which does result in 1.0
+    so add 1/math.pow(2,43) to notch small end of cellular boundry scale)
+  
+    giving workable cell boundaries of iota for scales approx 2^50 to 1/2^40
+    iotas beyond these scales may bug out proceedures, proceedures will
+    look for such problems, outwith optimised bulk processing routines. 
+  
+  hi=hi+abs(hi*4.440892098500626e-16)+1.1368683772161603e-13
+    
+upper feasible limit of vorld location is +- 2^52
+feasible limit of vorld location precision is 1/2^43
+
+var epsila=Math.pow(0.5,52)
+var epsilb=Math.pow(0.5,43)
+
+An issue here is that points on (or outside) of intended bounds are folded into
+same subcell space, so point at x-lw[0]+dvm[0] will register at 1*dvs[0]+rest
+
+so this function should ideally escape points 
+at dvm[0]*dvs[0], 
+and dvm[x]*dvs[x] etc  
+and correctly re-place them
+
+however that would be more complex than neccessary
+
+or it should be arranged that it never recieves points at these high boundaries 
+to place:
+ if topcell high boundaries are expanded at init, is it possible
+ to process subcells in an order which ensures their correct attribution?
+ -cant see it presently but it may require sorting source by magnitude
+ because a jote will get picked up by sublocing whether it is at 0 bound or 1 bound
+ all jotes will be subcelled if they have been previously sublocated
+ instant missublocation is to be avoided,
+ the topcell is larger than actual bounds to avoid its edge mislocation
+ but it may place internals at edges, 
+ which could potentially register at wrong point subproccessing
+ however as long as sublocing is slightly larger than its edges,

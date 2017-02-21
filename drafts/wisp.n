@@ -1,0 +1,302 @@
+
+wisps are fast mote clusters_by_convienience
+containing average of about 6 motes
+fast clustering may reckon on only position and 
+
+jote - core info of physics entity detail, location, motion, kind
+wisp - somewhat indistinct grouping space
+voxe - more distinct grouping space
+
+
+wisp properties
+
+members 1 > 8
+
+bounds, center, gcenter, radius, constraint
+
+maintence of grouping data
+
+grouping data
+close effect check, on group recursive
+ gravity
+ repulsion
+ collision
+ 
+group acceleration, group rotation?
+
+function geffect(group){
+	
+	foreach(subgroup)
+    subgroup.accel += group.accel
+    geffect(subgroup)
+ 
+when move to next group in list, are we going sideways, up or down in group level
+what group level are we moving to?
+
+
+
+
+re-generate wisps or just update wisps every turn
+expect average 4 jotes per wisp
+or allow larger wisps, and subdivide some wisps in process?
+
+wisp has 
+ hglwp3tc pos and hglwp3td pos
+ mass, centermassp3 at t0
+
+wisp may have other properties like rotation, constraint duties etc
+listed in wisp advanced def object.
+
+
+to make the new vox-wisp structure....
+
+ develope the new vox-map-pointer scheme..
+ improve the vox-surveyor
+ get the wisp surveyor working on endvoxes
+ have vox-map and wisp-map
+ 
+ write function to complete|update wisp-property-map
+ write function to up-put vox-property-map
+ 
+ 
+ global voxel sort
+ 
+ vxros 0 is startof gvox 0
+ gvox 0 is svox 0 of level 0
+ 
+ vros 0 is startof gvox 1
+ gvox 1 is svox 0 of level 1
+ 
+ vxros 0 can be startof gvox10
+ 
+ gvox10 can be lv:0,cvox:10, or lv:0,cvox:5,lv:1,cvox:2,lv:2,cvox:3
+ empty voxs
+ non empty svoxes
+ 
+ sparse array voxlev,cvox, voxdets:hilo,mass etc, stx fnx,...
+ 
+ record stfn& dets of each evox's upvox
+ 
+ record stfn & dets of each gvox
+ record upvox of each gvox
+ how many gvoxs - max is jtmaxn (approx 50k)  
+ likely gvox is about 30% ~15k
+ gvox data is around same size as jote data
+ 
+ no point in having a vox with just one jote is there?
+ so vox can have 
+ 
+ 
+ voxes are named by gvox calculation order
+ they reference their parent , and their first child, during calculation
+ they generate their own sequential id reference, which the relatives are referencing
+ 
+ it is possible to shrink expected parent size?
+ yes part of the vox referencing is explict size info,
+ which is required for high speed traversal of locality referencing
+ 3d locality relation,
+ which is used for feild and collision and contact
+ collision dist/vel - closeness
+ feild dist-vel-interval - dist-vel-interval
+ interval as bound of 3d space, of any tilt 
+ tilt dermined by velocy, tilt mediated by t0 bound
+ reaches to t1 bound, to detect contact-dist in t0-1
+ 
+ so voxes are the references to explicit or implicit  -spaces-
+ having parent order allows quickly jump
+ 
+ minim vox has to state is 3 position values ,doubles
+ of starting finishing positions ~ speed 
+ 
+ gvox records can be updated and reused, but they ballon as time increases
+ make detanglement processing less efficience
+ increasing entanglement of nearby ordered referencing
+ 
+ gvoxes can be recalculated on their members, 
+ after initial gvoxes are calculated
+ they can be updated, and recalculated fresh partialy, without any conflict?
+ 
+ recalculation means ripping through them expanding their bounds
+ from recalculation of smaller
+ for storing bound, speed is used? there are multiple options for this info...
+ its not that hard to calcualte its the cuboid overlay of 2 bounds*3d (6 numbers)
+  and^ centermass-3 velocity , centermass-3 position  ^doubled it
+ 2 govx_to_jotelisting   
+ the jotes are span-sorted
+ all jagdistance and interaction tests/inqueries/
+ 
+` 
+ the t1 bounds can be calculated by calcing the bounds of everything at t1
+ or by getting [most positive-least negative] and [most negative-least positive] motions, and applying those to t0,
+ although this can overestimate the bounds considerably if motion is high
+ 
+ since average vox ppl is expected about 3, optimisations should
+ be applicable to lowest / wisps
+ 
+ you can locale wisps without central point
+ a local smudge is where a bounded region applys to multiple voxes
+ perhaps wisps could be locat by center space, or anything internal
+ 
+ row column strata
+ voxel delination sequence
+ 
+ when voxes have ballooned
+ they may have bled into voxes outside their branch
+ meaning jotes within may be within their updated bounds
+ but not indicated close by their linkage
+ therefore multiple spatial parents may be implied
+ however for recursive localite processing
+ this can be accomodated
+ as locals are compared by their bound distance
+ with each sibling, and then by each siblings child as neccessary
+ this way relation of all parts of all groups still occurs
+ regardless of missing extra-parent pointers
+ missing extra parent pointers would be critical
+ if locales could be considered spatialy separate from their siblings
+ by inference of their reference, but this is rarely even sought
+ as distance of separation is nearly always a required factor of process,
+ dist of sep always requires a bounds comparison 
+ 
+ the treeframe reference structure of the vox-delin-seq w/ gvox-def-register
+ is discerned without much strict need except to register all containing members
+ and most optimally to do so non-randomly in regards to spatial closeness of members
+ 
+ vxkey > vdlstartkey for vox
+  vdlend often is vdlstartkey of vxkey+1
+  sometime vxkey+1 is child
+  the following created vox can be a sibling or a child if gvx is last sibling and has children, when it is a child, its first child starts same as it as parent 
+  
+ vxkey > vxkey of parent
+ vxkey > vxkey of firstchild
+  
+  
+ vxui 
+ vxdls  vox-delineation-sequence
+ dlsvxa  dls-vox-anchor
+  
+ next vxui will be either: 
+  a sibling
+  a child (when vx is last sibling)
+  a cousin or distant relative
+  
+  
+  to find dlsvxe dls-vox-end
+  if next vox is not child its dlsvxa is e+1
+  but it may have many offspring so plain testing following vxuidets
+  could waste thousands of checks
+  vxui_of_first_sibling is very useful/essential
+  dls-vox-e can be calculated easily with it
+  it is not straihtforward to write at runtime
+  as number offspring vox is not known
+  not easy for evry offspring vox to increment all its ancestors,
+  so the detail is only noticed and written when doing a level-bubble 
+  when updating bounds, voxes are swept through by vxui & level
+  #when parent of swept changes first offspring can be added to it dets 
+  
+  
+ process of calculating bounds-
+ 
+ list of childless-voxes is made available
+ each of them passes their bounds to their parents, which are listed
+ each of parents pass their bounds to their parents, which are listed
+ #or
+ vos-dets include vox depth
+ each max-depth passes its bounds to parent
+ each next-deep passes its bounds..
+  
+ dlsvxa
+  // vox delineation sequence , lining up~in jote indexs
+  vox_delineat_seq[vx_delin_index] = jtui    
+  vdlseq[vx_delin_index] = jtui    
+  
+  vxdet.vdlseq_anchor [vxui] = vxdli // vox'es delineator anchor index
+  vxdet.vdlseq_end    [vxui] = vxdli // not required     
+  vxdet.vxui_of_parent[vxui] = vxui 
+  
+  vxdet.vxui_of_first_child  [vxui] = vxui //defered runtime calculation
+    first child writes this to parent when level sweeping                
+  
+  
+  vxdet.vxui_of_next_sibling[vxui] = vxui //defered runtime calculation
+    sibling may write this to previous vox of same parent when level sweeping
+  #just test to see if next vxui has same parent
+    as all level&siblings are coined in a run
+    all ancestors are coined after parent level is separated   
+  
+  vxdet.lowbx [vxui] :f64
+  vxdet.lowby [vxui] :f64
+  vxdet.lowbz [vxui] :f64
+  vxdet.highbx[vxui] :f64
+  vxdet.highby[vxui] :f64
+  vxdet.highbz[vxui] :f64
+  
+  vxdet.drvx[vxui] :f64
+  vxdet.drvy[vxui] :f64
+  vxdet.drvz[vxui] :f64
+  
+  vxdet.grav  [vxui] :f64
+  vxdet.gravx [vxui] :f64
+  vxdet.gravy [vxui] :f64
+  vxdet.gravz [vxui] :f64
+   
+  first_sibling_list[n] = vxui //?
+    for?
+    
+  vxdet.level[vxui] : level
+  
+  13 * f64  5 * i16 = approx 7mb for 50k vox
+  
+  basic iota data = 50k *f64*3*2 = 2mb
+  
+  treelist processing can be done like this on any 
+  n-dimensional data, reducing in closeness, folding into delineation-seq
+  
+  the applications of delineation-seq co-referencing 
+  satirical exploration, 
+  word relation > satire
+  
+  dimensions are relations
+  referencing relational bounds, closeness nearnest - in all dimensions as factors
+  dimensions are relation 
+  child references share an affinity of placement through the relevant dimensions
+  
+    
+  abcdefg >group> abc de f g    //they can fit 4 different subgroups      
+  abcdefg >group> abcdefg       //they can all fit into 1 subgroup
+  abcdefg >group>! abcdefg abc  //they never have duplicate assignments [optional?]
+  abcdefg >group>! abcd         //they always assign all members to a subg [optional?]
+  abcdefg >group> abcd efg      //they often dont fill all subgroups
+  
+  //empty subgroups are not coined with a voxuid
+  //theyre are no empty voxs
+  //subgrouping squeezes spatial bounds
+  //to find all overlapping bounds, search to non-overlapping bound
+  //in siblings>their_children and grandparent_children>their_children
+  //dont search in grand-ancestors which dont overlap
+  //just do distant approximation with them
+  //do search into any group which overlaps
+  //process requires concept of primary vox scope(recursion/loop)
+  //and secondary/inner partner vox scope
+  //required bound distance may be 0 or more,
+  //maybe equal to primary vox size, to accept gravity approximation
+  //possible to create high energy lineages.....
+  
+  
+  // which is two 3d locations in 2 4d positions, two 3d feathers at oposite ends
+  // of 1d time interval, overlap the early high high low low, and the late high low
+  // recognise that should the bounds be calculated here?
+  // they are anyway, and stored in level.cell flattened 3d matrix (with oclusion bug)
+  // 
+  
+  
+  
+  if a vox is bigger than its parent vox, it might be reassigned to a larger parent?
+  how would the record/ dls be effected?
+  
+  to avoid, separate off high energy jotes when surveying, put them in their own
+  svox 
+  
+  ///---------
+  
+  noted diference between large family nodes of around 200  and final ones of around 100 or 10 (wisp) 
+  
