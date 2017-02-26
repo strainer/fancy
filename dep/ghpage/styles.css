@@ -298,7 +298,7 @@ header li:hover {
 
 a.buttons {
 	-webkit-font-smoothing: antialiased;
-	background: url(../github/arrow-down.png) no-repeat;
+	background: url(arrow-down.png) no-repeat;
 	font-weight: normal;
 	text-shadow: rgba(0, 0, 0, 0.4) 0 -1px 0;
 	padding: 2px 2px 2px 22px;
@@ -306,7 +306,7 @@ a.buttons {
 }
 
 a.github {
-	background: url(../github/octocat-small.png) no-repeat 1px;
+	background: url(octocat-small.png) no-repeat 1px;
 }
 
 a.buttons:hover {
