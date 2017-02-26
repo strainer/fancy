@@ -484,3 +484,23 @@ to be near in space is to grow nearer in space through time
 that is spatial attraction
 
 
+//-----------
+Issue that was to be done:
+
+upload fancy to git:
+sanitise fancy files and make presentable the readmes
+
+fancy developements: 
+  swipe control
+  remake qpane
+   sphere renderer
+   fps readout
+   github div slider
+  
+Inspection of repo structure
+ gh-pages branch is nested into master
+ i must commit dev to master, for visibility
+ copy to gh-pages and commit gh-pages
+ but must dev in gh-pages to get it basic working
+ before copying to master for standard deving
+ dev as much in master as possible and script.cp to gh-pages
