@@ -7,7 +7,7 @@
 
 var vplay = {
 
-   seed:0 ,world:4
+   seed:0 ,world:5
   ,geometry:{}, camera:{}, scene:{} 
   ,renderer:{}, displaybugi:20 //avoiding scrollbar
   ,tStat:{}         //stats panel
@@ -116,7 +116,7 @@ function setupfigview(fig){
 /* - - - - - - - - - - - - - - - */
 
 var adash= newDash("foo")
-growdash(adash,vplay)
+setdash(adash,vplay)
 
 adash.redrawDash()
 

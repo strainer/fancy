@@ -118,16 +118,16 @@ function addForces(fig,vplay) {
     var dv= pvx*qvx-dvx*dvx
            +pvy*qvy-dvy*dvy
            +pvz*qvz-dvz*dvz 
-       ,dv= dv<0? Sqrt(Sqrt(-dv)):-Sqrt(Sqrt(dv))
+       ,dv= dv<0? -Sqrt(Sqrt(-dv)):Sqrt(Sqrt(dv))
     
     var dx=px-qx, dy=py-qy, dz=pz-qz
     var cf=(dx*dx + dy*dy + dz*dz)
     //~ if(poo++<10000) console.log(dv)
-    var af = vplay.gravity - 20*pe*qe*(dv+0.30)/(qg+pg)
+    var af = vplay.gravity - 100*pe*qe*(1-dv*0.5)/(qg+pg)
    
-    var hyp=Sqrt(cf)
-
-    cf=af/cf //d*d*d
+    var hyp=af>0?Sqrt(cf):-Sqrt(cf) //stash sign in hyp
+    cf=Math.abs(af/cf) //d*d*d
+    
     if(cf>throt){ 
       cf= throt*(2-(0.6*(cf-throt)+cf)/cf) 
       //var over=cf-throt
