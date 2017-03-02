@@ -1,1 +1,35 @@
 nonsense shorthand notes in this directory
+
+
+
+//....
+
+courseplanning
+ 
+ urgency
+ adversity
+ required_energy_level
+ objectives
+  catch_object
+  get_to_pos_settled
+  get_to_pos_agile
+  get_to_position_anyways(blocking)
+  avoid_chaos/harm
+ length_of_plan_estimate
+ action_state_path - in action_state_graph
+
+dimensions of movement, 
+ x,y,z, vx,vy,vz, rota,rotb,rotc, vrota,vrotb,vrotc, 
+ mechanical_resource_state_a/b/c
+ 
+action_state_path building
+ find_state_to_state(sa, sb)
+   create/clone the active figment
+   ascertain available controls
+    ballistic (freefall: aerodynamic and inertial control)
+    limb contact (assess floor or contact object properties/precious/frailtie)
+    graph control availability in near temp
+   fancy maintains figment metadata of presences such as 
+    table>surface,leg1,leg2 etc   permissions: hard_avoid..employable
+    creature>
+    hazard

@@ -1,19 +1,19 @@
 Fancy
 =====
-Foresight physics engine for futuroids
+*Foresight physics engine for futuroids*
 
 ## Description
-This is a physics project with lofty aspirations of achieving practical physical awareness functions for robotics. 'Fancy' is thus named as a would-be programmatic sense of *fantasy*.
+This is a physics project with a far goal of achieving practical physical awareness functions for robotics. 'Fancy' is thus named as a would-be programmatic sense of *fantasy*.
 
-Currently a number of test worlds called 'figments' excercise the developing physics engine. At present these are abstract and astrological in kind, with point-gravity being excercised as the first basic force. For future practical purposes point-gravity will not be used, but the calculation of point-to-point repulsion and similar may be used to approximate gas pressures, flows and other phenomena.
+Currently a number of test worlds called 'figments' excercise the developing physics engine. At present these are abstract and astrological in kind, with point-gravity being excercised as the first basic force. Point-gravity is not much use for earthly purposes, but the calculation of point-to-point repulsion and similar may be used to approximate gas pressures, flows and other phenomena.
 
 A basic 'web workbench' allows selection and initialises figments and renders them for display and testing.
 
-When the 'figment' engine is capable enough, a goal is to model a bot's chassis and limbs within a figment, and train it to move itself within the dynamic virtual conditions which can be hosted by the engine. It should not be a huge stretch to then integrate a module which constructs and updates a figment with sensor data such as camera or sonar, from a real robot: to instantiate a virtual facsimilie of physical circumstance which a real robot can test actions and anticipate real events within.
+When the 'figment' engine is capable enough, a goal is to model a bot's chassis and limbs within a figment, and train virtual bots to move themselves within the dynamic virtual conditions which can be hosted by the engine. It should not be a huge stretch to then integrate a module which constructs and updates a figment with sensor data such as camera or sonar, from a real robot: to instantiate a virtual facsimilie of physical circumstance which a real robot can test actions and anticipate real events within.
 
-Somewhere down the line we end up with open source software for 'pet' robots that can scoot around spryly, dodge cats and catch dropped teacups etc. Also clear pests from feilds and harvest, investigate potholes, sea bed explorations... progress on this seems well overdue.
+Somewhere down the line we end up with open source software for 'pet' robots that can scoot around spryly, dodge cats and catch dropped teacups etc. Also clear pests from feilds and harvest, investigate potholes, exploration sea beds... progress on this seems well overdue.
 
-Granted thats all by and by, at the moment here are some curious pretty graphics.
+Granted thats all by-and-by, at the moment here are some curious pretty graphics.
 
 ## Web workbench
 The demo currently selects between 'figments', displays a few measurements - number of particles, model time step and rendering interlace rate, and arranges keyboard controls for view movements and speed changing. 
@@ -28,7 +28,7 @@ The project has been developed as a private hobby, in a 'from the ground up' man
 unruly functions in figment/construct.js which set particles into basic orbits 
 in a plane or randomised spherical area around an attractor.
 
-`bench/instructor.js` is the 'main' tying together the various bits of the system
+`bench/instructor.js` is tying together the various bits of the system
 
 `threeJS` library is used to handle all rendering
 
@@ -42,10 +42,10 @@ AoS might have benefits for code design and extensibility, but SoA allows for mo
 
 ####Gravity a basic interaction
 
-Approximate (non-relativistic) Gravity amounts to one configuration of an attractive/repulsive function between things. It is a fairly simple configuration where attraction is given by the inverse of the square of the distance between. More complexety can be involved in discerning the details of each separation between things than in calculating the resulting influence of the separations. 
+Common newtonian Gravity amounts to one formullation of an attractive/repulsive function between things. It is a fairly simple formula where attraction is given by the inverse of the square of the distance between. More algorithm complexety can be involved in discerning the details of each separation between things than in calculating the resulting influence of the separations. 
 
 #### Cross-quests and inter-quests
-The task of optimising all possible interactions between all jotes, on each timestep, requires cluster-grouping-graphing them all in an addressable structure which helps distinguish between distant and close pairs. An implementation of this is fairly well begun and is tested in the solar system figment where groups of objects (ie each planetary system) can be so far separated from the others, that very little accuracy is lost by applying gravitation influence between the groups instead of accounting each individual member.
+The task of optimising all possible interactions between all jotes, on each timestep, requires group-graphing them all in an addressable structure which helps distinguish between distant and close pairs. An implementation of this is fairly well begun and is tested in the solar system figment where groups of objects (ie each planetary system) can be so far separated from the others, that very little accuracy is lost by applying gravitation influence between the groups instead of accounting each individual member.
 
 Here the graphs groups (aka nodes) are called 'spots' as they correspond to *measured spots in space* which all their child spots and jotes are guaranteed to fit within. 
 

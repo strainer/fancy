@@ -504,3 +504,75 @@ Inspection of repo structure
  but must dev in gh-pages to get it basic working
  before copying to master for standard deving
  dev as much in master as possible and script.cp to gh-pages
+ 
+ 
+ 
+#bench dom layout
+
+ features to have
+  header bar
+   containging github link, 
+  openbutton figment > figments
+  choicelist > figments
+  
+  
+  
+[fancy physics demo: [help]]   [figments]      [fork on github]
+
+readings
+settings
+figment select
+help
+fork on github
+
+/*fancy* - View on Github
+select figment - Sol system
+settings
+readings
+start
+
+keys
+notes
+
+
+This is a Javascript Physics Simulation Demo
+
+
+
+
+//
+// - \\ - // - \\ - // - \\ - // - \\ - // - \\ - // - \\ -
+//\\ - //\\ - //\\ - //\\ - //\\ - //\\ - //\\ - //\\ - 
+//-\\\ - ///-\\ - //-\\\ - ///-\\ - //-\\\ - ///-\\ - //-\\\ - ///-\\ - 
+// -///- // -///- // -///- // -///- // -///- // -///-
+//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//
+// - /-/ - // - /-/ - // - /-/ - // - /-/ - // - /-/ - // - /-/ -
+//                          //          //               //          /
+//
+//
+// blapanel - html dash providing object 
+//
+// add readoutbox, controlbox to display on page
+// 
+// dashelements
+//  readouts
+//  inputs
+// 
+// containers
+//  nestable
+//  modalable
+//  stylable
+// 
+// dashmethods
+//  destroy
+//  pause
+//
+// -                    \\ -            // - \\ - // - \\ -
+//\\ - /  /\\ -  - //\\ - //\\     \\ - //\\ - //\\ - 
+//-\\\ - ///-\\ - //-\\\ - ///-\   \ - //-\\\ - ///-\\ - //-\\\ - ///-\\ - 
+// -//  ||/- // -///- // -//|/- // -||///- // -///-    // -||///-
+//-//-//-//-//     -//-//-//-//-  //-//-//-//-/||/-//-/|/-//-//-//
+// - /-/  - // -| /-/ - //| - /-/ -    // - /-/ - // - /-/ - // - /-/ -
+//                          //          //               //          /
+
+
