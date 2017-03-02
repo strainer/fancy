@@ -530,6 +530,7 @@ function createC5(){ //electrostatic cloud
   
   vplay.instaprops=
   {  forces:1
+    ,max_force:  2
     ,pradius:0.5
     ,firstfocus:-1
     ,runcycle_step : 2.5
@@ -544,7 +545,7 @@ function createC5(){ //electrostatic cloud
   Talter.setgroup(0)
   Talter.setbasecol(0)
   
-  Talter.addjote(0,0,0,1.0)
+  Talter.addjote(0,0,0,0.00001)
   Talter.colorprev({r:0,g:6,b:6.5})
   //~ Talter.addspherea({num:200,rad:2,hot:0.9})
     
@@ -554,14 +555,14 @@ function createC5(){ //electrostatic cloud
   //~ }) 
   //~ Talter.colorprev({ r:3,g:3.9,b:4.5,rfun:0,bfun:0,gfun:0 })
   //~ Talter.massallzeros(0.1) 
-  var pl=3
+  var pl=1
   var spc=1
   Talter.setaslast()
  
   Talter.addspinball({
-    num:nh*15, rad:spc*3, phi:0, pull:pl
+    num:nh*25, rad:spc*3, phi:0, pull:pl
     //~ ,radf:0, crvf:0, velf:0
-    ,radf:function(){ return Drand.gnorm( 0.7,1.2)   } 
+    ,radf:function(){ return Drand.gnorm( 0.7,1.2) } 
     ,velf:function(){ return Drand.gnorm( 0.9,1.1) } 
     ,thkf:function(){ return Drand.gnorm( 0.9,1.1) } 
   }) 
@@ -582,7 +583,7 @@ function createC5(){ //electrostatic cloud
    })
 
   Talter.addspinball({
-    num:nh*25, rad:spc*7, phi:0, pull:pl*3.5
+    num:nh*4, rad:spc*7, phi:0, pull:pl*2
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){ return Drand.gnorm( 0.6,1.5)   } 
     ,velf:function(){ return Drand.gnorm( 0.9,1.1) } 
@@ -592,10 +593,10 @@ function createC5(){ //electrostatic cloud
   //Talter.massuncolored(0.0)
  
   Talter.massuncolored(
-    function(){ return Drand.gteat( 0.015,0.025 ) }
+    function(){ return Drand.gteat( 0.025,0.035 ) }
   ) 
   Talter.chargeuncolored(
-    function(){ return Drand.gteat( -0.01,-0.025 ) }
+    function(){ return Drand.gteat( -0.1,-0.2 ) }
   )
   
   Talter.colorprev({ r:0.1,g:2.2,b:4.9
@@ -616,7 +617,10 @@ function createC6(){ //mock near earth orbitals
    ,model_pace : 100.0//315.36000 // (is seconds?)
    ,runcycle_step:10
    ,gravity : 6.67408e-8
-   ,camRad:5000
+   ,camRad:800
+   ,camThet:-2.1
+   ,camPhi:-Math.PI/60
+   ,firstfocus:1
    //~ ,max_force :  10000000000000
    //~ ,viewer2:true
   }
@@ -693,9 +697,9 @@ function createC6(){ //mock near earth orbitals
 
   
   Talter.colorprev({ r:0,g:0,b:0,
-    rfun:function(){ return Drand.gteat( 0.7,1.5 ) }
-   ,gfun:function(){ return Drand.gteat( 0.9,1.9 ) } 
-   ,bfun:function(){ return Drand.gteat( 0.9,2.9 ) }
+    rfun:function(){ return Drand.gteat( 0.7,2.2 ) }
+   ,gfun:function(){ return Drand.gteat( 1.2,2.0 ) } 
+   ,bfun:function(){ return Drand.gteat( 1.4,2.9 ) }
   })	
   
   /*
