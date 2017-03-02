@@ -7,7 +7,18 @@
 
 var vplay = {
 
-   seed:0 ,world:5
+  worlds:{
+    0:{name:"Ring",desc:""}
+   ,1:{name:"Spiral",desc:""}
+   ,2:{name:"4 Ring",desc:""}
+   ,3:{name:"Blue Disk",desc:""}
+   ,4:{name:"3 Planets",desc:""}
+   ,5:{name:"QuasEmagnetic",desc:""}
+   ,6:{name:"Near Earth",desc:""}
+   ,7:{name:"Solar Sim",desc:""}
+  }
+    
+  ,seed:0 ,world:5
   ,geometry:{}, camera:{}, scene:{} 
   ,renderer:{}, displaybugi:20 //avoiding scrollbar
   ,tStat:{}         //stats panel
@@ -154,7 +165,7 @@ function framemaster() { // master frame dispatch
   var dashact; 
   while( dashact=adash.pullAction() ){ dashact() } 
     
-  if((vplay.allframe_clock)%3===0)
+  if(!vplay.paused && (vplay.allframe_clock)%3===0)
   {
     adash.redrawDash() 
   }
@@ -177,7 +188,6 @@ function framemaster() { // master frame dispatch
 
   }
   
-    
 }
 
 var done=0
@@ -204,9 +214,9 @@ function liveframe(){
     { //console.log("do")
       var bitstep = vplay.runcycle_trip-vplay.model_clock 
       //~ console.log("bitstep",bitstep)
-      if(bitstep){ Fgm.velmove(bitstep); vplay.movperframe++ }
+      if(bitstep){ Fgm.velmove(bitstep); }
       vplay.model_clock+=bitstep
-      if(vplay.gravity) donature()
+      if(vplay.gravity){ donature(); vplay.movperframe++ }
       movstep-=bitstep
       vplay.runcycle_trip+=vplay.model_pace
     }
@@ -216,9 +226,9 @@ function liveframe(){
     { //console.log("do")
       var bitstep = -vplay.runcycle_trip+vplay.model_clock 
       //~ console.log("bitstep",bitstep)
-      if(bitstep){ Fgm.velmove(bitstep); vplay.movperframe++ }
+      if(bitstep){ Fgm.velmove(bitstep) }
       vplay.model_clock+=bitstep
-      if(vplay.gravity) donature()
+      if(vplay.gravity){ donature(); vplay.movperframe++ }
       movstep-=bitstep
       vplay.runcycle_trip+=vplay.model_pace
     }
@@ -226,7 +236,6 @@ function liveframe(){
   //~ console.log("movstep",movstep)
   if(movstep){ 
     Fgm.velmove(movstep); 
-    vplay.movperframe++ 
   }
   vplay.model_clock+=movstep
   //Fgm.frameshift() 
@@ -270,8 +279,8 @@ function setkeys(){
     if((vplay.skipframe_step *= 14/15)<1)vplay.skipframe_step=1 } 
   )
 
-  keysys.whenst("l"    , reverseTime )
-  keysys.whenst("k"    , reverseTime2 )
+  keysys.whenst("h"    , reverseTime )
+  keysys.whenst("u"    , reverseTime2 )
 
   keysys.whilst("up"    , setgn , ["keyY", 1] )
   keysys.whilst("down"  , setgn , ["keyY",-1] )

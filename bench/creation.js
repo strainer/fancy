@@ -617,7 +617,10 @@ function createC6(){ //mock near earth orbitals
    ,model_pace : 100.0//315.36000 // (is seconds?)
    ,runcycle_step:10
    ,gravity : 6.67408e-8
-   ,camRad:5000
+   ,camRad:800
+   ,camThet:-2.1
+   ,camPhi:-Math.PI/60
+   ,firstfocus:1
    //~ ,max_force :  10000000000000
    //~ ,viewer2:true
   }
@@ -694,9 +697,9 @@ function createC6(){ //mock near earth orbitals
 
   
   Talter.colorprev({ r:0,g:0,b:0,
-    rfun:function(){ return Drand.gteat( 0.7,1.5 ) }
-   ,gfun:function(){ return Drand.gteat( 0.9,1.9 ) } 
-   ,bfun:function(){ return Drand.gteat( 0.9,2.9 ) }
+    rfun:function(){ return Drand.gteat( 0.7,2.2 ) }
+   ,gfun:function(){ return Drand.gteat( 1.2,2.0 ) } 
+   ,bfun:function(){ return Drand.gteat( 1.4,2.9 ) }
   })	
   
   /*

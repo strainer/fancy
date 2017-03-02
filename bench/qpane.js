@@ -8,37 +8,41 @@
 
 function newDash(){ return (function(gu){
   
-  var topel, winwidth, winheight
   var hazcss=0
 
-  var clra="#62be16"  //entity    "#6e2", #dfcf78 pebbletan
-     ,clrb="#bbbb8e"  //title     "#ee2", #ffcf59 orangemild
-     ,clrc="#916151"  //border    "#676", #afaf78 pebbletanw #c25
-     ,clrch="#c16151" //border hover    "#676", #afaf78 pebbletanw #c25
-     ,clrd="#aeaece"  //reading   "#eee"
-     ,clre="#141414"  //backg   "#eee"
-
-  winwidth =window.innerWidth
-  var fntw=Math.floor(0.5+winwidth*0.014)
-  winheight =window.innerHeight
+  var winwidth, winheight
   
-  seat=newEl('div',{
-    zindex:10
-   ,position:'absolute'
-   ,top:0,left:0
-   ,fontFamily: 'monospace'
-   //~ ,left:  Math.floor(ewi*0.125)
-   //~ ,height:(winheight*0.3)+'px'
-   //~ ,width: '10%'
-   ,color: clra
-   //~ ,backgroundColor: "#181f20"
-   //,border: "1px dashed #73AD21"
-   ,padding: "2px"
-   ,fontSize: fntw+'px'
-   ,width:'98%'
-  })
-  document.body.appendChild(seat)
+  var www  = window, ddd  = www.document, dde = ddd.documentElement,
+  ddb = ddd.body || ddd.getElementsByTagName('body')[0],
+  winwidth  = www.innerWidth || dde.clientWidth || ddb.clientWidth,
+  winheight = www.innerHeight|| dde.clientHeight|| ddb.clientHeight;
+  
+  var mez=(2+winwidth/70)
+  
   onloadit(iniStyles)
+  
+  function iniStyles(){
+    if(hazcss++) return
+    var stdef=heredoc(function(){/*
+      
+    .button1:hover {
+     color:#feeb8e;
+     border-color:#f16151;
+    }
+    
+    .button1{
+     cursor:pointer; float:left; color:#ebcb8e;
+     border-width: 2px; border-style:solid; border-color:#b16151;
+     padding:1px 6px 0px 6px; margin:2px 3px 2px 3px ;
+     background-color:#222;
+    }
+    
+    */},' ')
+
+    var s = document.createElement('style')
+    s.type = 'text/css'; s.innerHTML=stdef
+    document.getElementsByTagName("head")[0].appendChild(s)	
+  }
           
   //mixof (in [,out=intype][,n=1][,in_start=0][,in_fin=len])
   //~ clra=Fdrandom.hot().mixof("23456789abcdef","#",3)
@@ -52,9 +56,22 @@ function newDash(){ return (function(gu){
   
   var displayoff=0
 
+  var clra,clrb,clrc,clrch,clrd,clre
+
+  var seat=newEl('div',{})
+  document.body.appendChild(seat)	
+  
+  function setseat(sty){
+    styleEl(seat,sty)
+  }
+  
+  function setcolors(cols){
+    clra =cols.clra ,clrb =cols.clrb ,clrc =cols.clrc
+    clrch=cols.clrch,clrd =cols.clrd ,clre =cols.clre
+  }
   
   function togPane(tp){
-    tp=tp||topel
+    tp=tp||seat
     var st
     if(displayoff){ tp.style.display='block'; displayoff=0 }
     else{ tp.style.display='none'; displayoff=1 }
@@ -84,9 +101,9 @@ function newDash(){ return (function(gu){
     var sty=pm.style
     if(typeof(sty)==='string'){ sty=dstyles[sty] }
     
-    var bttn=newEl('div',{},'button1')
+    var bttn=newEl('div',pm.upstyle,'button1')
     var rdng=newEl('div',pm.instyle)
-    var dset=newEl('div',pm.upstyle)
+    var dset=newEl('div',{})
     
     //dset.style.backgroundColor=clre
     bttn.textContent=pm.content
@@ -117,7 +134,7 @@ function newDash(){ return (function(gu){
     var bttn=newEl('text',{},'button1')
     var dset=newEl('div',sty)
     
-    dset.style.backgroundColor='#403000'
+    dset.style.backgroundColor='#101010'
     bttn.textContent=pm.legend
     
     //console.info(dset)
@@ -183,6 +200,7 @@ function newDash(){ return (function(gu){
      ,'key':pm.varkey
      ,'type':pm.type
      ,'val':0
+     ,'vala':[0,0,0,0,0]
      ,'elem':em
      ,'dial':di
      ,'lege':lg
@@ -247,7 +265,9 @@ function newDash(){ return (function(gu){
   function elemupdate(m,cv){
     
     if(m.type==='runav'){ 
-      m.val=(((m.val)||0)*0.9) + (cv||0)*0.105
+      m.vala[0]=(m.vala[0]%4)+1
+      m.vala[m.vala[0]]=cv
+      m.val=(m.vala[1]+m.vala[2]+m.vala[3]+m.vala[4])/4
       if ((m.val==0)||(Math.abs(m.val-(m.bval||0))>0.1)){ 
         m.bval=m.val||0 
         m.dial.textContent=(m.val).toFixed(1);
@@ -286,6 +306,10 @@ function newDash(){ return (function(gu){
     return d
   }
 
+  function styleEl(el,sty){
+    for(var k in sty){ el.style[k]=sty[k]	} 
+  }
+
   var actions={a:0,e:0}  //fifo queue for adding onclick actions to dash 
   
   function addAction(f){
@@ -299,29 +323,6 @@ function newDash(){ return (function(gu){
     return f
   } 
   
-  
-  function iniStyles(){
-    if(hazcss++) return
-    var stdef=heredoc(function(){/*
-      
-    .button1:hover {
-     color:#fbbb8e;
-     border-color:#c16151;
-    }
-    
-    .button1{
-     cursor:pointer; float:left; color:#bbbb8e;
-     border-width: 2px; border-style:solid; border-color:#916151;
-     padding:0px 3px 0px 3px; margin:1px;
-    }
-    
-    */},' ')
-
-    var s = document.createElement('style')
-    s.type = 'text/css'; s.innerHTML=stdef
-    document.getElementsByTagName("head")[0].appendChild(s)	
-  }
-
   function onloadit(fn){
     if (window.addEventListener)
     { window.addEventListener('load', fn, false) }
@@ -343,7 +344,10 @@ function newDash(){ return (function(gu){
     redrawDash : redrawDash
    ,addDiv     : addDiv
    ,reading  : reading
+   ,mez:mez
    ,seat: seat
+   ,setseat: setseat
+   ,setcolors:setcolors
    ,styleclass :styleclass
    ,togPane:togPane
    ,revealer:revealer
@@ -352,207 +356,6 @@ function newDash(){ return (function(gu){
    ,pullAction:pullAction
    ,delGroup:delGroup
    ,button:button
+   ,winwidth:winwidth
   }
 }(arguments))}
-
-//
-// - \\ - // - \\ - // - \\ - // - \\ - // - \\ - // - \\ -
-//\\ - //\\ - //\\ - //\\ - //\\ - //\\ - //\\ - //\\ - 
-//-\\\ - ///-\\ - //-\\\ - ///-\\ - //-\\\ - ///-\\ - //-\\\ - ///-\\ - 
-// -///- // -///- // -///- // -///- // -///- // -///-
-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//
-// - /-/ - // - /-/ - // - /-/ - // - /-/ - // - /-/ - // - /-/ -
-//                          //          //               //          /
-//
-//
-// blapanel - html dash providing object 
-//
-// add readoutbox, controlbox to display on page
-// 
-// dashelements
-//  readouts
-//  inputs
-// 
-// containers
-//  nestable
-//  modalable
-//  stylable
-// 
-// dashmethods
-//  destroy
-//  pause
-//
-// -                    \\ -            // - \\ - // - \\ -
-//\\ - /  /\\ -  - //\\ - //\\     \\ - //\\ - //\\ - 
-//-\\\ - ///-\\ - //-\\\ - ///-\   \ - //-\\\ - ///-\\ - //-\\\ - ///-\\ - 
-// -//  ||/- // -///- // -//|/- // -||///- // -///-    // -||///-
-//-//-//-//-//     -//-//-//-//-  //-//-//-//-/||/-//-/|/-//-//-//
-// - /-/  - // -| /-/ - //| - /-/ -    // - /-/ - // - /-/ - // - /-/ -
-//                          //          //               //          /
-
-
-
-
-function growdash(cdash,vplay){
-  
-  cdash.styleclass('global',{})
-  cdash.styleclass('def1',{})
-  cdash.styleclass('def2',{margin:'0 0 0 3px'})
-
-  //addtodash(parent,type,legend,varname,steez)
-
-  //~ var leftcon = cdash.addpane(cdash.topel,{width:"50%",float:"left"})
-  //~ var rightcon= cdash.addpane(cdash.topel,{width:"50%",float:"right"})
-  var dsleft=cdash.addDiv({
-    seat:cdash
-   ,style:{float:'left'}
-   ,group:'dleft'	
-    })
-
-  var dsright=cdash.addDiv({
-    seat:cdash
-   ,style:{float:'right'}
-   ,group:'dright'	
-    })
-
-  var dstop=cdash.addDiv({
-    seat:cdash
-   ,style:{marginLeft:'auto',marginRight:'auto',width:'50%',textAlign:'center'}
-   ,group:'dtop'	
-    })
-
-  // boards of can...
-   
-  var dsselect= cdash.revealer({
-    seat:dstop
-   ,content:"Figments"
-   ,upstyle:{ marginLeft:'auto',marginRight:'auto',width:'50%',textAlign:'center' }
-   ,instyle:{
-     textAlign:'center'
-    ,backgroundColor:"#ffffff88",border:"9px",clear:'both',padding:"3px"}
-   ,on:false
-  })
-  var dsreadings= cdash.revealer({
-    seat:dsleft
-   ,content:"Readings"
-   ,upstyle:{ clear:'both',backgroundColor:"#ffffff88"}
-   ,instyle:{ clear:'both',backgroundColor:"#ffffff88"}
-   ,on:true
-  })
-  var dsright= cdash.revealer({
-    seat:dsright
-   ,content:"keys"
-   ,upstyle:{clear:'both',float:'right'}
-   ,instyle:{clear:'both'}
-   ,on:false
-  })
-
-  // Multiline Function String - Nate Ferrero - Public Domain
-
-  var keystext=heredoc(function(){/*
-  &nbsp;s- toggle stats
-  &nbsp;d- toggle pane
-  &nbsp;g- tog gravity
-  &nbsp;x- explode
-  &nbsp;c- pause
-  zoom
-  &nbsp;a- in, z- out
-  &nbsp;pan- cursors
-  &nbsp;crawl- ctrlcursor
-  time
-  &nbsp;i- - throttle
-  &nbsp;o- + throttle 
-  &nbsp;q- - interlace 
-  &nbsp;w- + interlace
-  &nbsp;l- backwrdmove
-  &nbsp;k- backwrdtime 
-  <br>
-  */})
-
-  cdash.addHTML(dsright, keystext, {margin:'0 0 0 3px'}   )
-
-
-  cdash.reading({
-    seat:dsreadings
-   ,type:'text1'
-   ,legend:'interlace:'
-   ,scoper:vplay ,varkey:'runcycle_step'
-   ,style:'def2'
-   ,group:'fu' 
-  })
-  cdash.reading({
-    seat:dsreadings
-   ,type:'text1'
-   ,legend:'freezefrm:'
-   ,scoper:vplay ,varkey:'skipframe_step'
-   ,style:'def2' 
-   ,group:'fu'
-  })
-  cdash.reading({
-    seat:dsreadings
-   ,type:'runav'
-   ,legend:'movsprfrm:'
-   ,scoper:vplay ,varkey:'movperframe'
-   ,style:'def2' 
-   ,group:'fu' 
-  })
-  cdash.reading({
-    seat:dsreadings ,type:'text1' ,legend:'iota:'
-   ,scoper:vplay ,varkey:'iota'
-   ,style:'def2'
-   ,group:'fu'
-   ,func:function(a){ return (a-1).toFixed(0) } 
-  })
-
-  cdash.styleclass('mbutts',{display:'inline-block', padding:'0 0.1em' })
-
-
-  cdash.button({
-    legend:'ring' ,param:0 ,callb:setupfigview ,closes:true
-   ,seat:dsselect,style:'mbutts',group:'fu',type:'text1',on:true
-  })
-  cdash.button({
-    legend:'Spiral' ,param:1 ,callb:setupfigview ,closes:true
-   ,seat:dsselect,style:'mbutts',group:'fu',type:'text1',on:true
-  })
-  cdash.button({
-    legend:'4 ring' ,param:2 ,callb:setupfigview ,closes:true
-   ,seat:dsselect,style:'mbutts',group:'fu',type:'text1',on:true
-  })
-  cdash.button({
-    legend:'Blue disk' ,param:3 ,callb:setupfigview ,closes:true
-   ,seat:dsselect,style:'mbutts',group:'fu',type:'text1',on:true
-  })
-  cdash.button({
-    legend:'3 planetz' ,param:4 ,callb:setupfigview ,closes:true
-   ,seat:dsselect,style:'mbutts',group:'fu',type:'text1',on:true
-  })
-  cdash.button({
-    legend:'Electrostatic' ,param:5 ,callb:setupfigview ,closes:true
-   ,seat:dsselect,style:'mbutts',group:'fu',type:'text1',on:true
-  })
-  cdash.button({
-    legend:'Near Earthly' ,param:6 ,callb:setupfigview ,closes:true
-   ,seat:dsselect,style:'mbutts',group:'fu',type:'text1',on:true
-  })
-  cdash.button({
-    legend:'Solar Simulum' ,param:7 ,callb:setupfigview ,closes:true
-   ,seat:dsselect,style:'mbutts',group:'fu',type:'text1',on:true
-  })
-
-  cdash.button({
-    seat:dsreadings
-   ,type:'text1'
-   ,flipper:true
-   ,legend:'start'
-   ,legend2:'pause'
-   ,scoper:vplay ,varkey:'paused'
-   ,style:'mbutts'
-   ,group:'fu'
-   ,callb:togglePause
-   ,on:true
-   ,val:1
-   ,func:function(a){ return a?"resume":"pause" } 
-  })
-
-}
