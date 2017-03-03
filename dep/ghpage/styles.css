@@ -27,7 +27,7 @@ padding:10px 50px 0 0;
 
 body {
   
-  color: #af2;
+  color: #8e2;
   background-color: #000;
   -webkit-font-smoothing: antialiased;
 }
@@ -53,6 +53,12 @@ p img {
 
 
 /* Header */
+
+.glight{
+	color:#eaf;
+	/*text-shadow: 0 0 5px #b83, 0 0 10px #b83;*/
+	letter-spacing: 3px;
+}
 
 header {
   width:640px;
@@ -89,6 +95,7 @@ a.github {
 }
 
 a.buttons:hover {
-	color: #fff;
-	text-decoration: none;
+	/*color: #ffd !important; */
+	text-decoration: underline;
+	text-shadow: 0 0 5px #faa, 0 0 10px #faa;
 }
