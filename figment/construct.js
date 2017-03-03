@@ -146,7 +146,7 @@ function addConstruct(fig) {
       sqirad=Sqrt(G/(rad*rdff))
       _tocarte( sqirad, thet+hPi, phi )
       jote.vx[j]=ins.vx + _x/axs// + vvf()
-      jote.vy[j]=ins.vy + _y + cvf()
+      jote.vy[j]=ins.vy + _y + cvf()*0.25
       jote.vz[j]=ins.vz + _z*axs// + vvf()
     }
     
