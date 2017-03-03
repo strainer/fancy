@@ -73,6 +73,15 @@ function setdash(cdash,vplay){
    ,group:'dleft'	
     })
 
+  var control_div=cdash.addDiv({
+    seat:cdash
+   ,style:{
+     position:'absolute'
+    ,top:mez*20+'px',left:mez*brd+"px",width:fez*18+"px"
+    }
+    ,group:'dtop'	
+   })
+
   var keys_div=cdash.addDiv({
     seat:cdash
     ,style:{
@@ -82,15 +91,6 @@ function setdash(cdash,vplay){
    ,group:'dright'	
     })
     
-  var control_div=cdash.addDiv({
-    seat:cdash
-   ,style:{
-     position:'absolute'
-    ,top:mez*18+'px',left:mez*brd+"px",width:fez*18+"px"
-    }
-    ,group:'dtop'	
-   })
-
   // boards of can...
    
   var figwid=fez*16
