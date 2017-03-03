@@ -59,9 +59,9 @@ function newViewport(fig,vplay){
 
       vplay.camera.position.z = vplay.camRad
       
-      vplay.particleSystem.rotation.x= vplay.camPhi
-      vplay.particleSystem.rotation.y= vplay.camThet
-      vplay.particleSystem.rotation.z= 0
+      //~ vplay.particleSystem.rotation.x= vplay.camPhi
+      //~ vplay.particleSystem.rotation.y= vplay.camThet
+      //~ vplay.particleSystem.rotation.z= 0
     
     }
     
@@ -71,11 +71,12 @@ function newViewport(fig,vplay){
     var geometry2 = new THREE.Geometry();
     geometry2.vertices.push(new THREE.Vector3(0, 0, 0)); //line drawn
     geometry2.vertices.push(new THREE.Vector3(_x, _y, _z));  //vector to vector
+    geometry2.vertices.push(new THREE.Vector3(_x, _y, _z));  //vector to vector
     geometry2.computeBoundingSphere()
     var dbline = new THREE.Line(geometry2, material2);
     vplay.geo2=geometry2
     vplay.dbline=dbline
-    vplay.scene.add(vplay.dbline);
+    //~ vplay.scene.add(vplay.dbline);
        
     
     vplay.renderer = new THREE.WebGLRenderer( { antialias: true } )
@@ -120,8 +121,8 @@ function newViewport(fig,vplay){
       )
     }
     focus.sd= 1/((Math.sqrt(ss))/js.length)
-    console.log("jd",jd) 
-    console.log("focus",focus.sd) 
+    console.log("focusing, jd:",jd) 
+    console.log("focusing, focus.sd:",focus.sd) 
    ,focus.jd= jd
    ,focus.timer= 10
    
@@ -228,36 +229,74 @@ function newViewport(fig,vplay){
     vplay.geometry.attributes.color.needsUpdate = true
     vplay.geometry.attributes.position.needsUpdate = true
 
-    vplay.keyXd = (vplay.keyX===0)?0:(vplay.keyXd+(vplay.keyX*0.0028))*0.985
-    vplay.keyYd = (vplay.keyY===0)?0:(vplay.keyYd+(vplay.keyY*0.0028))*0.985
-    vplay.keyZd = (vplay.keyZ===0)?0:(vplay.keyZd+(vplay.keyZ*0.0025))*0.91
+    vplay.keyLRd = (vplay.keyLR===0)?0:(vplay.keyLRd+(vplay.keyLR*0.0028))*0.985
+    vplay.keyUDd = (vplay.keyUD===0)?0:(vplay.keyUDd+(vplay.keyUD*0.0028))*0.985
+    vplay.keyRd = (vplay.keyR===0)?0:(vplay.keyRd+(vplay.keyR*0.0025))*0.91
 
     if(vplay.keyCtrl){ //autodrift and shift lookat
       
+      //our plane is x,z  , y is updown
+      
       _topolar( //direction in xy plane we are looking
 
-       vport.camlook.x-vplay.camera.position.x 
-      ,0//vport.camlook.y-vplay.camera.position.y //our y is up down 
-      ,vport.camlook.z-vplay.camera.position.z 
+       vplay.camera.position.x-vport.camlook.x //these will be phi
+      ,vplay.camera.position.z-vport.camlook.z //these will be phi
+      ,vplay.camera.position.y-vport.camlook.y 
        )
-
-      _tocarte(_rad,_the,_phi)  // center line in xz plane 
-      vport.camlook.x+=_x*vplay.keyYd*0.00255+vplay.keyYd*0.0175
-      vport.camlook.z+=_z*vplay.keyYd*0.00255+vplay.keyYd*0.0175
-
-      _tocarte(_rad,_the+Pi/2,_phi)  // false right 
       
-      vport.camlook.x+=_x*vplay.keyXd*0.00255+vplay.keyXd*0.0175
-      vport.camlook.y+=_y*vplay.keyXd*0.00255+vplay.keyXd*0.0175
+      //~ function _topolar(x,y,z) {
+        //~ _rad = Math.sqrt(x*x+y*y+z*z+1.0e-40)
+        //~ _the = Math.acos(z/_rad) 
+        //~ _phi = Math.atan2(y,x) 
+      //~ }
+      
+      //~ _the=(_the+Pi)%Pi
+      //~ _phi=(_phi+2*Pi)%Pi
+      //~ console.log("the",_the,"phi",_phi)
+      //~ _tocarte(_rad,_the,_phi)  // center line in xz plane
+                                //gives back _x as x  _y as z _z as _y
+      //~ vport.camlook.x+=_x*vplay.keyUDd*0.00255+vplay.keyUDd*0.0175
+      //~ 
+      //~ _tocarte(vplay.camRad,vplay.camPhi,vplay.camThet)
+      //~ gives coords of camera
+      //~ this is all about moving in x z plane according to camThet
 
+      _tocarte(_rad, Pi/2, vplay.camThet+Pi/2)  // false right 
+      
+      vport.camlook.x+=_x*vplay.keyLRd*0.00355
+      vport.camlook.z+=_y*vplay.keyLRd*0.00355
+      //vport.camlook.y+=_x*vplay.keyLRd*0.00255+vplay.keyLRd*0.0175
 
+      _tocarte(_rad, Pi/2, vplay.camThet)  // false right 
+      
+      vport.camlook.x+=_x*vplay.keyUDd*0.00355
+      vport.camlook.z+=_y*vplay.keyUDd*0.00355
+      //vport.camlook.y+=_x*vplay.keyLRd*0.00255+vplay.keyLRd*0.0175
+
+      if(!(vplay.keyUDd||vplay.keyLRd||vplay.keyUD||vplay.keyLR)){
+        var rud=vplay.camRad*0.004
+        var rret=(vport.camlook.x>0)?1:-1
+        if(abs(vport.camlook.x)<rud){ vport.camlook.x=0 }
+        else{ vport.camlook.x-=rud*rret }
+        
+        rret=(vport.camlook.z>0)?1:-1
+        if(abs(vport.camlook.z)<rud){ vport.camlook.z=0 }
+        else{ vport.camlook.z-=rud*rret }
+      }
+      
       //~ console.log(vplay.dbline)
       
-      vplay.dbline.geometry.vertices[1].x=_x
-      vplay.dbline.geometry.vertices[1].y=_y
-      vplay.dbline.geometry.vertices[1].z=_z
-      vplay.dbline.geometry.verticesNeedUpdate=true
-      vplay.dbline.geometry.computeBoundingSphere()
+      //~ vplay.dbline.geometry.vertices[0].x = focus.x
+      //~ vplay.dbline.geometry.vertices[0].y = focus.y
+      //~ vplay.dbline.geometry.vertices[0].z = focus.z
+      //~ vplay.dbline.geometry.vertices[2].x = vport.camlook.x+_x
+      //~ vplay.dbline.geometry.vertices[2].y = vport.camlook.y+_z
+      //~ vplay.dbline.geometry.vertices[2].z = vport.camlook.z+_y
+      //~ vplay.dbline.geometry.vertices[1].x = vport.camlook.x
+      //~ vplay.dbline.geometry.vertices[1].y = vport.camlook.y
+      //~ vplay.dbline.geometry.vertices[1].z = vport.camlook.z
+      //~ vplay.dbline.geometry.verticesNeedUpdate=true
+      //~ vplay.dbline.geometry.computeBoundingSphere()
       
       /*
       geometry = new THREE.Geometry();
@@ -271,9 +310,9 @@ function newViewport(fig,vplay){
       
       
       
-      if(true){ //is drifting sea of forgotten teardrops
+      if(false){ //is drifting sea of forgotten teardrops
         if(vplay.driftCount<0.02){ vplay.driftCount+=vplay.camDrift}
-        if(vplay.keyYd||vplay.keyXd||vplay.keyZd)
+        if(vplay.keyUDd||vplay.keyLRd||vplay.keyRd)
         { vplay.driftCount=0 }
         //~ vplay.driftCount=0.1
         var vva=0.007 ,vvb=0.004 ,vvc=0.006
@@ -287,21 +326,22 @@ function newViewport(fig,vplay){
       } 
  
     }else{ //not pressed ctrl
-      vplay.camRad  /= 1-vplay.keyZd*0.1
-      vplay.camPhi  -= vplay.keyYd*0.0325
+      vplay.camRad  /= 1-vplay.keyRd*0.1
+      vplay.camPhi  -= vplay.keyUDd*0.0325
       
       if(vplay.camPhi>Pi){ //flip hoz spin if past gimbal points
-        vplay.camThet -= vplay.keyXd*0.0325
+        vplay.camThet -= vplay.keyLRd*0.0325
       }else{
-        vplay.camThet += vplay.keyXd*0.0325
+        vplay.camThet += vplay.keyLRd*0.0325
       }
       
-      if(vplay.keyXd||vplay.keyYd||vplay.keyZd)
+      if(vplay.keyLRd||vplay.keyUDd||vplay.keyRd)
       { //return focus to center while rotating
-        vport.camlook.set(
-          vport.camlook.x*0.994
-         ,vport.camlook.y*0.994
-         ,vport.camlook.z)
+        
+        //~ vport.camlook.set(
+          //~ vport.camlook.x*0.994
+         //~ ,vport.camlook.y*0.994
+         //~ ,vport.camlook.z*0.994)
       }
     }
     
@@ -320,7 +360,11 @@ function newViewport(fig,vplay){
     //~ vplay.camera.position.set(_y,_z,_x); //opposite, gimlocks
     //~ vplay.camera.position.set(_y,_x,_z); //semi oppo
     //~ vplay.camera.position.set(_z,_y,_x); //closest
-    vplay.camera.position.set(_x,_z,_y);
+    vplay.camera.position.set(
+     _x+vport.camlook.x
+    ,_z+vport.camlook.y
+    ,_y+vport.camlook.z
+    );
     
     //invert on Phi crossing 0 and PI
     var up=(vplay.camPhi>Pi)?1:-1
@@ -340,11 +384,11 @@ function newViewport(fig,vplay){
 
     //vplay.camera.lookAt(origin3)
     
-    //~ vplay.camera.position.z = vplay.camera.position.z + vplay.keyZ*5
-    //~ vplay.camera.position.x = vplay.camera.position.x - vplay.keyX/2 
-    //~ vplay.camera.position.y = vplay.camera.position.y - vplay.keyY/2 
-    //~ vplay.particleSystem.rotation.y = vplay.particleSystem.rotation.y +vplay.keyX/20
-    //~ vplay.particleSystem.rotation.x = vplay.particleSystem.rotation.x -vplay.keyY/20
+    //~ vplay.camera.position.z = vplay.camera.position.z + vplay.keyRd*5
+    //~ vplay.camera.position.x = vplay.camera.position.x - vplay.keyLR/2 
+    //~ vplay.camera.position.y = vplay.camera.position.y - vplay.keyUD/2 
+    //~ vplay.particleSystem.rotation.y = vplay.particleSystem.rotation.y +vplay.keyLR/20
+    //~ vplay.particleSystem.rotation.x = vplay.particleSystem.rotation.x -vplay.keyUD/20
     
   }
   

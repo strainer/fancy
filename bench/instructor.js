@@ -50,9 +50,9 @@ var vplay = {
     ,iota:0
     
     ,driftCount:0, camDrift:0.03, camRad:50, camRadd:0
-    ,camThet:0, camPhi:0, spincam:0, firstfocus:0  //phi Math.PI/6
+    ,camThet:0, camPhi:Math.PI/1.5, spincam:0, firstfocus:0  //phi 
     
-    ,keyY:0, keyX:0, keyZ:0 ,keyYd:0, keyXd:0, keyZd:0, keyCtrl:0
+    ,keyUD:0, keyLR:0, keyR:0 ,keyUDd:0, keyLRd:0, keyRd:0, keyCtrl:0
     
     ,paused:1, explode:0, pausetime:0 
     ,gravityoff:0
@@ -282,20 +282,20 @@ function setkeys(){
   keysys.whenst("h"    , reverseTime )
   keysys.whenst("u"    , reverseTime2 )
 
-  keysys.whilst("up"    , setgn , ["keyY", 1] )
-  keysys.whilst("down"  , setgn , ["keyY",-1] )
-  keysys.whilst("left"  , setgn , ["keyX", 1] )
-  keysys.whilst("right" , setgn , ["keyX",-1] )
-  keysys.whilst("a"     , setgn , ["keyZ",-1] )
-  keysys.whilst("z"     , setgn , ["keyZ", 1] )
+  keysys.whilst("up"    , setgn , ["keyUD", 1] )
+  keysys.whilst("down"  , setgn , ["keyUD",-1] )
+  keysys.whilst("left"  , setgn , ["keyLR", 1] )
+  keysys.whilst("right" , setgn , ["keyLR",-1] )
+  keysys.whilst("a"     , setgn , ["keyR",-1] )
+  keysys.whilst("z"     , setgn , ["keyR", 1] )
   keysys.whilst("ctrl"  , setgp , ["keyCtrl", 1] )
 
-  keysys.whenup("up"    , setgp , ["keyY", 0] )
-  keysys.whenup("down"  , setgp , ["keyY", 0] )
-  keysys.whenup("left"  , setgp , ["keyX", 0] )
-  keysys.whenup("right" , setgp , ["keyX", 0] )
-  keysys.whenup("a"     , setgp , ["keyZ", 0] )
-  keysys.whenup("z"     , setgp , ["keyZ", 0] )
+  keysys.whenup("up"    , setgp , ["keyUD", 0] )
+  keysys.whenup("down"  , setgp , ["keyUD", 0] )
+  keysys.whenup("left"  , setgp , ["keyLR", 0] )
+  keysys.whenup("right" , setgp , ["keyLR", 0] )
+  keysys.whenup("a"     , setgp , ["keyR", 0] )
+  keysys.whenup("z"     , setgp , ["keyR", 0] )
   keysys.whenup("ctrl"  , setgp , ["keyCtrl", 0] )
 
   keysys.whenst ("c"    , togglePause )
