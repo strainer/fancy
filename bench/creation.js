@@ -93,7 +93,7 @@ function createC1(){ //undulating spiral
     num:nn, rad:zar, phi:0, pull:1   ,seam:-25
    ,off:{x:0.00003}
    ,radf:function(){ zee+=zaa; zool+=zee; return zool } 
-   ,thkf:function(){ return (zool-1)/40 } //hehehe... 
+   ,thkf:function(){ return -(zool-1)/21 } //hehehe... 
   }) 
   
   var zod =2.8
@@ -257,7 +257,7 @@ function createC3(){ //1 + 3 gbody and disk
     num:(180*nn), rad:3.6, phi:0, pull:1
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gspire( 0.30,1.80)} 
-    ,velf:function(){return Drand.gnorm(-0.05,0.05)} 
+    ,velf:function(){return Drand.gnorm(-0.01,0.01)} 
     ,thkf:function(){return Drand.gteat(-0.35,0.35)} 
   }) 
   Talter.colorprev({ r:1.9,g:3.9,b:1.5,rfun:0,bfun:0,gfun:0 })
