@@ -34,28 +34,50 @@ function newViewport(fig,vplay){
     vplay.camera = new THREE.PerspectiveCamera( 18
       ,( window.innerWidth-vplay.displaybugi) / (window.innerHeight-vplay.displaybugi)
       , 0.01, 40000 )
+    vport.camlook=new THREE.Vector3(-0,-0,-0)
+    vport.camup=new THREE.Vector3(0,1,0)
 
     vplay.scene = new THREE.Scene()
     //vplay.scene.fog = new THREE.Fog( 0x000000, 500, 4500 )
 
-    vplay.geometry = new THREE.BufferGeometry()
+    //this is an object to be rendered in a scene
+    // of particles, with position and color attributes
+       
+    if(vplay.rendermode===0){
+      vplay.geometry = new THREE.BufferGeometry()
+      vplay.geometry.addAttribute('position',new Float32Array( vplay.particles * 3 ), 3 )
+      vplay.geometry.addAttribute('color',   new Float32Array( vplay.particles * 3 ), 3 )
 
-    vplay.geometry.addAttribute('position',new Float32Array( vplay.particles * 3 ), 3 )
-    vplay.geometry.addAttribute('color',   new Float32Array( vplay.particles * 3 ), 3 )
+      //this may happen automatically
+      vplay.geometry.computeBoundingSphere()
 
-    vplay.geometry.computeBoundingSphere()
+      var material = new THREE.ParticleSystemMaterial( { size: vplay.pradius, vertexColors: true } )
 
-    var material = new THREE.ParticleSystemMaterial( { size: vplay.pradius, vertexColors: true } )
-
-    vplay.particleSystem = new THREE.ParticleSystem( vplay.geometry, material )
-    vplay.scene.add( vplay.particleSystem )
-
-    vplay.camera.position.z = vplay.camRad
+      vplay.particleSystem = new THREE.ParticleSystem( vplay.geometry, material )
     
-    vplay.particleSystem.rotation.x= vplay.camPhi
-    vplay.particleSystem.rotation.y= vplay.camThet
-    vplay.particleSystem.rotation.z= 0
+      vplay.scene.add( vplay.particleSystem )
 
+      vplay.camera.position.z = vplay.camRad
+      
+      vplay.particleSystem.rotation.x= vplay.camPhi
+      vplay.particleSystem.rotation.y= vplay.camThet
+      vplay.particleSystem.rotation.z= 0
+    
+    }
+    
+    _x=0,_y=0,_z=0
+    
+    var material2 = new THREE.LineBasicMaterial({ color: 0xffffff });
+    var geometry2 = new THREE.Geometry();
+    geometry2.vertices.push(new THREE.Vector3(0, 0, 0)); //line drawn
+    geometry2.vertices.push(new THREE.Vector3(_x, _y, _z));  //vector to vector
+    geometry2.computeBoundingSphere()
+    var dbline = new THREE.Line(geometry2, material2);
+    vplay.geo2=geometry2
+    vplay.dbline=dbline
+    vplay.scene.add(vplay.dbline);
+       
+    
     vplay.renderer = new THREE.WebGLRenderer( { antialias: true } )
     vplay.renderer.setClearColor( 0x000000, 0 )
 
@@ -107,36 +129,16 @@ function newViewport(fig,vplay){
    focus.je=jd
    //~ console.log(jote.foc)
   }
-  
+
   function syncrender(pace)
   { 
     velcolor(vplay.colorfac)
     
-    if(focus.timer)
-    { 
-      var jd=focus.jd
-      pace=pace||1
-      //f = f -(f-j)/timer
-      focus.timer=focus.timer*0.9-0.1
-      if(focus.timer<0){ focus.timer=0 }	
-      pace*=focus.timer*0.15
-      focus.x-= (focus.x-jote.x[jd]-jote.vx[jd]*pace)/(focus.timer+1)
-      focus.y-= (focus.y-jote.y[jd]-jote.vy[jd]*pace)/(focus.timer+1)
-      focus.z-= (focus.z-jote.z[jd]-jote.vz[jd]*pace)/(focus.timer+1)
-      focus.sc-= (focus.sc-focus.sd)/(focus.timer+1)
-    
-      if(focus.timer===0){ 
-        focus.je=focus.jc=focus.jd
-        focus.chng=0 
-      }
-      
-      //~ console.log(focus.timer,focus.x,focus.sc)
-    }else{
-      if(focus.jd!=-1){
-        focus.x=jote.x[focus.jc]
-       ,focus.y=jote.y[focus.jc]
-       ,focus.z=jote.z[focus.jc]
-     }
+    if(focus.timer){ changingfocus(pace) }
+    else if(focus.jd!=-1){
+      focus.x=jote.x[focus.jc]
+     ,focus.y=jote.y[focus.jc]
+     ,focus.z=jote.z[focus.jc]
     }
     
     var sc=focus.sc
@@ -150,6 +152,60 @@ function newViewport(fig,vplay){
   
   }
 
+  function syncrender2(pace)
+  { 
+    velcolor(vplay.colorfac)
+    
+    if(focus.timer){ changingfocus(pace) }
+    else if(focus.jd!=-1){
+      focus.x=jote.x[focus.jc]
+     ,focus.y=jote.y[focus.jc]
+     ,focus.z=jote.z[focus.jc]
+    }
+    
+    if (focus.sc!=focus.bsc)
+    { var sc=focus.sc, isc=1/sc 
+      focus.bsc=focus.sc }
+    
+    for(var i=0,j=0;j<jote.top;j++)
+    { 
+      var vj=vport.visjote[i]
+      if(sc){ vj.scale.set( isc, isc, isc ) }
+      vj.position.set( 
+        (jote.x[j]-focus.x)*sc
+        (jote.y[j]-focus.y)*sc
+        (jote.z[j]-focus.z)*sc
+      )
+      
+      vj.material.color.set(
+        jote.ccolor[i++]
+       ,jote.ccolor[i++]
+       ,jote.ccolor[i++]
+      )
+    }
+  }
+
+  function changingfocus(pace){
+  
+    var jd=focus.jd
+    pace=pace||1
+    //f = f -(f-j)/timer
+    focus.timer=focus.timer*0.9-0.1
+    if(focus.timer<0){ focus.timer=0 }	
+    pace*=focus.timer*0.15
+    focus.x-= (focus.x-jote.x[jd]-jote.vx[jd]*pace)/(focus.timer+1)
+    focus.y-= (focus.y-jote.y[jd]-jote.vy[jd]*pace)/(focus.timer+1)
+    focus.z-= (focus.z-jote.z[jd]-jote.vz[jd]*pace)/(focus.timer+1)
+    focus.sc-= (focus.sc-focus.sd)/(focus.timer+1)
+  
+    if(focus.timer===0){ 
+      focus.je=focus.jc=focus.jd
+      focus.chng=0 
+    }
+    
+    //~ console.log(focus.timer,focus.x,focus.sc)
+  }
+      
   function velcolor(f)
   { 
     for(var i=0,j=-1; i<jote.top; i++)
@@ -176,11 +232,46 @@ function newViewport(fig,vplay){
     vplay.keyYd = (vplay.keyY===0)?0:(vplay.keyYd+(vplay.keyY*0.0028))*0.985
     vplay.keyZd = (vplay.keyZ===0)?0:(vplay.keyZd+(vplay.keyZ*0.0025))*0.91
 
-    if(vplay.keyCtrl){
-      vplay.camera.position.x-= Math.abs(vplay.camera.position.z)*vplay.keyXd*0.00255+vplay.keyXd*0.0175
-      vplay.camera.position.y+= Math.abs(vplay.camera.position.z)*vplay.keyYd*0.00255+vplay.keyYd*0.0175 
+    if(vplay.keyCtrl){ //autodrift and shift lookat
       
-       if(true){ //drifting sea of forgotten teardrops
+      _topolar( //direction in xy plane we are looking
+
+       vport.camlook.x-vplay.camera.position.x 
+      ,0//vport.camlook.y-vplay.camera.position.y //our y is up down 
+      ,vport.camlook.z-vplay.camera.position.z 
+       )
+
+      _tocarte(_rad,_the,_phi)  // center line in xz plane 
+      vport.camlook.x+=_x*vplay.keyYd*0.00255+vplay.keyYd*0.0175
+      vport.camlook.z+=_z*vplay.keyYd*0.00255+vplay.keyYd*0.0175
+
+      _tocarte(_rad,_the+Pi/2,_phi)  // false right 
+      
+      vport.camlook.x+=_x*vplay.keyXd*0.00255+vplay.keyXd*0.0175
+      vport.camlook.y+=_y*vplay.keyXd*0.00255+vplay.keyXd*0.0175
+
+
+      //~ console.log(vplay.dbline)
+      
+      vplay.dbline.geometry.vertices[1].x=_x
+      vplay.dbline.geometry.vertices[1].y=_y
+      vplay.dbline.geometry.vertices[1].z=_z
+      vplay.dbline.geometry.verticesNeedUpdate=true
+      vplay.dbline.geometry.computeBoundingSphere()
+      
+      /*
+      geometry = new THREE.Geometry();
+      geometry.vertices = vertices;
+
+      scene.remove( line );
+      line = new THREE.Line( geometry, material )
+      scene.add( line );
+      
+      */
+      
+      
+      
+      if(true){ //is drifting sea of forgotten teardrops
         if(vplay.driftCount<0.02){ vplay.driftCount+=vplay.camDrift}
         if(vplay.keyYd||vplay.keyXd||vplay.keyZd)
         { vplay.driftCount=0 }
@@ -194,26 +285,58 @@ function newViewport(fig,vplay){
         vplay.camThet -= dfb*vvc*vplay.driftCount*0.9
         vplay.camPhi -= (dfa+dfc*0.5)*vvc*vplay.driftCount
       } 
-      
-    }else{
+ 
+    }else{ //not pressed ctrl
       vplay.camRad  /= 1-vplay.keyZd*0.1
-      vplay.camThet -= vplay.keyXd*0.0325
       vplay.camPhi  -= vplay.keyYd*0.0325
       
+      if(vplay.camPhi>Pi){ //flip hoz spin if past gimbal points
+        vplay.camThet -= vplay.keyXd*0.0325
+      }else{
+        vplay.camThet += vplay.keyXd*0.0325
+      }
+      
       if(vplay.keyXd||vplay.keyYd||vplay.keyZd)
-      { vplay.camera.position.x*=0.994
-        vplay.camera.position.y*=0.994 }
+      { //return focus to center while rotating
+        vport.camlook.set(
+          vport.camlook.x*0.994
+         ,vport.camlook.y*0.994
+         ,vport.camlook.z)
+      }
     }
     
     //~ var camo=Fgm.tocarte(vplay.camRad,vplay.camThet,vplay.camPhi)
     //~ vplay.camera.position.x=camo[0]
     //~ vplay.camera.position.y=camo[1]
     //~ vplay.camera.position.z=camo[2]
-    vplay.camera.position.z=vplay.camRad
     
-    vplay.particleSystem.rotation.x= vplay.camPhi
-    vplay.particleSystem.rotation.y= vplay.camThet
-    vplay.particleSystem.rotation.z= 0
+    vplay.camPhi=(vplay.camPhi+Tau)%Tau
+     
+    _tocarte(vplay.camRad,vplay.camPhi,vplay.camThet)
+    //~ console.log(vplay.camPhi,vplay.camThet)
+    // Place camera on x axis
+    //~ vplay.camera.position.set(_x,_y,_z);
+    //~ vplay.camera.position.set(_z,_x,_y); //warp
+    //~ vplay.camera.position.set(_y,_z,_x); //opposite, gimlocks
+    //~ vplay.camera.position.set(_y,_x,_z); //semi oppo
+    //~ vplay.camera.position.set(_z,_y,_x); //closest
+    vplay.camera.position.set(_x,_z,_y);
+    
+    //invert on Phi crossing 0 and PI
+    var up=(vplay.camPhi>Pi)?1:-1
+    vport.camup.set(0,up,0)
+    vplay.camera.up = vport.camup;
+    vplay.camera.lookAt(vport.camlook);
+
+    //~ vplay.camera.position.z=_z
+    //~ vplay.camera.position.y=_y
+    //~ vplay.camera.position.x=_x
+    
+    //~ vplay.camera.lookAt(0,0,0)
+    
+    //~ vplay.particleSystem.rotation.x= vplay.camPhi
+    //~ vplay.particleSystem.rotation.y= vplay.camThet
+    //~ vplay.particleSystem.rotation.z= 0
 
     //vplay.camera.lookAt(origin3)
     
@@ -223,6 +346,19 @@ function newViewport(fig,vplay){
     //~ vplay.particleSystem.rotation.y = vplay.particleSystem.rotation.y +vplay.keyX/20
     //~ vplay.particleSystem.rotation.x = vplay.particleSystem.rotation.x -vplay.keyY/20
     
+  }
+  
+  var _x,_y,_z
+  function _tocarte(r,t,p) {
+    _x=r*Math.sin(t)*Math.cos(p)
+    _y=r*Math.sin(t)*Math.sin(p)
+    _z=r*Math.cos(t)
+  }
+  var _the,_phi,_rad
+  function _topolar(x,y,z) {
+    _rad = Math.sqrt(x*x+y*y+z*z+1.0e-40)
+    _the = Math.acos(z/_rad) 
+    _phi = Math.atan2(y,x) 
   }
   
   function spincam()
@@ -266,12 +402,6 @@ function newViewport(fig,vplay){
 
 
 
-
-
-
-
-
-
 /*
 
 var material = new THREE.LineBasicMaterial({ color: 0x0000ff });
@@ -289,7 +419,8 @@ var sphere = new THREE.Mesh( geometry, material );
 
 sphere.position.set( x, y, z ); 
 sphere.scale.set( 1, 1, 1 );
-sphere.overdraw = true;
+
+sphere.overdraw = true; //overlaps edges slightly
 
 // add the sphere to the scene
 

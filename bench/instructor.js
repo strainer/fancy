@@ -18,8 +18,8 @@ var vplay = {
    ,7:{name:"Solar Sim",desc:""}
   }
     
-  ,seed:0 ,world:5
-  ,geometry:{}, camera:{}, scene:{} 
+  ,seed:0 ,world:3
+  ,geometry:{}, camera:{}, scene:{}, rendermode:0 
   ,renderer:{}, displaybugi:20 //avoiding scrollbar
   ,tStat:{}         //stats panel
   
@@ -50,7 +50,7 @@ var vplay = {
     ,iota:0
     
     ,driftCount:0, camDrift:0.03, camRad:50, camRadd:0
-    ,camThet:0, camPhi:Math.PI/6, spincam:0, firstfocus:0
+    ,camThet:0, camPhi:0, spincam:0, firstfocus:0  //phi Math.PI/6
     
     ,keyY:0, keyX:0, keyZ:0 ,keyYd:0, keyXd:0, keyZd:0, keyCtrl:0
     
