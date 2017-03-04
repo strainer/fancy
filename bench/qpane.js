@@ -189,8 +189,10 @@ function newDash(){ return (function(gu){
     //~ parent,type,legend,varname,steez,clr
     
     var em= newEl('div',sty)
-    var lg= newEl('text',{clear:'both'});lg.textContent=pm.legend+" "
-    var di= newEl('text',{color:clrd} );di.textContent="-"
+    var lg= newEl('text',{padding:'1px 2px',clear:'both',backgroundColor:'rgba(0, 0, 0, 0.55)'})
+    lg.textContent=pm.legend+" "
+    var di= newEl('text',{padding:'1px 2px',color:clrd,backgroundColor:'rgba(0, 0, 0, 0.55)'} )
+    di.textContent="-"
    
     em.appendChild(lg); em.appendChild(di)
     

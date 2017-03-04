@@ -34,12 +34,10 @@ body {
 
 /* Images */
 
-img {
-/*  position: relative;
-  margin: 0 auto;
-  padding: 5px;
-  margin: 10px 0 32px 0;
-  border: 1px solid #ccc; */
+header img {
+  position: relative;
+  top:-3px;
+  opacity: 0.8;
 }
 
 p img {
@@ -83,15 +81,17 @@ a.name {
 
 a.buttons {
 	-webkit-font-smoothing: antialiased;
-	background: url(arrow-down.png) no-repeat;
+	
+	/*background: url(arrow-down.png) no-repeat;*/
 	font-weight: normal;
 	padding: 2px 22px 2px 2px;
 	/*height: 30px;*/
 }
 
 a.github {
-	background: url(octocat-small.png) no-repeat 1px;
-	background-position:top right;
+	background-color: rgba(0, 0, 0, 0.55);
+	/*background: url(octocat-small.png) no-repeat 1px;
+	background-position:top right;*/
 }
 
 a.buttons:hover {

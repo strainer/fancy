@@ -14,7 +14,9 @@ function setdash(cdash,vplay){
   document.body.style.fontSize = fez+'px'	
 
   cdash.styleclass('global',{})
-  cdash.styleclass('readings',{margin:'0 0 0 3px'})
+  cdash.styleclass('readings',
+   {margin:'0 0 0 3px'}
+  )
 
   cdash.setcolors({
     clra: "#62be16" // entity    "#6e2", #dfcf78 pebbletan

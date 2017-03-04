@@ -2,21 +2,22 @@ Fancy
 =====
 *Foresight physics engine for futuroids*
 
-## Description
-This is a physics project with a far goal of achieving practical physical awareness functions for robotics. 'Fancy' is thus named as a would-be programmatic sense of *fantasy*.
+### Project Description
+This is a physics project with lofty aspirations of making practical physical awareness functions for robotics. 'Fancy' is thus named as a would-be programmatic sense of *fantasy*.
 
-Currently a number of test worlds called 'figments' excercise the developing physics engine. At present these are abstract and astrological in kind, with point-gravity being excercised as the first basic force. Point-gravity is not much use for earthly purposes, but the calculation of point-to-point repulsion and similar may be used to approximate gas pressures, flows and other phenomena.
-
-A basic 'web workbench' allows selection and initialises figments and renders them for display and testing.
-
-When the 'figment' engine is capable enough, a goal is to model a bot's chassis and limbs within a figment, and train virtual bots to move themselves within the dynamic virtual conditions which can be hosted by the engine. It should not be a huge stretch to then integrate a module which constructs and updates a figment with sensor data such as camera or sonar, from a real robot: to instantiate a virtual facsimilie of physical circumstance which a real robot can test actions and anticipate real events within.
-
-Somewhere down the line we end up with open source software for 'pet' robots that can scoot around spryly, dodge cats and catch dropped teacups etc. Also clear pests from feilds and harvest, investigate potholes, exploration sea beds... progress on this seems well overdue.
-
-Granted thats all by-and-by, at the moment here are some curious pretty graphics.
+Presently a number of test worlds excercise the physics engine in developement. So far these are abstract and astrological in kind, with point-gravity being excercised as the first basic force. Point-gravity is not much use for earthly purposes, but similar point-to-point calculations may be used to induce pressure, flows and other phenomena.
 
 ## Web workbench
+A [basic web workbench](http://strainer.github.io/fancy/) selects and initialises virtual worlds called 'figments' and renders them for display and testing.
+
 The demo currently selects between 'figments', displays a few measurements - number of particles, model time step and rendering interlace rate, and arranges keyboard controls for view movements and speed changing. 
+
+### Project Description
+When the 'figment' engine is capable, a goal is to model a bot's chassis and limbs within a figment, and train virtual bots to move themselves within virtual worlds which can be mocked and hosted by the engine. Following from this, a module which constructs and updates a figment with sensor data from a real robot; would then be able to instantiate a virtual facsimilie of physical circumstance which real robots can test actions and anticipate real events within.
+
+Somewhere down the line we must end up with open source software for 'pet' robots that can scoot around spryly, dodge cats and catch dropped teacups etc. Also clear pests from feilds and harvest, investigate potholes, explore ocean worlds... progress on all this seems well overdue.
+
+Of course this is a fantasy, at the moment here are some curious pretty graphics:
 
 ## Solar system test
 The solar system figment uses accurate data provided by Nasa JPLs email service and employs the real physical constant of G. A quick test which compared figment's projected position of the earth after one year of virtual time, with Nasa Jpls year later position for the earth, found the two positions to be within about 200,000 km of each other - this is very close considering the circumference of earths orbit is about 1000,000,000 km. It is possible the discrepancy is due to the limitation of javascripts 64bit float numbers rather than subtle algorithmic or relativistic error.
