@@ -231,10 +231,15 @@ function newViewport(fig,vplay){
 
     vplay.keyLRd = (vplay.keyLR===0)?0:(vplay.keyLRd+(vplay.keyLR*0.0028))*0.985
     vplay.keyUDd = (vplay.keyUD===0)?0:(vplay.keyUDd+(vplay.keyUD*0.0028))*0.985
-    vplay.keyRd = (vplay.keyR===0)?0:(vplay.keyRd+(vplay.keyR*0.0025))*0.91
-
+    vplay.keyRd  = (vplay.keyR===0)?0:(vplay.keyRd+(vplay.keyR*0.0025))*0.91
+    vplay.keyCtrld = (vplay.keyCtrl==0||vplay.keyUD||vplay.keyLR)?0
+     :(0.000045+vplay.keyCtrld)*0.995
+    
     if(vplay.keyCtrl){ //autodrift and shift lookat
       
+      console.log("thet",vplay.camThet)
+      console.log("Phi",vplay.camPhi)
+
       //our plane is x,z  , y is updown
       
       _topolar( //direction in xy plane we are looking
@@ -273,12 +278,15 @@ function newViewport(fig,vplay){
       vport.camlook.z+=_y*vplay.keyUDd*0.00355
       //vport.camlook.y+=_x*vplay.keyLRd*0.00255+vplay.keyLRd*0.0175
 
-      if(!(vplay.keyUDd||vplay.keyLRd||vplay.keyUD||vplay.keyLR)){
-        var rud=vplay.camRad*0.004
+      if(vplay.keyCtrld>0.000145
+          &&!(vplay.keyUDd||vplay.keyLRd||vplay.keyUD||vplay.keyLR)){
+        var rud=vplay.camRad*vplay.keyCtrld
+        vport.camlook.x*=(0.9999-vplay.keyCtrld*50)
         var rret=(vport.camlook.x>0)?1:-1
         if(abs(vport.camlook.x)<rud){ vport.camlook.x=0 }
         else{ vport.camlook.x-=rud*rret }
         
+        vport.camlook.z*=(0.9999-vplay.keyCtrld*50)
         rret=(vport.camlook.z>0)?1:-1
         if(abs(vport.camlook.z)<rud){ vport.camlook.z=0 }
         else{ vport.camlook.z-=rud*rret }
@@ -308,8 +316,6 @@ function newViewport(fig,vplay){
       
       */
       
-      
-      
       if(false){ //is drifting sea of forgotten teardrops
         if(vplay.driftCount<0.02){ vplay.driftCount+=vplay.camDrift}
         if(vplay.keyUDd||vplay.keyLRd||vplay.keyRd)
@@ -321,7 +327,7 @@ function newViewport(fig,vplay){
         var dfc=dfb+Math.sin((vplay.playedframe_clock+900)*vva)*0.7+Math.sin((vplay.playedframe_clock+200)*vva*0.6)
         
         vplay.camRad/=(1+(dfc+dfb*2)*vvb*vplay.driftCount)
-        vplay.camThet -= dfb*vvc*vplay.driftCount*0.9
+        vplay.camThet-= dfb*vvc*vplay.driftCount*0.9
         vplay.camPhi -= (dfa+dfc*0.5)*vvc*vplay.driftCount
       } 
  

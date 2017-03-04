@@ -199,7 +199,8 @@ function createC2(){ //4 rough rings of rnd mass particles
 function createC3(){ //1 + 3 gbody and disk
   
   vplay.instaprops=
-  { runcycle_step: 1.5 }
+  { camRad:35
+   ,runcycle_step: 1.5 }
 
   var nn=7
   
@@ -617,9 +618,9 @@ function createC6(){ //mock near earth orbitals
    ,model_pace : 100.0//315.36000 // (is seconds?)
    ,runcycle_step:10
    ,gravity : 6.67408e-8
-   ,camRad:800
-   ,camThet:-2.1
-   ,camPhi:-Math.PI/60
+   ,camRad:250
+   ,camThet:5.62
+   ,camPhi:1.62
    ,firstfocus:1
    //~ ,max_force :  10000000000000
    //~ ,viewer2:true
