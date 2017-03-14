@@ -2,9 +2,9 @@
 
 `times = ( +/-Sqrt( (d*d-P感)*V慎 + V感*V感 ) -V感 ) / V慎`
 
-Thanks go to a Mr Joshua de Bellis who once worked this equation out for a stranger in a library (me) on being presented with some tricky notes. He showed me the trick is to think about vectors. The equation is closely related to 'the raycasting formula' that is commonly used in raycasting and collision detection programming, only more concise than commonly found.
+Thanks go to Mr. Joshua de Bellis who once worked this equation out for me - as a stranger in a library, on being presented with my tricky notes. He showed me the trick is to think about vectors. The solution equation is closely related to 'the raycasting formula' that is commonly used in raycasting and collision detection programming, only it is more concise than commonly found.
 
-Im still very far from fluency in the magic realm of vectors but here are some thoughts on the formula. 
+Im very far from fluency in the magic realm of vectors but here are some thoughts on the formula. 
  
 Expression: `( +/-Sqrt( (d*d-P感)*V慎 + V感*V感 ) -V感 ) / V慎`
 
@@ -68,8 +68,8 @@ So, this is a distance squared:
 And this too:
  -V感
  
-V感 is very intresting, it seems that it gives the distance
-to the spheres minima of separation, squared, yet signed (neat).
+V感 seems to give the distance to the spheres minima of separation, 
+squared, yet signed (neat).
 This distance might exist in the spheres 'delta-space'
 between the origin ([0,0,0] : where Pa resides) and where
 Pb resides at the minima - the point of its travel which is
@@ -97,9 +97,10 @@ Also, observing this is added and subtracted with V感 :
 It seems this expression gives an absolute distance squared
 of the delta travel through the duration of eclipse.
 
-In computing it gets called 'the determinant' as when it is 
+In places it gets called 'the determinant' ,when it is 
 negative, there is no contact between the spheres and
 no way to proceed with slow square root operation.
+(except modern cpu fsqrt is not much slower than division)
 
 (d*d-P感)*V慎 + V感*V感
 
