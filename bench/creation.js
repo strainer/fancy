@@ -336,7 +336,7 @@ function createC2(){ //trappist-1 data
 
 
 
-function createC3(){ //1 + 3 gbody and disk
+function createC3(){ //1 + 4 gbody and disk
   
   vplay.instaprops=
   { 
@@ -375,6 +375,8 @@ function createC3(){ //1 + 3 gbody and disk
   Talter.setaslast(2)
   purpball(100,0.02,0.2) 
   Talter.setaslast(3)
+  purpball(100,0.02,0.2)
+  Talter.setaslast(4)
   purpball(100,0.02,0.2) 
   
   Talter.setaslast(0)
