@@ -31,9 +31,14 @@ function newKeySet_glbl(){ return (function(){
     var t0 = e.changedTouches[0] 
     var t1 = e.changedTouches[1] 
     
-    ct0x=parseInt(t0.clientX)||0
-    ct0y=parseInt(t0.clientY)||0
+    ct0x=parseInt(t0.clientX)
+    ct0y=parseInt(t0.clientY)
 
+    if(!(isFinite(ct0x)&isFinite(ct0y))){
+      ct0x=ct0y=bt0x=bt0y=ct1x=ct1y=bt1x=bt1y=0
+      return
+    }
+    
     if(t1){                        //is pinching
       ct1x=parseInt(t1.clientX)||0
       ct1y=parseInt(t1.clientY)||0
@@ -58,7 +63,6 @@ function newKeySet_glbl(){ return (function(){
     bt1x=ct1x,bt1y=ct1y
     //~ e.preventDefault()
   }
-  
   
   function pinchaction(b,c){
     vplay.keyR=(100*(b-c))/b
