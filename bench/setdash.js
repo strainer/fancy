@@ -118,7 +118,7 @@ function setdash(cdash,vplay){
   
   var keyrevealer= cdash.revealer({
     seat:keys_div
-   ,content:"keys"
+   ,content:"<u>k</u>eys"
    ,upstyle:{float:'right'}
    ,instyle:{clear:'both',float:'right'}
    ,on:false
@@ -128,21 +128,22 @@ function setdash(cdash,vplay){
   
   // Multiline Function String - Nate Ferrero 
   var keystext=heredoc(function(){/*
-  View
-  &nbsp;&nbsp;&nbsp;&nbsp;<_> : track
-  &nbsp;&nbsp;&nbsp;&nbsp;a_z : in out
-  &nbsp;cursor : rotate
-  crsr+ctrl: slide
+  <span class="keyba">View</span>
+  <span class="keybb">&nbsp;&nbsp;&nbsp;&nbsp;<-></span>  track
+  <span class="keybb">&nbsp;&nbsp;&nbsp;&nbsp;a-z</span>  in-out
+  <span class="keybb">&nbsp;cursor</span>  rotate
+  <span class="keybb">crsr+ctrl</span>  slide
   
-  Time
-  &nbsp;&nbsp; c : pause
-  &nbsp;i_o : throttle
-  &nbsp;&nbsp; u : reverse 
+  <span class="keyba">Time</span>
+  <span class="keybb">&nbsp;&nbsp; c</span>  pause
+  <span class="keybb">&nbsp;q-w</span>  slow-faster
+  <span class="keybb">&nbsp;i-o</span>  throttle
+  <span class="keybb">&nbsp;&nbsp; u</span>  reverse 
   
-  Misc
-  &nbsp;g : toggle grav
-  &nbsp;x : expansion
-  &nbsp;k : keys
+  <span class="keyba">Misc</span>
+  <span class="keybb">&nbsp;g</span>  toggle grav
+  <span class="keybb">&nbsp;x</span>  expansion
+  <span class="keybb">&nbsp;k</span>  keys
 
   <br>
   */})

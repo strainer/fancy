@@ -114,7 +114,7 @@ function newDash(){ return (function(gu){
     var dset=newEl('div',{})
     
     //dset.style.backgroundColor=clre
-    bttn.textContent=pm.content
+    bttn.innerHTML=pm.content
     
     //console.info(dset)
     dset.appendChild(bttn)
