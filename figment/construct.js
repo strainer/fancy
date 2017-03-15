@@ -11,7 +11,7 @@ function addConstruct(fig) {
   
   //~ for(var prop in fig) this.prop=fig[prop]  //pull in all scope from mbase
 
-  var jote=fig.jote 
+  var jote=fig.jote, kind=fig.kind 
      ,Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
      ,Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
      ,Drand=fig.Drand ,Hrand=fig.Hrand
@@ -88,14 +88,43 @@ function addConstruct(fig) {
   } 
 
 
-  function addjote(x,y,z,g,vx,vy,vz){
+  function addjote(x,y,z,g,vx,vy,vz,knd,rad){
     //~ console.log("addg u g",ins.due,g)
     var j=ins.due
-    jote.x[j]=x, jote.y[j]=y, jote.z[j]=z, jote.g[j]=g||ins.mass
+    jote.y[j]=y, jote.z[j]=z, jote.g[j]=g||ins.mass
     jote.vx[j]=vx||ins.vx, jote.vy[j]=vy||ins.vy, jote.vz[j]=vz||ins.vz
+    
+    if(knd){ jsetkind(j,knd,rad) }
     ins.due=j+1
   }
   
+  function jsetlast(p){    //jote: knd: rad: mass: charge: 
+    var j=p.jote||ins.due-1
+    var knd=p.knd, rad=p.rad, mass=p.mass, charge=p.charge 
+    
+    if(knd){ jsetkind(j,knd,rad) }
+    if(mass){ jote.g[j]=mass }
+    if(charge){ jote.c[j]=charge }
+    if(isFinite(p.r)){ 
+      jote.bcolor[j*3]=p.r
+      jote.bcolor[j*3+1]=p.g
+      jote.bcolor[j*3+2]=p.b
+    }
+  }
+  
+  function jsetkind(j,knd,rad){
+    var k=1,ke=kind.nom.length 
+    for( ; k<ke; k++)
+    { if(kind.nom[k]==knd){ break } }
+    
+    if(k>=kind.nom.length){ 
+      //~ console.log(i,ke,jote.kinds.length,knd)
+      kind.nom[k]=knd 
+      kind.rad[k]=rad 
+    }
+    jote.knd[j]=k
+    return k
+  }
   
   function getprop(p,str,def,none){
     var ret,none=none||fnbyp
@@ -106,6 +135,37 @@ function addConstruct(fig) {
     return ret
   }
   
+  function addwheel(){
+    var num=p.num, spks=p.spokes
+  } //do wheel, maybe easier to do in a cloned spinring method
+  
+  function addspoke(p){ //{num:,ja:,jb:, fuz:, skipin:,skipout:,skipon: }
+    
+    var j =ins.due
+    var num=p.num, fuz=p.fuz||0, ja=p.ja, jb=p.jb
+    
+    var dx=jote.x[jb]-jote.x[ja]
+    var dy=jote.y[jb]-jote.y[ja]
+    var dz=jote.z[jb]-jote.z[ja]
+    var dvx=jote.vx[jb]-jote.vx[ja]
+    var dvy=jote.vy[jb]-jote.vy[ja]
+    var dvz=jote.vz[jb]-jote.vz[ja]
+    
+    var ingap=num*((p.skipin)||0.71),outgap=((p.skipout)||0.1)
+    for(var i=0; i<num; i++) {
+      var k = (i+ingap)/(num+ingap)
+      k=k<(1-outgap)?k : k +outgap*2
+      jote.x[j] =jote.x[ja] +dx*k+Drand.gnorm()*fuz
+      jote.y[j] =jote.y[ja] +dy*k+Drand.gnorm()*fuz
+      jote.z[j] =jote.z[ja] +dz*k+Drand.gnorm()*fuz 
+      jote.vx[j]=jote.vx[ja]+dvx*k
+      jote.vy[j]=jote.vy[ja]+dvy*k
+      jote.vz[j]=jote.vz[ja]+dvz*k
+      j++
+    }
+  
+    return (ins.due=j)-ins.bfr
+  }
   
   function addspinring(p){ //{num:,rad:, pull:, radf:, crvf:, velf: } 
     
@@ -114,7 +174,7 @@ function addConstruct(fig) {
     var cvf=getprop(p,'thkf',ins.mdsta,absnull)
     var vvf=getprop(p,'velf',ins.mdsta,absnull)
     var seam=(1-p.seam)||ins.seam
-    var inskip=(p.inskip)||0
+    var inskip=0
     var G=p.pull||ins.mass
     var axs=p.axs||1
     
@@ -125,7 +185,9 @@ function addConstruct(fig) {
     
     var j = ins.due
     
-    var ci=Tau*seam, thd=ci/(p.num)+inskip, sqirad=Sqrt(G/rad)
+    if(p.inskip){ inskip=(p.inskip)()*Tau }
+    
+    var ci=Tau*seam, thd=ci/(p.num), sqirad=Sqrt(G/rad)
     var phi,phi2
     var thdr=thd*(p.crdf||0)
     
@@ -137,16 +199,16 @@ function addConstruct(fig) {
       var rdff=rdf()
    
       if(phi2){ phi=Drand.gteat() } 
-      _tocarte( rad*rdff, thet+thdr*rndu(), phi ) //
+      _tocarte( rad*rdff, thet+thdr*rndu()+inskip, phi ) //
       jote.x[j]=inx+_x*axs//+vvf()
       jote.y[j]=iny+_y+cvf()
       jote.z[j]=inz+_z/axs//+vvf()
       //~ console.log(j,thet,_x,_y,_z)
       
       sqirad=Sqrt(G/(rad*rdff))
-      _tocarte( sqirad, thet+hPi, phi )
+      _tocarte( sqirad, thet+hPi+inskip, phi )
       jote.vx[j]=ins.vx + _x/axs// + vvf()
-      jote.vy[j]=ins.vy + _y + cvf()
+      jote.vy[j]=ins.vy + _y + cvf()*0.25
       jote.vz[j]=ins.vz + _z*axs// + vvf()
     }
     
@@ -405,7 +467,9 @@ function addConstruct(fig) {
   fig.massuncolored     = massuncolored 
   fig.chargeuncolored   = chargeuncolored 
   fig.rndchargeall      = rndchargeall 
-
+  fig.jsetlast          = jsetlast 
+  
+  fig.addspoke             = addspoke
   fig.addspherea           = addspherea
   fig.addspinring          = addspinring
   fig.addspinball          = addspinball

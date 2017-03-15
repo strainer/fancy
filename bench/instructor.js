@@ -8,26 +8,28 @@
 var vplay = {
 
   worlds:{
-    0:{name:"Ring",desc:""}
-   ,1:{name:"Spiral",desc:""}
-   ,2:{name:"4 Ring",desc:""}
+    0:{name:"Solar System",desc:""}
+   ,1:{name:"Near Earths",desc:""}
+   ,2:{name:"TRAPPIST-1",desc:""}
    ,3:{name:"Blue Disk",desc:""}
-   ,4:{name:"3 Planets",desc:""}
-   ,5:{name:"QuasEmagnetic",desc:""}
-   ,6:{name:"Near Earth",desc:""}
-   ,7:{name:"Solar Sim",desc:""}
+   ,4:{name:"3Planets",desc:""}
+   ,5:{name:"MassRing",desc:""}
+   ,6:{name:"Cymball",desc:""}
+   ,7:{name:"QuasiMags",desc:""}
+   ,8:{name:"Pattern",desc:""}
+   ,9:{name:"4MassRing",desc:""}
   }
     
-  ,seed:0 ,world:5
+  ,seed:0 ,world:3
   ,geometry:{}, camera:{}, scene:{} 
   ,renderer:{}, displaybugi:20 //avoiding scrollbar
-  ,tStat:{}         //stats panel
   
   ,instaprops:{}
   
   ,defaults:{
      //timing datums
      allframe_clock:0
+    ,rendermode:0
     ,goframe_clock:0
     ,skipframe_step:1   // units of allframes
     ,skipframe_trip:0   // units of allframes
@@ -48,11 +50,12 @@ var vplay = {
     
     ,particles:32000    // max particles 
     ,iota:0
+
+    ,driftCount:0, camDrift:0.03, camRad:250, camRadd:0
+    ,camThet:0, camPhi:Math.PI/1.5, spincam:0, firstfocus:0  //phi 
+    ,nowfocus:0
     
-    ,driftCount:0, camDrift:0.03, camRad:50, camRadd:0
-    ,camThet:0, camPhi:Math.PI/6, spincam:0, firstfocus:0
-    
-    ,keyY:0, keyX:0, keyZ:0 ,keyYd:0, keyXd:0, keyZd:0, keyCtrl:0
+    ,keyUD:0, keyLR:0, keyR:0 ,keyUDd:0, keyLRd:0, keyRd:0, keyCtrl:0
     
     ,paused:1, explode:0, pausetime:0 
     ,gravityoff:0
@@ -60,7 +63,8 @@ var vplay = {
     ,Gtweak:1 
     ,velfz:0.15
     ,colorfac:0.5
-    ,pradius:0.2
+    ,pradius:2
+    ,printtime:function(a){ return (a).toFixed(2) }
   }
 }
 
@@ -102,7 +106,7 @@ function setupfigview(fig){
   
       
   //~ if(!Vpr)    //i shouldnt have to recreate this ..
-  { Vpr=newViewport(Fgm,vplay) }
+  Vpr=newViewport(Fgm,vplay)
     
   Vpr.initview( document.getElementById( 'threediv' ), vplay)
 
@@ -116,10 +120,12 @@ function setupfigview(fig){
   //~ Vpr.velcolor(vplay.colorfac)
    
   Vpr.syncrender()
+  Vpr.ctrlcam()
   
   vplay.renderer.render( vplay.scene, vplay.camera )
   vplay.iota = Fgm.jote.top
-
+  //setfocusname(vplay.firstfocus)
+  
   if(adash)adash.redrawDash()
   keysys.attachswipe(vplay)
 }
@@ -134,7 +140,6 @@ adash.redrawDash()
 setkeys()
 
 refreshrender()
-
 framemaster()
 
 function refreshrender(){
@@ -165,7 +170,7 @@ function framemaster() { // master frame dispatch
   var dashact; 
   while( dashact=adash.pullAction() ){ dashact() } 
     
-  if(!vplay.paused && (vplay.allframe_clock)%3===0)
+  if( vplay.pausetime<40 && (vplay.allframe_clock)%3===0)
   {
     adash.redrawDash() 
   }
@@ -282,20 +287,20 @@ function setkeys(){
   keysys.whenst("h"    , reverseTime )
   keysys.whenst("u"    , reverseTime2 )
 
-  keysys.whilst("up"    , setgn , ["keyY", 1] )
-  keysys.whilst("down"  , setgn , ["keyY",-1] )
-  keysys.whilst("left"  , setgn , ["keyX", 1] )
-  keysys.whilst("right" , setgn , ["keyX",-1] )
-  keysys.whilst("a"     , setgn , ["keyZ",-1] )
-  keysys.whilst("z"     , setgn , ["keyZ", 1] )
+  keysys.whilst("up"    , setgn , ["keyUD", 1] )
+  keysys.whilst("down"  , setgn , ["keyUD",-1] )
+  keysys.whilst("left"  , setgn , ["keyLR", 1] )
+  keysys.whilst("right" , setgn , ["keyLR",-1] )
+  keysys.whilst("a"     , setgn , ["keyR",-1] )
+  keysys.whilst("z"     , setgn , ["keyR", 1] )
   keysys.whilst("ctrl"  , setgp , ["keyCtrl", 1] )
 
-  keysys.whenup("up"    , setgp , ["keyY", 0] )
-  keysys.whenup("down"  , setgp , ["keyY", 0] )
-  keysys.whenup("left"  , setgp , ["keyX", 0] )
-  keysys.whenup("right" , setgp , ["keyX", 0] )
-  keysys.whenup("a"     , setgp , ["keyZ", 0] )
-  keysys.whenup("z"     , setgp , ["keyZ", 0] )
+  keysys.whenup("up"    , setgp , ["keyUD", 0] )
+  keysys.whenup("down"  , setgp , ["keyUD", 0] )
+  keysys.whenup("left"  , setgp , ["keyLR", 0] )
+  keysys.whenup("right" , setgp , ["keyLR", 0] )
+  keysys.whenup("a"     , setgp , ["keyR", 0] )
+  keysys.whenup("z"     , setgp , ["keyR", 0] )
   keysys.whenup("ctrl"  , setgp , ["keyCtrl", 0] )
 
   keysys.whenst ("c"    , togglePause )
@@ -317,7 +322,9 @@ function setkeys(){
 function focustob(){ focustod(-1) }
 function focustod(c){
   c=c||1
+  var jf=Vpr.focus.je+c
   Vpr.reFocusThree(Vpr.focus.je+c)
+  if(adash)adash.redrawDash() 
 }
 
 function reverseTime()

@@ -27,19 +27,17 @@ padding:10px 50px 0 0;
 
 body {
   
-  color: #af2;
+  color: #8e2;
   background-color: #000;
   -webkit-font-smoothing: antialiased;
 }
 
 /* Images */
 
-img {
-/*  position: relative;
-  margin: 0 auto;
-  padding: 5px;
-  margin: 10px 0 32px 0;
-  border: 1px solid #ccc; */
+header img {
+  position: relative;
+  top:-3px;
+  opacity: 0.8;
 }
 
 p img {
@@ -53,6 +51,12 @@ p img {
 
 
 /* Header */
+
+.glight{
+	color:#eaf;
+	/*text-shadow: 0 0 5px #b83, 0 0 10px #b83;*/
+	letter-spacing: 3px;
+}
 
 header {
   width:640px;
@@ -77,18 +81,21 @@ a.name {
 
 a.buttons {
 	-webkit-font-smoothing: antialiased;
-	background: url(arrow-down.png) no-repeat;
+	
+	/*background: url(arrow-down.png) no-repeat;*/
 	font-weight: normal;
 	padding: 2px 22px 2px 2px;
 	/*height: 30px;*/
 }
 
 a.github {
-	background: url(octocat-small.png) no-repeat 1px;
-	background-position:top right;
+	background-color: rgba(0, 0, 0, 0.55);
+	/*background: url(octocat-small.png) no-repeat 1px;
+	background-position:top right;*/
 }
 
 a.buttons:hover {
-	color: #fff;
-	text-decoration: none;
+	/*color: #ffd !important; */
+	text-decoration: underline;
+	text-shadow: 0 0 5px #faa, 0 0 10px #faa;
 }

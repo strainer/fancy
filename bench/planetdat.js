@@ -3,11 +3,11 @@
 /// solar system data from NASA JPL
 
 planetdatas = {
-  "SUN":{
+  "Sun":{
     radius:696300
    ,massval:1.988544
    ,masskge:30
-   ,x:0,y:0,z:0 ,vx:0,vy:0,vz:0 ,r:1,g:1,b:0.7
+   ,x:0,y:0,z:0 ,vx:0,vy:0,vz:0 ,r:1,g:1,b:1
    }
   ,"mercury":{
     radius:2440
@@ -97,7 +97,7 @@ planetdatas = {
     ,vx:-5.725979134658776e+00
     ,vy:2.537138540297251e+01
     ,vz:6.722010395376810e-01
-    ,r:1.2,g:0.7,b:0.1
+    ,r:1.0,g:0.6,b:0.3
   }
   ,"phobos(mars)":{
     radius:13.1
