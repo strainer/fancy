@@ -61,12 +61,12 @@ function newKeySet_glbl(){ return (function(){
   
   
   function pinchaction(b,c){
-    vplay.keyR=(10*(b-c))/b
+    vplay.keyR=(100*(b-c))/b
   }
 
   function swipeaction(x,y){
-    vplay.keyLR=-x*3
-    vplay.keyUD=-y*3
+    vplay.keyLR=x*0.3
+    vplay.keyUD=y*0.3
   }
   
   var keycodes = {
