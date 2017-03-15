@@ -20,7 +20,11 @@ function newViewport(fig,vplay){
   function initview(container) {
     if(!vplay.renderer.domElement){
       
-      vplay.renderer = new THREE.WebGLRenderer( { antialias: true } )
+      vplay.renderer = new THREE.WebGLRenderer( { 
+        antialias: true
+       ,logarithmicDepthBuffer: true 
+      } )
+
       vplay.renderer.setClearColor( 0x000000, 0 )
 
       container.appendChild( vplay.renderer.domElement )
@@ -277,9 +281,8 @@ function newViewport(fig,vplay){
     // translate features to a good float32 range
     // oversize is approx 1,000,000
         
-     
-    if((jd==-1)||jd==jote.top) //-1 means keep last origin/focus
-    { focus.je= focus.jd= focus.jc= -1 
+    if((jd==-1)||(jd==jote.top)) //-1 means keep last origin/focus
+    { jd=focus.je= focus.jd= focus.jc= -1 
       //~ console.log("booked",focus.je, focus.jd, focus.jc) 
       vplay.camdist=0
       fdisplaynom(jd)
@@ -291,9 +294,11 @@ function newViewport(fig,vplay){
     //~ if(jd!=0){ js.push(0) }
     
     //making array of neighbours
-    if(jd+1<jote.top){ js.push(jd+1)}else{ js.push(jd-2) }
-    if(jd+2<jote.top){ js.push(jd+2)}else{ js.push(jd-3) }
-    if(jd-1>-1){ js.push(jd-1)}else{ js.push(jd+2) }
+    //~ if(jd+1<jote.top){ js.push(jd+1)}else{ js.push(jd-2) }
+    //~ if(jd+2<jote.top){ js.push(jd+2)}else{ js.push(jd-3) }
+    //~ if(jd-1>-1){ js.push(jd-1)}else{ js.push(jd+2) }
+    
+    js.push(jote.top-1); js.push(0); js.push(Math.floor(jote.top/2))
     
     var neadist=0
     
@@ -304,7 +309,7 @@ function newViewport(fig,vplay){
       +(jote.y[jd]-jote.y[jr])*(jote.y[jd]-jote.y[jr])
       +(jote.z[jd]-jote.z[jr])*(jote.z[jd]-jote.z[jr])
       )
-    } //toting distance of close neighbours
+    } //toting distance of far neighbours
     
     neadist/=js.length
 

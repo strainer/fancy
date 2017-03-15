@@ -96,7 +96,7 @@ function createC1(){ //mock near earth orbitals
   vplay.gravity= 6.67408e-8
   vplay.instaprops=
   {
-    pradius : 0.75//315.36000
+    pradius : 0.85//315.36000
    ,model_pace : 100.0//315.36000 // (is seconds?)
    ,runcycle_step:10
    ,gravity : 6.67408e-8
@@ -295,17 +295,19 @@ function createC2(){ //trappist-1 data
 
     
   //earthmass,smajau,inclin,earthrad
+  var smass=trapmas*6.67408e-8
+
   var trappdat=[
-    ['exop-b' ,0.85 ,0.01111 ,89.65 ,1.086, 2.3 ,1.8 ,1.2 ]
-   ,['exop-c' ,1.38 ,0.01522 ,89.67 ,1.056, 1.9 ,1.6 ,1.3 ]
-   ,['exop-d' ,0.41 ,0.021   ,89.75 ,0.772, 1.8 ,1.5 ,1.4 ]
-   ,['exop-e' ,0.62 ,0.028   ,89.86 ,0.918, 1.5 ,1.5 ,1.8 ]
-   ,['exop-f' ,0.68 ,0.037   ,89.68 ,1.045, 1.5 ,1.5 ,1.8 ]
-   ,['exop-g' ,1.34 ,0.045   ,89.71 ,1.127, 1.5 ,1.9 ,1.5 ]
-   ,['exop-h' ,0.9  ,0.063   ,89.80 ,0.755, 1.7 ,1.6 ,1.5 ]
+    ['exop-b' ,0.85 ,0.01111 ,89.65 ,1.086, 2.3 ,1.8 ,1.2, smass ]
+   ,['exop-c' ,1.38 ,0.01522 ,89.67 ,1.056, 1.9 ,1.6 ,1.3, smass ]
+   ,['exop-d' ,0.41 ,0.021   ,89.75 ,0.772, 1.8 ,1.5 ,1.4, smass ]
+   ,['exop-e' ,0.62 ,0.028   ,89.86 ,0.918, 1.5 ,1.5 ,1.8, smass ]
+   ,['exop-f' ,0.68 ,0.037   ,89.68 ,1.045, 1.5 ,1.5 ,1.8, smass ]
+   ,['exop-g' ,1.34 ,0.045   ,89.71 ,1.127, 1.5 ,1.9 ,1.5, smass ]
+   ,['exop-h' ,0.9  ,0.063   ,89.80 ,0.755, 1.7 ,1.6 ,1.5, smass ]
+   ,['yazo-o' ,0.1  ,0.083   ,86.80 ,0.255, 0.9 ,0.6 ,0.1, smass*0.25 ]
   ]
   
-  var smass=trapmas*6.67408e-8
   
   for(var p=0; p<trappdat.length;p++){
     
@@ -313,10 +315,11 @@ function createC2(){ //trappist-1 data
     //var qg=1/1000000000
     
     var rw=trappdat[p] 
-    var nom=rw[0]  ,mss=rw[1]  ,orb=rw[2] ,inkle=rw[3]*Math.Pi/180 ,rad=rw[4]*erad
+    var nom=rw[0]  ,mss=rw[1]  ,orb=rw[2] 
+     ,inkle=rw[3]*Math.Pi/180 ,rad=rw[4]*erad, smss=rw[8]
      
     Talter.addspinring({
-       num:1, rad:au*orb, phi:inkle, pull:smass
+       num:1, rad:au*orb, phi:inkle, pull:smss
       ,radf:function(){return Drand.gspire( 0.999999998,1.0000000002  ) } 
       ,velf:function(){return Drand.gspire( -0.00000001,0.00000001 ) } 
       //~ ,thkf:function(){return Drand.gspire( 0.998,1.002  ) } //this makes cool ring
@@ -339,7 +342,7 @@ function createC3(){ //1 + 3 gbody and disk
   { 
    camRad:540,
    runcycle_step: 1.5 
-   ,pradius:20
+   ,pradius:40
    }
 
   var nn=7
@@ -602,7 +605,7 @@ function createC5(){
   //a ring of rnd mass particles
   
   vplay.instaprops=
-  { pradius:30 }
+  { pradius:60 }
   
   Talter.setpos(0,0,0)
   Talter.setvel(0,0,0)
@@ -633,7 +636,7 @@ function createC5(){
 function createC6(){ //undulating spiral
   
   vplay.instaprops=
-  { pradius:240
+  { pradius:6.5
    ,runcycle_step:1
    ,model_pace:0.1
   }

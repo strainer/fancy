@@ -58,6 +58,14 @@ p img {
 	letter-spacing: 3px;
 }
 
+.keyba{
+  color:#eb5;	
+}
+
+.keybb{
+  color:#AEBEFE;	
+}
+
 header {
   width:640px;
   float:left;
