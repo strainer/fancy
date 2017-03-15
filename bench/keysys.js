@@ -31,15 +31,42 @@ function newKeySet_glbl(){ return (function(){
     var t0 = e.changedTouches[0] 
     var t1 = e.changedTouches[1] 
     
-    if(t1){
-      ct1x=parseInt(t1.clientX)
-      ct1y=parseInt(t1.clientY)
-    }else{ct1x=ct1y=0}
-    
-    ct0x=parseInt(t0.clientX)
-    ct0y=parseInt(t0.clientY)
+    ct0x=parseInt(t0.clientX)||0
+    ct0y=parseInt(t0.clientY)||0
 
+    if(t1){                        //is pinching
+      ct1x=parseInt(t1.clientX)||0
+      ct1y=parseInt(t1.clientY)||0
+      if(bt1x||bt1y){
+        var bx= bt0x-bt1x ,cx= ct0x-ct1x
+           ,by= bt0y-bt1y ,cx= ct0y-ct1y
+        
+        pinchaction(
+          Math.sqrt(bx*bx+by*by),Math.sqrt(cx*cx+cy*cy)
+        ) 
+        e.preventDefault()
+      }
+    }else{                         //is swiping
+      ct1x=ct1y=0
+      if(bt0x||bt1y){
+        swipeaction(ct0x-bt0x , ct0y-bt0y)
+        e.preventDefault()
+      }
+    }
+    
+    bt0x=ct0x,bt0y=ct0y,
+    bt1x=ct1x,bt1y=ct1y
     //~ e.preventDefault()
+  }
+  
+  
+  function pinchaction(b,c){
+    vplay.keyR=(10*(b-c))/b
+  }
+
+  function swipeaction(x,y){
+    vplay.keyLR=-x*3
+    vplay.keyUD=-y*3
   }
   
   var keycodes = {
@@ -81,10 +108,6 @@ function newKeySet_glbl(){ return (function(){
     else{ x=delay }
     onhold[keycodes[key]] = {"fnc":fnc,"arg":arg,"dly":x, btime:0} 
   }
-  
-  var wdrag,wpinch
-  function dragging(fnc){ wdrag=fnc } 
-  function pinching(fnc){ wpinch=fnc }
   
   var dbb=0
   
@@ -144,24 +167,22 @@ function newKeySet_glbl(){ return (function(){
   
   function newkeyset() { return newKeySet_glbl }
   
-  var swipel
-  function attachswipe(vplay){
-          
+  var swipel, vplay
+  function attachswipe(vp){
+    vplay=vp 
     if(swipel){
-      swipel.removeEventListener('touchstart', touchlog )
-      swipel.removeEventListener('touchmove' , touchlog )
-      swipel.removeEventListener('touchend'  , touchlog ) 
+      swipel.removeEventListener('touchstart', touchmove )
+      swipel.removeEventListener('touchmove' , touchmove )
+      swipel.removeEventListener('touchend'  , touchmove ) 
     }
-    swipel=vplay.renderer.domElement
-    console.log(swipel)
+    swipel=vp.renderer.domElement
+    //~ console.log(swipel)
     
-    swipel.addEventListener('touchstart', touchlog, true )
-    swipel.addEventListener('touchmove' , touchlog, true )
-    swipel.addEventListener('touchend'  , touchlog, true ) 
+    swipel.addEventListener('touchstart', touchmove, true )
+    swipel.addEventListener('touchmove' , touchmove, true )
+    swipel.addEventListener('touchend'  , touchmove, true ) 
     //~ swipel.addEventListener('mousedown'  , touchlog, true ) 
-    
-    console.log("attached?")
-        
+           
   }
     
   return {
