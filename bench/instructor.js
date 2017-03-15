@@ -20,7 +20,7 @@ var vplay = {
    ,9:{name:"4MassRing",desc:""}
   }
     
-  ,seed:0 ,world:8
+  ,seed:0 ,world:3
   ,geometry:{}, camera:{}, scene:{} 
   ,renderer:{}, displaybugi:20 //avoiding scrollbar
   
