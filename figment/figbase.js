@@ -34,13 +34,15 @@ function newFigment(size){ return (function(size){
     ,'qx'  : new Float64Array(size)  //copy
     ,'qy'  : new Float64Array(size)
     ,'qz'  : new Float64Array(size)
-    ,'g'  : new Float64Array(size)   //weight
-    ,'c'  : new Float64Array(size)   //charge
-    ,'grp'  : new Uint32Array(size)  //group 
-    ,'knd'  : new Uint32Array(size)  //kind
+    ,'g'   : new Float64Array(size)   //weight
+    ,'c'   : new Float64Array(size)   //charge
+    ,'grp'   : new Uint32Array(size)  //group 
+    ,'knd'   : new Uint32Array(size)  //kind
     ,'bcolor' : new Float32Array(size*3)
     ,'ccolor' : new Float32Array(size*3)
   }
+  
+  var kind={ nom:[] ,rad:[] ,flags:[] }
 
   var abs=Math.abs, floor=Math.floor, Sqrt =Math.sqrt 
   var Tau=2*Math.PI ,Pi=Math.PI, hPi=Pi/2, tPi=Pi/3
@@ -71,6 +73,7 @@ function newFigment(size){ return (function(size){
      velmove:velmove 
     ,recycle:recycle
     ,jote:jote
+    ,kind:kind
     ,Tau:Tau ,Pi:Pi, hPi:hPi, tPi:tPi
     ,abs:abs ,floor:floor ,Sqrt:Sqrt
     ,Drand:Drand, Hrand:Hrand, rndu:rndu, rndh:rndh 

@@ -52,7 +52,7 @@ function setdash(cdash,vplay){
     seat:cdash
    ,style:{
      position:'absolute'
-    ,top:mez*3.5+'px',left:mez*brd+"px",width:fez*18+"px"
+    ,top:mez*3.2+'px',left:mez*brd+"px",width:fez*18+"px"
     }
     ,group:'dtop'	
     }) 
@@ -61,7 +61,7 @@ function setdash(cdash,vplay){
     seat:cdash
    ,style:{
      position:'absolute'
-    ,top:mez*5.5+'px',left:mez*brd+"px",width:fez*18+"px"
+    ,top:mez*5.6+'px',left:mez*brd+"px",width:fez*18+"px"
     }
     ,group:'dtop'	
     }) 
@@ -70,7 +70,7 @@ function setdash(cdash,vplay){
     seat:cdash
    ,style:{
      position:'absolute'
-    ,top:mez*8.5+'px',left:mez*brd+"px" ,width:fez*18+"px"
+    ,top:mez*10.6+'px',left:mez*brd+"px" ,width:fez*18+"px"
     }
    ,group:'dleft'	
     })
@@ -79,7 +79,7 @@ function setdash(cdash,vplay){
     seat:cdash
    ,style:{
      position:'absolute'
-    ,top:mez*20+'px',left:mez*brd+"px",width:fez*18+"px"
+    ,top:mez*20.5+'px',left:mez*brd+"px",width:fez*18+"px"
     }
     ,group:'dtop'	
    })
@@ -148,61 +148,62 @@ function setdash(cdash,vplay){
   */})
 
   cdash.addHTML(keyrevealer, keystext, {margin:'0 4px 0 0px'}   )
-
-  cdash.reading({
-    seat:fig_display_div
-   ,type:'text1'
-   ,legend:'>'
-   ,scoper:vplay ,varkey:'world'
-   ,style:'readings'
-   ,group:'fu'
-   ,func:function(a){ return vplay.worlds[a].name } 
-  })
-  
-  cdash.reading({
+   
+  var readings=[
+    {
+      seat:fig_display_div
+     ,legend:':'
+     ,varkey:'world'
+     ,func:function(a){ return vplay.worlds[a].name } 
+    },{
+      seat:fig_display_div
+     ,legend:'<>'
+     ,varkey:'nowfocus'
+     ,func:function(a){ return a } 
+    },{
+      seat:fig_display_div
+     ,legend:'dist:'
+     ,varkey:'camdist'
+     ,func:function(a){ return a } 
+    },{
     seat:dsreadings
-   ,type:'text1'
-   ,legend:'interlace:'
-   ,scoper:vplay ,varkey:'runcycle_step'
-   ,style:'readings'
-   ,group:'fu' 
-  }) 
-  cdash.reading({
-    seat:dsreadings
-   ,type:'text1'
-   ,legend:'freezefrm:'
-   ,scoper:vplay ,varkey:'skipframe_step'
-   ,style:'readings' 
-   ,group:'fu'
-  }) 
-  cdash.reading({
-    seat:dsreadings
-   ,type:'runav'
-   ,legend:'movsprfrm:'
-   ,scoper:vplay ,varkey:'movperframe'
-   ,style:'readings' 
-   ,group:'fu' 
-  })
-  cdash.reading({
-    seat:dsreadings
-   ,type:'text1'
-   ,legend:'figtime:'
-   ,scoper:vplay ,varkey:'model_clock'
-   ,style:'readings' 
-   ,group:'fu'
-   //~ ,func:function(a){ return a.toFixed(2) } 
-  })
-  cdash.reading({
-    seat:dsreadings ,type:'text1' ,legend:'iota:'
-   ,scoper:vplay ,varkey:'iota'
-   ,style:'readings'
-   ,group:'fu'
+   ,legend:'time:'
+   ,varkey:'model_clock'
+   ,func:function(a){ return vplay.printtime(a) } 
+  },{
+    seat:dsreadings 
+   ,legend:'iota:'
+   ,varkey:'iota'
    ,func:function(a){ return (a-1).toFixed(0) } 
-  })
+  },{
+      seat:dsreadings
+     ,legend:'interlace:'
+     ,varkey:'runcycle_step'
+    },{ 
+      seat:dsreadings
+     ,legend:'freezefrm:'
+     ,varkey:'skipframe_step'
+    },{
+      seat:dsreadings
+     ,type:'runav'
+     ,legend:'movsprfrm:'
+     ,varkey:'movperframe'
+    }
+  ]
+
+  for(var rd,i=0;i<readings.length;i++){
+    rd=readings[i]
+    cdash.reading({
+      seat:rd.seat , type:rd.type||'text1' , legend:rd.legend
+     ,scoper:rd.scoper||vplay , varkey:rd.varkey
+     ,style:rd.style||'readings' , group:rd.group||'fu'
+     ,func:rd.func
+    })
+  }
 
   cdash.styleclass('mbutts',{display:'inline-block', padding:'0 0.1em' })
   
-  for( var fi in vplay.worlds )
+  for( var fi in vplay.worlds ) //make select button for each world
   { if(!isFinite(fi)){ continue }
     var leg=vplay.worlds[fi].name
     cdash.button({
@@ -223,7 +224,8 @@ function setdash(cdash,vplay){
    ,callb:togglePause
    ,on:true
    ,val:1
-   ,func:function(a){ return a?"resume":"pause" } 
+   ,func:function(a){ 
+     return a?"resume":"pause" } 
   })
 
 }
