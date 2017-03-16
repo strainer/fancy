@@ -280,17 +280,27 @@ function newViewport(fig,vplay){
     // whole scene rescaling is performed to...
     // translate features to a good float32 range
     // oversize is approx 1,000,000
-        
+    
+    var notrack=false
+    
     if((jd==-1)||(jd==jote.top)) //-1 means keep last origin/focus
     { jd=focus.je= focus.jd= focus.jc= -1 
       //~ console.log("booked",focus.je, focus.jd, focus.jc) 
       vplay.camdist=0
       vplay.camvel=0
       fdisplaynom(jd)
-      return } 
-    if(jd==-2){ jd=jote.top-1 } 
-    else { jd=(jote.top+jd)%jote.top }
-    
+      notrack=true
+      focus.jd = jd
+      jd=0
+    }else{ 
+      if(jd==-2){ jd=jote.top-1 } 
+      else { jd=(jote.top+jd)%jote.top }
+      focus.jd = jd , focus.je = jd
+      fdisplaynom(jd) 
+    }
+
+    focus.timer= 10, focus.chng=1
+        
     var js = [ ] //js would be array of jotes to fit in view
     //~ if(jd!=0){ js.push(0) }
     
@@ -319,9 +329,9 @@ function newViewport(fig,vplay){
       focus.sd=500/neadist
       vplay.pradius*=focus.sd
       focus.cam= vplay.camRad*0.1
+      
     }else {
       focus.cam=0
-      //~ console.log("dointhis")
       var radd=kind.rad[ jote.knd[jd] ] * focus.sc
       if(radd*2>vplay.camRad){ focus.cam = radd*2 }
             
@@ -331,23 +341,6 @@ function newViewport(fig,vplay){
     }
         
     focus.distb=neadist
-    
-    //3 things, origin, scale, camera dist
-    //refocusing can change these things
-    //on figment change: (wc!=vplay.world) 
-    // set origin
-    // set scale for rendering and
-    // dont alter camera dist unless too close
-    // 
-    //after figment change
-    // set origin
-    // alter camera distance only if close 
-   
-    focus.jd= jd   , focus.je=jd
-    focus.timer= 10, focus.chng=1
-    
-    //update display name too
-    fdisplaynom(jd) 
   }
 
   function fdisplaynom(jd){
@@ -366,10 +359,11 @@ function newViewport(fig,vplay){
     focus.timer=focus.timer*0.9-0.1
     if(focus.timer<0){ focus.timer=0 }	
     pace*=focus.timer*0.15
-    focus.x-= (focus.x-jote.x[jd]-jote.vx[jd]*pace)/(focus.timer+1)
-    focus.y-= (focus.y-jote.y[jd]-jote.vy[jd]*pace)/(focus.timer+1)
-    focus.z-= (focus.z-jote.z[jd]-jote.vz[jd]*pace)/(focus.timer+1)
-    
+    if(jd>-1){
+      focus.x-= (focus.x-jote.x[jd]-jote.vx[jd]*pace)/(focus.timer+1)
+      focus.y-= (focus.y-jote.y[jd]-jote.vy[jd]*pace)/(focus.timer+1)
+      focus.z-= (focus.z-jote.z[jd]-jote.vz[jd]*pace)/(focus.timer+1)
+    }
     vplay.camRad/=focus.sc
     focus.cam/=focus.sc
     focus.sc-= (focus.sc-focus.sd)/(Math.sqrt(64+focus.timer)-7)
@@ -387,7 +381,6 @@ function newViewport(fig,vplay){
     
     if(focus.timer===0){ 
       focus.je=focus.jc=focus.jd
-      //~ console.log("in viewport",vplay.nowfocus)
       focus.chng=0, focus.cam=0 
     }
     

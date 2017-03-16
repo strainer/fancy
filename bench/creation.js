@@ -732,10 +732,10 @@ function createC7(){ //electrostatic cloud
   vplay.instaprops=
   {  forces:1
     ,max_force:  2
-    ,pradius:1.0
+    ,pradius:60.0
     ,firstfocus:-1
     ,runcycle_step : 2.5
-    ,camRad:80
+    ,camRad:600
   }
 
   var nh=15
