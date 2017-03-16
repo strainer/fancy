@@ -285,6 +285,7 @@ function newViewport(fig,vplay){
     { jd=focus.je= focus.jd= focus.jc= -1 
       //~ console.log("booked",focus.je, focus.jd, focus.jc) 
       vplay.camdist=0
+      vplay.camvel=0
       fdisplaynom(jd)
       return } 
     if(jd==-2){ jd=jote.top-1 } 
@@ -566,8 +567,16 @@ function newViewport(fig,vplay){
     vplay.camera.up = vport.camup;
     vplay.camera.lookAt(vport.camlook);
     vplay.camdist=(vplay.camRad/focus.sc).toFixed(0)
-  
-    if(vplay.rendermode===1) vplay.camdist+="km"
+    if(vplay.rendermode===1){ vplay.camdist+="km"}
+    
+    if(focus.jc>-1){ 
+      var cj=focus.jd
+        , dq=jote.vx[cj]*jote.vx[cj]+jote.vy[cj]*jote.vy[cj]+jote.vz[cj]*jote.vz[cj]
+    
+      vplay.camvel=(Math.sqrt(dq)*1000).toFixed(2)
+      if(vplay.rendermode===1){ vplay.camvel+="m/s" }
+    }
+        
     //~ if(vplay.rendermode===1) setvisguide()
   }
   
