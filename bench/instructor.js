@@ -68,6 +68,11 @@ var vplay = {
   }
 }
 
+if(window.location.hash) {
+  var wrlda = window.location.hash.substring(1);
+  if(isFinite(wrlda)){ vplay.world=wrlda; vplay.unpaused=1 }
+}
+
 var Fgm,Vpr
 
 setupfigview(vplay.world)
@@ -84,7 +89,6 @@ function setupfigview(fig){
   if(Fgm){ Fgm.recycle() } 
   Fgm=newFigment(vplay.particles)
   
-  
   addConstruct(Fgm)  //adds service functions, doesnt initiate xx..
   addParanorm(Fgm)  //adds service function
   addSpotmap(Fgm,vplay)  //adds service function
@@ -94,6 +98,8 @@ function setupfigview(fig){
   for( var p in vplay.instaprops)
   { vplay[p]=vplay.instaprops[p] }
 
+  if(vplay.unpause){ vplay.unpause=vplay.paused=0 }
+  
   addForces(Fgm,vplay)  //adds service function
 
   Fgm.applyforces={
