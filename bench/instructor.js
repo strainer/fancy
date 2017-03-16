@@ -70,7 +70,7 @@ var vplay = {
 
 if(window.location.hash) {
   var wrlda = window.location.hash.substring(1);
-  if(isFinite(wrlda)){ vplay.world=wrlda; vplay.unpaused=1 }
+  if(isFinite(wrlda)){ vplay.world=wrlda; vplay.unpause=1 }
 }
 
 var Fgm,Vpr
