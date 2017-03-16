@@ -299,13 +299,13 @@ function createC2(){ //trappist-1 data
 
   var trappdat=[
     ['exop-b' ,0.85 ,0.01111 ,89.65 ,1.086, 2.3 ,1.8 ,1.2, smass ]
-   ,['exop-c' ,1.38 ,0.01522 ,89.67 ,1.056, 1.9 ,1.6 ,1.3, smass ]
-   ,['exop-d' ,0.41 ,0.021   ,89.75 ,0.772, 1.8 ,1.5 ,1.4, smass ]
-   ,['exop-e' ,0.62 ,0.028   ,89.86 ,0.918, 1.5 ,1.5 ,1.8, smass ]
-   ,['exop-f' ,0.68 ,0.037   ,89.68 ,1.045, 1.5 ,1.5 ,1.8, smass ]
-   ,['exop-g' ,1.34 ,0.045   ,89.71 ,1.127, 1.5 ,1.9 ,1.5, smass ]
-   ,['exop-h' ,0.9  ,0.063   ,89.80 ,0.755, 1.7 ,1.6 ,1.5, smass ]
-   ,['yazo-o' ,0.1  ,0.083   ,86.80 ,0.255, 0.9 ,0.6 ,0.1, smass*0.25 ]
+   ,['exop-c' ,1.38 ,0.01522 ,89.67 ,1.056, 0.2 ,0.6 ,1.8, smass ]
+   ,['exop-d' ,0.41 ,0.021   ,89.75 ,0.772, 1.8 ,1.5 ,1.0, smass ]
+   ,['exop-e' ,0.62 ,0.028   ,89.86 ,0.918, 1.0 ,1.5 ,1.0, smass ]
+   ,['exop-f' ,0.68 ,0.037   ,89.68 ,1.045, 0.5 ,1.0 ,0.8, smass ]
+   ,['exop-g' ,1.34 ,0.045   ,89.71 ,1.127, 0.7 ,0.7 ,0.8, smass ]
+   ,['exop-h' ,0.9  ,0.063   ,89.80 ,0.755, 1.9 ,0.6 ,0.5, smass ]
+   ,['groke'  ,0.1  ,0.083   ,86.80 ,0.255, 0.8 ,0.5 ,0.1, smass*0.25 ]
   ]
   
   
@@ -315,16 +315,14 @@ function createC2(){ //trappist-1 data
     //var qg=1/1000000000
     
     var rw=trappdat[p] 
-    var nom=rw[0]  ,mss=rw[1]  ,orb=rw[2] 
+    var nom=rw[0]  ,mss=rw[1]*emass  ,orb=rw[2] 
      ,inkle=rw[3]*Math.Pi/180 ,rad=rw[4]*erad, smss=rw[8]
      
     Talter.addspinring({
        num:1, rad:au*orb, phi:inkle, pull:smss
       ,radf:function(){return Drand.gspire( 0.999999998,1.0000000002  ) } 
       ,velf:function(){return Drand.gspire( -0.00000001,0.00000001 ) } 
-      //~ ,thkf:function(){return Drand.gspire( 0.998,1.002  ) } //this makes cool ring
       ,thkf:function(){return Drand.gspire( -0.00000001,0.00000001  ) }
-      //,crdf:4
       ,inskip:function(){ return Drand.gskip() }
     }) 
     
@@ -332,6 +330,19 @@ function createC2(){ //trappist-1 data
     Talter.jsetlast({ knd:nom ,rad:rad ,mass:mss, r:rw[5],g:rw[6],b:rw[7] }) 
   }
   
+  Talter.setaslast(2)
+  
+  Talter.addspinring({
+     num:1, rad:au*0.00015, phi:inkle, pull:1.38*emass*6.67408e-8
+    ,radf:function(){return Drand.gspire( 0.999999998,1.0000000002  ) } 
+    ,velf:function(){return Drand.gspire( -0.00000001,0.00000001 ) } 
+    ,thkf:function(){return Drand.gspire( -0.00000001,0.00000001  ) }
+    ,inskip:function(){ return Drand.gskip() }
+  }) 
+  
+  Talter.jsetlast(
+   { knd:"Yazo-o" ,rad:0.1*erad ,mass:0.08*emass, r:1,g:1.5,b:0 }
+  )
 }
 
 

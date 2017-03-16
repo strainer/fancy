@@ -121,7 +121,7 @@ function setdash(cdash,vplay){
    ,content:"<u>k</u>eys"
    ,upstyle:{float:'right'}
    ,instyle:{clear:'both',float:'right'}
-   ,on:false
+   ,on:true
   })
 
   keysys.whenst("k"    , keyrevealer.click )
