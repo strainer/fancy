@@ -271,7 +271,7 @@ function createC2(){ //trappist-1 data
    ,viewer2:true
    ,printtime:hourtime
    ,rendermode:1
-   ,camRad:270500000
+   ,camRad:370500000
   }
 
   var solmas=Math.pow( 10 , 30-12 )*( 1.988544 ), sunrad=696300
