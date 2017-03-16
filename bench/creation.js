@@ -732,10 +732,10 @@ function createC7(){ //electrostatic cloud
   vplay.instaprops=
   {  forces:1
     ,max_force:  2
-    ,pradius:1.0
+    ,pradius:60.0
     ,firstfocus:-1
     ,runcycle_step : 2.5
-    ,camRad:80
+    ,camRad:600
   }
 
   var nh=15
@@ -938,29 +938,30 @@ function createC9(){ //4 rough rings of rnd mass particles
 
 
 function createC10(){ //47 Tuc X9
-  //
   
   vplay.instaprops=
   {
-    model_pace : 60.0//315.36000 // (is seconds?)
+    model_pace : 60.0 //300 works
    ,gravity : 6.67408e-8
-   ,max_force :  1000000000000000000000000000000000000000000000000000
+   //~ ,max_force :  0.000000000000000001 // this almost works with 60s
+   ,max_force :  0.0000000000000001
    ,viewer2:true
    ,printtime:hourtime
    ,rendermode:1
    ,camRad:370500000
   }
 
-  var solmas=Math.pow( 10 , 30-12 )*( 1.988544 ), sunrad=696300
-  
-  var bhmass=60*solmas
-  
+  var solmas=1.988544e+18  //(*1e+12) 
+     ,sunrad=696300
+     ,bhmass=60*solmas
+     ,bigG=6.67408e-8
+     
   Talter.addjote(
-   0  ,0  ,0 
-  ,bhmass
-  ,0 ,0 ,0
-  ,"Black hole"
-  ,sunrad
+   0  ,0  ,0  //xyz
+  ,bhmass     //mass
+  ,0 ,0 ,0    //vxyz
+  ,"Black hole" //nom
+  ,sunrad       //size
   )
 
   Talter.colorprev({ r:0.5,g:2.1,b:0.5,
@@ -968,46 +969,37 @@ function createC10(){ //47 Tuc X9
    ,bfun:function(x){ return Drand.gteat(0.7,1.25)*x }
    ,gfun:function(x){ return Drand.gteat(0.7,2.25)*x } 
   })	
-
-    
-  var orbdat=[
-    ['star' ,solmas ,2.5*3.84402e+05 ,89.65 ,sunrad, 1.8 ,1.8 ,2.0, bhmass ]
+  
+  var orbitals=[
+  { nom:'star', cmass:solmas, amass:bhmass, axis:2.5*3.84402e+05, 
+    tiltx:89.65, cradius:sunrad    , r:1.8, g:1.8, b:1.8
+  }
+  //~ ,{ nom:'star', cmass:solmas, amass:bhmass, axis:2.5*3.84402e+05, 
+    //~ tiltx:89.65, cradius:sunrad    , r:1.8, g:1.8, b:1.8
+  //~ }
   ]
   
-  for(var p=0; p<orbdat.length;p++){
-    
-    //var q=1/1000000
-    //var qg=1/1000000000
-    
-    var rw=orbdat[p] 
-    var nom=rw[0]  ,mss=rw[1]  ,orb=rw[2] 
-     ,inkle=rw[3]*Math.Pi/180 ,rad=rw[4], smss=rw[8]
-     
+  for(
+    var orb=orbitals[0] ,p=0 ; 
+    p<orbitals.length ; 
+    orb=orbitals[++p]
+  ){
     Talter.addspinring({
-       num:1, rad:orb, phi:inkle, pull:smss*6.67408e-8
-      ,radf:function(){return Drand.gspire( 0.999999998,1.0000000002  ) } 
-      ,velf:function(){return Drand.gspire( -0.00000001,0.00000001 ) } 
-      ,thkf:function(){return Drand.gspire( -0.00000001,0.00000001  ) }
+       num:1, rad:orb.axis, phi: orb.tiltx *Math.Pi/180, 
+       pull:orb.amass*bigG
+      ,radf:function(){return Drand.gnorm( 0.999999998,1.0000000002  ) } 
+      ,velf:function(){return Drand.gnorm( -0.00000001,0.00000001 ) } 
+      ,thkf:function(){return Drand.gnorm( -0.00000001,0.00000001  ) }
       ,inskip:function(){ return Drand.gskip() }
     }) 
     
     //jote: knd: rad: mass: charge:
-    Talter.jsetlast({ knd:nom ,rad:rad ,mass:mss, r:rw[5],g:rw[6],b:rw[7] }) 
-  }
+    Talter.jsetlast(
+    { knd:orb.nom ,rad:orb.cradius ,mass:orb.cmass
+     ,r:orb.r ,g:orb.g ,b:orb.b }) 
+    }
   
   //~ Talter.setaslast(2)
-  
-  //~ Talter.addspinring({
-     //~ num:1, rad:au*0.00015, phi:inkle, pull:1.38*emass*6.67408e-8
-    //~ ,radf:function(){return Drand.gspire( 0.999999998,1.0000000002  ) } 
-    //~ ,velf:function(){return Drand.gspire( -0.00000001,0.00000001 ) } 
-    //~ ,thkf:function(){return Drand.gspire( -0.00000001,0.00000001  ) }
-    //~ ,inskip:function(){ return Drand.gskip() }
-  //~ }) 
-  
-  //~ Talter.jsetlast(
-   //~ { knd:"Yazo-o" ,rad:0.1*erad ,mass:0.08*emass, r:1,g:1.5,b:0 }
-  //~ )
 }
 
 

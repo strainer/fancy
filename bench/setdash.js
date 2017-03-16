@@ -70,7 +70,7 @@ function setdash(cdash,vplay){
     seat:cdash
    ,style:{
      position:'absolute'
-    ,top:mez*10.6+'px',left:mez*brd+"px" ,width:fez*18+"px"
+    ,top:mez*11.8+'px',left:mez*brd+"px" ,width:fez*18+"px"
     }
    ,group:'dleft'	
     })
@@ -79,7 +79,7 @@ function setdash(cdash,vplay){
     seat:cdash
    ,style:{
      position:'absolute'
-    ,top:mez*20.5+'px',left:mez*brd+"px",width:fez*18+"px"
+    ,top:mez*21.5+'px',left:mez*brd+"px",width:fez*18+"px"
     }
     ,group:'dtop'	
    })
@@ -165,6 +165,11 @@ function setdash(cdash,vplay){
       seat:fig_display_div
      ,legend:'dist:'
      ,varkey:'camdist'
+     ,func:function(a){ return a } 
+    },{
+      seat:fig_display_div
+     ,legend:'vel:'
+     ,varkey:'camvel'
      ,func:function(a){ return a } 
     },{
     seat:dsreadings
