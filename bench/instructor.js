@@ -18,9 +18,10 @@ var vplay = {
    ,7:{name:"QuasiMags",desc:""}
    ,8:{name:"Pattern",desc:""}
    ,9:{name:"4MassRing",desc:""}
+   ,10:{name:"47 Tuc X9",desc:""}
   }
     
-  ,seed:0 ,world:3
+  ,seed:0 ,world:10
   ,geometry:{}, camera:{}, scene:{} 
   ,renderer:{}, displaybugi:20 //avoiding scrollbar
   

@@ -19,6 +19,7 @@ if(vplay.world==6){ createC6() }
 if(vplay.world==7){ createC7() }
 if(vplay.world==8){ createC8() }
 if(vplay.world==9){ createC9() }
+if(vplay.world==10){ createC10() }
 
 Talter.settop()
 
@@ -934,6 +935,81 @@ function createC9(){ //4 rough rings of rnd mass particles
   //~ Talter.massallzeros(1,function(){return Drand.gbowl(0,0.3)})
   Talter.massallzeros(0.0001/nn,function(){return 1})
 }
+
+
+function createC10(){ //47 Tuc X9
+  //
+  
+  vplay.instaprops=
+  {
+    model_pace : 60.0//315.36000 // (is seconds?)
+   ,gravity : 6.67408e-8
+   ,max_force :  1000000000000000000000000000000000000000000000000000
+   ,viewer2:true
+   ,printtime:hourtime
+   ,rendermode:1
+   ,camRad:370500000
+  }
+
+  var solmas=Math.pow( 10 , 30-12 )*( 1.988544 ), sunrad=696300
+  
+  var bhmass=60*solmas
+  
+  Talter.addjote(
+   0  ,0  ,0 
+  ,bhmass
+  ,0 ,0 ,0
+  ,"Black hole"
+  ,sunrad
+  )
+
+  Talter.colorprev({ r:0.5,g:2.1,b:0.5,
+    rfun:function(x){ return Drand.gteat(0.7,1.25)*x }
+   ,bfun:function(x){ return Drand.gteat(0.7,1.25)*x }
+   ,gfun:function(x){ return Drand.gteat(0.7,2.25)*x } 
+  })	
+
+    
+  var orbdat=[
+    ['star' ,solmas ,2.5*3.84402e+05 ,89.65 ,sunrad, 1.8 ,1.8 ,2.0, bhmass ]
+  ]
+  
+  for(var p=0; p<orbdat.length;p++){
+    
+    //var q=1/1000000
+    //var qg=1/1000000000
+    
+    var rw=orbdat[p] 
+    var nom=rw[0]  ,mss=rw[1]  ,orb=rw[2] 
+     ,inkle=rw[3]*Math.Pi/180 ,rad=rw[4], smss=rw[8]
+     
+    Talter.addspinring({
+       num:1, rad:orb, phi:inkle, pull:smss*6.67408e-8
+      ,radf:function(){return Drand.gspire( 0.999999998,1.0000000002  ) } 
+      ,velf:function(){return Drand.gspire( -0.00000001,0.00000001 ) } 
+      ,thkf:function(){return Drand.gspire( -0.00000001,0.00000001  ) }
+      ,inskip:function(){ return Drand.gskip() }
+    }) 
+    
+    //jote: knd: rad: mass: charge:
+    Talter.jsetlast({ knd:nom ,rad:rad ,mass:mss, r:rw[5],g:rw[6],b:rw[7] }) 
+  }
+  
+  //~ Talter.setaslast(2)
+  
+  //~ Talter.addspinring({
+     //~ num:1, rad:au*0.00015, phi:inkle, pull:1.38*emass*6.67408e-8
+    //~ ,radf:function(){return Drand.gspire( 0.999999998,1.0000000002  ) } 
+    //~ ,velf:function(){return Drand.gspire( -0.00000001,0.00000001 ) } 
+    //~ ,thkf:function(){return Drand.gspire( -0.00000001,0.00000001  ) }
+    //~ ,inskip:function(){ return Drand.gskip() }
+  //~ }) 
+  
+  //~ Talter.jsetlast(
+   //~ { knd:"Yazo-o" ,rad:0.1*erad ,mass:0.08*emass, r:1,g:1.5,b:0 }
+  //~ )
+}
+
 
 
 
