@@ -175,7 +175,7 @@ function setdash(cdash,vplay){
     seat:dsreadings 
    ,legend:'iota:'
    ,varkey:'iota'
-   ,func:function(a){ return (a-1).toFixed(0) } 
+   ,func:function(a){ return (a).toFixed(0) } 
   },{
       seat:dsreadings
      ,legend:'interlace:'
