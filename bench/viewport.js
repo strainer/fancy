@@ -93,12 +93,13 @@ function newViewport(fig,vplay){
       //color, intensity, distance, decay 
       var pointLight = new THREE.PointLight(0xffffff,1,0,0.01)
       
-      if(vplay.world==8) pointLight = new THREE.PointLight(0xff1111,1,0,0.01)
-      
-      pointLight.position.set(0,0,0)
-      vplay.scene.add(pointLight) 
+      //light color for trappist
+      if(vplay.world==2) pointLight = new THREE.PointLight(0xff1111,1,0,0.01)
       
       vplay.plight=pointLight
+      vplay.plight.position.set(0,0,0)
+      vplay.scene.add(pointLight) 
+      
       //Adding a directional light source to see anything..
       //~ var directionalLight = new THREE.DirectionalLight(0xffffff);
       //~ directionalLight.position.set(0, 0, 0);
@@ -169,6 +170,7 @@ function newViewport(fig,vplay){
     vplay.geometry.attributes.position.needsUpdate = true	
   }
 
+  var qcount=0
   function syncrender2(pace)
   { 
     //~ velcolor(vplay.colorfac)
@@ -194,9 +196,13 @@ function newViewport(fig,vplay){
     //~ console.log("minoo",vplay.camRad,drawscale,mindot)
     
     vplay.plight.position.set(
-      -focus.x*drawscale,-focus.y*drawscale,-focus.z*drawscale
+      (jote.x[0]-focus.x)*drawscale
+      ,(jote.y[0]-focus.y)*drawscale
+      ,(jote.z[0]-focus.z)*drawscale
     )
     
+    //~ if(qcount++%50==1){ console.log(vplay.plight) }
+        
     for(var i=0,j=0;j<jote.top;j++)
     { 
       var vj=vport.visjote[j]
