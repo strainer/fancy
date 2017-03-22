@@ -1,3 +1,5 @@
+//file is just pre-proto sketches of datatypes
+
 top data structures
 
 to make pods:
