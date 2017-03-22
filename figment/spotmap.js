@@ -154,7 +154,7 @@ function addSpotmap(fig,vplay) {
   var max_subcell = 25     //max subdivision of space per iteration
   var endsize=5            //endcell must be smaller than this population
     
-  ///Sector recursion detail object:Crdo notes per level*sbvox
+  ///Cell recursion detail object:Crdo notes per level*sbvox
   // caches the recursively used details of cells
   // approx maxlevel * celln in bulk ~= 256*10 2500
   // could just use a lev*maxcelln array
@@ -183,7 +183,7 @@ function addSpotmap(fig,vplay) {
     if(ej < endsize)
     { endcell( curdet[0].cellanchor[0], curdet[0].cellanchor[1] ) }
     else
-    { digest_cell( 0, 0 )	}
+    { digest_cell( 0, 0 )	}  // (lvlnum,cellnum)
     
   }
   
@@ -204,7 +204,7 @@ function addSpotmap(fig,vplay) {
     
     if(bcl_lv>18){ enddeep(bcl_lv, bcelli,bpop); return }
     
-    var celln_trgt= floor(2+(bpop/endsize)*Fdrandom.range(0.5,1))
+    var celln_trgt= floor(2+(bpop/endsize)*Drand.range(0.5,1))
     if (celln_trgt>max_subcell) { celln_trgt=max_subcell-1; }
     
     survey_cell( bcl_lv, bcelli, celln_trgt ) 
@@ -251,10 +251,12 @@ function addSpotmap(fig,vplay) {
     )
     
     var q=[]
-    for(var i=curdet[bcl_lv].cellanchor[bcelli]
-        ;i<curdet[bcl_lv].cellanchor[bcelli+1]
-        ;i++ ) 
-    { var j=dlns[i]
+    for(
+      var i=curdet[bcl_lv].cellanchor[bcelli]
+      ;i<curdet[bcl_lv].cellanchor[bcelli+1]
+      ;i++ 
+    ){ 
+      var j=dlns[i]
       q.push(","+jote.x[j]+" "+jote.y[j]+" "+jote.z[j]+" ") 
     } 
     tella('odeepjts',q)
@@ -837,9 +839,9 @@ function addSpotmap(fig,vplay) {
 
   function endcellx(rst,rov,lv) //stub to test bulk_load
   { 
-    var rr= Fdrandom.gskip(0,0,1)
-    var gg= Fdrandom.gskip(0,0,1)
-    var bb= Fdrandom.gskip(0,0,1)
+    var rr= Drand.gskip(0,0,1)
+    var gg= Drand.gskip(0,0,1)
+    var bb= Drand.gskip(0,0,1)
     
     for(var ri=rst; ri<rov; ri++)  //ds avg loc and avg vl
     { 

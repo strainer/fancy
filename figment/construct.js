@@ -11,7 +11,7 @@ function addConstruct(fig) {
   
   //~ for(var prop in fig) this.prop=fig[prop]  //pull in all scope from mbase
 
-  var jote=fig.jote, kind=fig.kind 
+  var jote=fig.jote, jkind=fig.jkind 
      ,Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
      ,Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
      ,Drand=fig.Drand ,Hrand=fig.Hrand
@@ -113,14 +113,14 @@ function addConstruct(fig) {
   }
   
   function jsetkind(j,knd,rad){
-    var k=1,ke=kind.nom.length 
+    var k=1,ke=jkind.nom.length 
     for( ; k<ke; k++)
-    { if(kind.nom[k]==knd){ break } }
+    { if(jkind.nom[k]==knd){ break } }
     
-    if(k>=kind.nom.length){ 
+    if(k>=jkind.nom.length){ 
       //~ console.log(i,ke,jote.kinds.length,knd)
-      kind.nom[k]=knd 
-      kind.rad[k]=rad 
+      jkind.nom[k]=knd 
+      jkind.rad[k]=rad 
     }
     jote.knd[j]=k
     return k
