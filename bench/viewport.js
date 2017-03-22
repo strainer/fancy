@@ -8,7 +8,7 @@
 
 function newViewport(fig,vplay){ 
   
-  var jote=fig.jote, kind=fig.kind 
+  var jote=fig.jote, jkind=fig.jkind 
      ,Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
      ,Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
      ,Drand=fig.Drand ,Hrand=fig.Hrand
@@ -40,7 +40,7 @@ function newViewport(fig,vplay){
 
     vplay.camera = new THREE.PerspectiveCamera( 18
       ,( window.innerWidth-vplay.displaybugi) / (window.innerHeight-vplay.displaybugi)
-      , 0.0000001, 4000000 )
+      , 0.0000001, 400000000 )
     vport.camlook=new THREE.Vector3(-0,-0,-0)
     vport.camup=new THREE.Vector3(0,1,0)
 
@@ -52,6 +52,17 @@ function newViewport(fig,vplay){
       vport.syncrender=syncrender
       
       vplay.geometry = new THREE.BufferGeometry()
+      
+      /* //proper way
+      thrLc = new Float32Array( vplay.particles * 3 )
+      vplay.geometry.addAttribute( 'position', new THREE.BufferAttribute( thrLc, 3 ) )
+      */
+      
+      //~ thrLc=new Float32Array( vplay.particles * 3 )
+      //~ vplay.geometry.addAttribute(
+       //~ 'position',new THREE.BufferAttribute( thrLc, 3 )
+      //~ )
+      
       vplay.geometry.addAttribute('position',new Float32Array( vplay.particles * 3 ), 3 )
       vplay.geometry.addAttribute('color',   new Float32Array( vplay.particles * 3 ), 3 )
 
@@ -207,7 +218,7 @@ function newViewport(fig,vplay){
     { 
       var vj=vport.visjote[j]
       if(resc){  //this is done in ctrlcam 
-        var isc=drawscale*(kind.rad[ jote.knd[j] ])
+        var isc=drawscale*(jkind.rad[ jote.knd[j] ])
         if(isc<mindot){ isc=mindot }
         vj.scale.set( isc, isc, isc ) 
       }
@@ -261,7 +272,7 @@ function newViewport(fig,vplay){
       
       sphere.position.set( jote.x[j], jote.y[j], jote.z[j] ) 
       
-      var ss=kind.rad[jote.knd[j]]*focus.sc+Math.sqrt(focus.sc*10)
+      var ss=jkind.rad[jote.knd[j]]*focus.sc+Math.sqrt(focus.sc*10)
       sphere.scale.set( ss, ss, ss )
       //sphere.overdraw = true //overlaps edges slightly
       vplay.scene.add( sphere )
@@ -338,7 +349,7 @@ function newViewport(fig,vplay){
       
     }else {
       focus.cam=0
-      var radd=kind.rad[ jote.knd[jd] ] * focus.sc
+      var radd=jkind.rad[ jote.knd[jd] ] * focus.sc
       if(radd*2>vplay.camRad){ focus.cam = radd*2 }
             
       if(vplay.camRad<neadist*focus.sc){
@@ -353,8 +364,8 @@ function newViewport(fig,vplay){
     vplay.nowfocus="obj "+jd
     if(jd===-1)
     { vplay.nowfocus="free tracking" }
-    else if(isFinite(Fgm.jote.knd[jd])&&Fgm.kind.nom[Fgm.jote.knd[jd]])
-    { vplay.nowfocus=jd+" "+Fgm.kind.nom[Fgm.jote.knd[jd]] } 
+    else if(isFinite(Fgm.jote.knd[jd])&&Fgm.jkind.nom[Fgm.jote.knd[jd]])
+    { vplay.nowfocus=jd+" "+Fgm.jkind.nom[Fgm.jote.knd[jd]] } 
   }
 
   function changingfocus(pace){
@@ -541,7 +552,7 @@ function newViewport(fig,vplay){
         for(var i=0,j=0;j<jote.top;j++)
         { 
           var vj=vport.visjote[j] 
-          var isc=focus.sc*(kind.rad[ jote.knd[j] ])
+          var isc=focus.sc*(jkind.rad[ jote.knd[j] ])
           if(isc<mindot){ isc=mindot }
           vj.scale.set( isc, isc, isc ) 
         }
