@@ -77,12 +77,12 @@ function addSpotmap(fig,vplay) {
     for( var ts=spot.dln_anchor[sui];ts<te;ts++)
     {
       var j= dlns[ts],p=0
-      if(jote.x[j] < lwx) { p=1;biglog("low x",sui,te-ts,spot.dln_span[sui])}
-      if(jote.y[j] < lwy) { p=1;biglog("low y",sui,te-ts,spot.dln_span[sui])}
-      if(jote.z[j] < lwz) { p=1;biglog("low z",sui,te-ts,spot.dln_span[sui])}
-      if(jote.x[j] > hix) { p=1;biglog("hig x",sui,te-ts,spot.dln_span[sui])}
-      if(jote.y[j] > hiy) { p=1;biglog("hig y",sui,te-ts,spot.dln_span[sui])}
-      if(jote.z[j] > hiz) { p=1;biglog("hig z",sui,te-ts,spot.dln_span[sui])}
+      if(jote.x[j]< spot.lbx[sui]) { p=1;biglog("low x",sui,te-ts,spot.dln_span[sui])}
+      if(jote.y[j]< spot.lby[sui]) { p=1;biglog("low y",sui,te-ts,spot.dln_span[sui])}
+      if(jote.z[j]< spot.lbz[sui]) { p=1;biglog("low z",sui,te-ts,spot.dln_span[sui])}
+      if(jote.x[j]> spot.hbx[sui]) { p=1;biglog("hig x",sui,te-ts,spot.dln_span[sui])}
+      if(jote.y[j]> spot.hby[sui]) { p=1;biglog("hig y",sui,te-ts,spot.dln_span[sui])}
+      if(jote.z[j]> spot.hbz[sui]) { p=1;biglog("hig z",sui,te-ts,spot.dln_span[sui])}
       
       if(p){
         var fchil=spot.fchild[sui]
@@ -106,12 +106,13 @@ function addSpotmap(fig,vplay) {
   var epsila=Math.pow(0.5,52)
   var epsilb=Math.pow(0.5,43)
 
-  var maxsp=2000 //Math.pow(2,16) //~max spots ?
+  var maxsp=8000 //Math.pow(2,16) //~max spots ?
   var _dsui=1    //due sui, 0 is not valid 
   
   var spot = //13*4+3*2 bytes per spot - about 3 Mb for 50k
   {
     deep          : 0                       //depth of plant
+   ,top           : 0
    ,depth         : new Uint8Array(maxsp)
    ,dln_anchor    : new Uint16Array(maxsp)
    ,dln_span      : new Uint16Array(maxsp)
@@ -179,12 +180,13 @@ function addSpotmap(fig,vplay) {
   { 
     ej=ej||jote.top
     ej=topcell(ej)
-    
+        
     if(ej < endsize)
     { endcell( curdet[0].cellanchor[0], curdet[0].cellanchor[1] ) }
     else
     { digest_cell( 0, 0 )	}  // (lvlnum,cellnum)
     
+    //~ logtell()
   }
   
   //surveys vox then loops through all subvoxs, calculating their jtpopuls
@@ -489,7 +491,8 @@ function addSpotmap(fig,vplay) {
   //make first vox 1 (not 0) - seemingly done
   var _spt_deep=0
   
-  function measure_spots(){ 
+  function measure_spots(){ //without vel for force
+    spot.top=_dsui
     _spt_deep=0
         
     for(var sui=1;sui<_dsui;sui++){
@@ -607,7 +610,7 @@ function addSpotmap(fig,vplay) {
     }
   }
 
-  function remeasure_spots(tms){ 
+  function bimeasure_spots(tms){ //with vel for collision
     
     var lwx,hix, lwy,hiy, lwz,hiz
     var cgx,cgy,cgz,cmass_tot
@@ -858,7 +861,7 @@ function addSpotmap(fig,vplay) {
   }
     
 
-  function precip_accel(){ 
+  function distrib_accel(){ 
     precipkids(1) 
   }
   
@@ -906,10 +909,24 @@ function addSpotmap(fig,vplay) {
     }
   }
   
+  var _runs=0
+
+  function prefit_spotmap(){
+    if(_runs++%5===0){ bulk_load() }
+    measure_spots()
+  }
+
+  function postfit_spotmap(){ 
+    distrib_accel()
+    acceltovel()
+  }
+  
+  fig.prefit_spotmap  = prefit_spotmap
+  fig.postfit_spotmap = postfit_spotmap
   fig.bulk_load = bulk_load
   fig.measure_spots = measure_spots
-  fig.remeasure_spots = remeasure_spots
-  fig.precip_accel = precip_accel
+  fig.bimeasure_spots = bimeasure_spots
+  fig.distrib_accel = distrib_accel
   fig.acceltovel = acceltovel
   fig.spot = spot
   fig.dlns = dlns

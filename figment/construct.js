@@ -442,10 +442,10 @@ function addConstruct(fig) {
     jote.top = ins.due
     for(var j=jote.top-1;j>=0;j--)
     { if(jote.g[j]){ jote.topg=j+1; break } }
-    console.log("top", jote.top)
-    console.log("topg", jote.topg, jote.g[jote.topg])
-    console.log("gs:")
-    for(var j=0;j<jote.topg;j++) console.log(jote.g[j])
+    //~ console.log("top", jote.top)
+    //~ console.log("topg", jote.topg, jote.g[jote.topg])
+    //~ console.log("gs:")
+    //~ for(var j=0;j<jote.topg;j++) console.log(jote.g[j])
   }
       
   fig.setpos               = setpos

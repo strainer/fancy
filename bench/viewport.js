@@ -156,7 +156,7 @@ function newViewport(fig,vplay){
       */
     }
   }
-  
+
   function syncrender(pace)
   { 
     velcolor(vplay.colorfac)
@@ -176,6 +176,8 @@ function newViewport(fig,vplay){
    
     for(var i=0,ie=jote.top*3; i<ie; i++)
     { thrCl[i]=jote.ccolor[i] }
+    
+    if(vplay.seespots) { vboxspot() }
     
     vplay.geometry.attributes.color.needsUpdate = true
     vplay.geometry.attributes.position.needsUpdate = true	
@@ -199,7 +201,7 @@ function newViewport(fig,vplay){
     { focus.bsc=focus.sc, resc=focus.sc}
     
     if(jote.top>(vport.jtop||0)){
-      addvisjotes( (vport.jtop||0) , jote.top )
+      vis_spheres( (vport.jtop||0) , jote.top )
     }
     
     var mindot=(vplay.camRad)/(1000)
@@ -233,10 +235,12 @@ function newViewport(fig,vplay){
        //~ ,jote.ccolor[i++]
        //~ ,jote.ccolor[i++]
       //~ )
+      //~ 
+      if(vplay.seespots) { vboxspot() }
     }
   }
 
-  function addvisjotes(j,k){
+  function vis_spheres(j,k){
     
     //~ var geometry = new THREE.SphereBufferGeometry( 5, 32, 32 )
     
@@ -282,7 +286,87 @@ function newViewport(fig,vplay){
     vport.jtop=k
   }
 
+
+  function setupvbox(){
+    vport.vbox=[]
+
+    var n=-0.5 ,p=0.5	
+    var vtex =[ //trace a cuboid, 15 links over 12 edges
+      [n, n, n] 
+     ,[n, n, p] ,[p, n, p] ,[p, n, n] ,[p, n, p] 
+     ,[p, p, p] ,[n, p, p] ,[n, n, p] ,[n, p, p]
+     ,[n, p, n] ,[p, p, n] ,[p, p, p] ,[p, p, n]
+     ,[p, n, n] ,[n, n, n] ,[n, p, n]
+    ]
+          
+    vport.vbox[0] = new THREE.Line( 
+      new THREE.Geometry()
+     ,new THREE.LineBasicMaterial({ 
+       color: 0xffffff, opacity: 0.5 ,transparent:true
+     }) 
+    )
+
+    for(var c=0;c<vtex.length;c++){
+      vport.vbox[0].geometry.vertices.push(
+        new THREE.Vector3( vtex[c][0], vtex[c][1], vtex[c][2] )
+      )
+    }
+    
+    //whay nay?
+    vport.vbox[0].geometry.computeBoundingSphere()
+    vplay.scene.add( vport.vbox[0] )
+  }
   
+  function vboxspot(turnoff){
+    
+    var spot =fig.spot
+    if(!vport.hasOwnProperty('vbox')){ setupvbox() }//made a vbox
+
+    if((turnoff||vplay.seespots==-1)){
+      
+      if( vport.vbox[0].visible )
+      for(var si=0; si<vport.vbox.length;si++)
+      { vport.vbox[si].visible=false }
+      
+      return
+    }
+    
+    //topup vboxlist
+    if(vport.vbox.length<spot.top){
+      for(var d=vport.vbox.length; d<spot.top;d++){
+        vport.vbox[d]=vport.vbox[0].clone()
+        vplay.scene.add( vport.vbox[d] )
+      }
+    }
+    
+    //pos and scale for every spot
+    for(var si=0;si<spot.top;si++){
+      
+      var px=(spot.lbx[si]+spot.hbx[si])*0.5
+         ,sx=(spot.hbx[si]-spot.lbx[si])+0.03
+         ,py=(spot.lby[si]+spot.hby[si])*0.5
+         ,sy=(spot.hby[si]-spot.lby[si])+0.03
+         ,pz=(spot.lbz[si]+spot.hbz[si])*0.5
+         ,sz=(spot.hbz[si]-spot.lbz[si])+0.03
+      
+      vport.vbox[si].position.set( 
+        (px-focus.x)*focus.sc
+       ,(py-focus.y)*focus.sc
+       ,(pz-focus.z)*focus.sc )
+         
+      vport.vbox[si].scale.set( 
+        sx*focus.sc
+       ,sy*focus.sc
+       ,sz*focus.sc )
+    
+      vport.vbox[si].visible=true
+    }
+    
+    //disable the rest
+    for(var si=spot.top; si<vport.vbox.length;si++)
+    { vport.vbox[si].visible=false }
+  }
+
   var focus={ 
     chng:0, wc:-1, distb:0, jc:0,jd:-1,je:0, sc:1,sd:1 ,cam:0, timer:0, x:0,y:0,z:0 
   }

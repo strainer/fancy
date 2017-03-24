@@ -143,6 +143,7 @@ function setdash(cdash,vplay){
   <span class="keyba">Misc</span>
   <span class="keybb">&nbsp;g</span>  toggle grav
   <span class="keybb">&nbsp;x</span>  expansion
+  <span class="keybb">&nbsp;s</span>  see bounds
   <span class="keybb">&nbsp;k</span>  keys
 
   <br>

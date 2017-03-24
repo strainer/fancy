@@ -355,6 +355,7 @@ function createC3(){ //1 + 4 gbody and disk
    camRad:540,
    runcycle_step: 1.5 
    ,pradius:40
+   ,forces:0
    }
 
   var nn=7
@@ -619,7 +620,9 @@ function createC5(){
   //a ring of rnd mass particles
   
   vplay.instaprops=
-  { pradius:60 }
+  { pradius:60
+   ,forces:2
+  }
   
   Talter.setpos(0,0,0)
   Talter.setvel(0,0,0)
@@ -879,10 +882,10 @@ function createC9(){ //4 rough rings of rnd mass particles
   vplay.instaprops=
   { pradius:70.8
    ,runcycle_step:1.5
-   ,forces:1
+   ,forces:2
   }
 
-  var nn=1
+  var nn=4
   
   Talter.setpos(0,0,0)
   Talter.setvel(0,0,0)

@@ -34,6 +34,9 @@ function newFigment(size){ return (function(size){
     ,'qx'  : new Float64Array(size)  //copies
     ,'qy'  : new Float64Array(size)
     ,'qz'  : new Float64Array(size)
+    ,'tx'  : new Float64Array(size)  //copies for tempering
+    ,'ty'  : new Float64Array(size)
+    ,'tz'  : new Float64Array(size)
     ,'g'   : new Float64Array(size)   //weight   - roll into knd
     ,'c'   : new Float64Array(size)   //charge   - toll into knd
     ,'grp'  : new Uint32Array(size)  //group 
