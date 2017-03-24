@@ -21,7 +21,7 @@ var vplay = {
    ,10:{name:"47 Tuc X9",desc:""}
   }
     
-  ,seed:0 ,world:9, seespots:-1
+  ,seed:0 ,world:3, seespots:-1
   ,geometry:{}, camera:{}, scene:{} 
   ,renderer:{}, displaybugi:20 //avoiding scrollbar
   
@@ -71,10 +71,10 @@ var vplay = {
 
 var urlpar=[]
 if(window.location.hash) {
-  var patt=/#[^\d]*(\d{1,2})?[^p]*(pau)?[^s]*(spots)?/
-  urlpar=window.location.hash.match(patt);
- 
-  if(isFinite(urlpar[1])){ vplay.world=urlpar[1] }
+  var patt=/#[^\d]*(\d{1,2})?[^ps]*(pau)?s?[^s]*(spots)?/
+  urlpar=window.location.hash.match(patt)
+  //~ console.log("urls",urlpar)
+  if(isFinite(urlpar[1])){ vplay.world=parseInt(urlpar[1]) }
 }
 
 var Fgm,Vpr
