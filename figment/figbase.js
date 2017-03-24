@@ -23,26 +23,40 @@ function newFigment(size){ return (function(size){
   var jote={
      'len' : size                    //max size
     ,'top' : 0                       //next empty 
-    ,'topg': 0
-    ,'topd': 0
+    ,'topg': 0                       //top gravitator
+    ,'topdxx': 0                     //removed
     ,'x'   : new Float64Array(size)  //pos
     ,'y'   : new Float64Array(size)
     ,'z'   : new Float64Array(size)
     ,'vx'  : new Float64Array(size)  //mov
     ,'vy'  : new Float64Array(size)
     ,'vz'  : new Float64Array(size)
-    ,'qx'  : new Float64Array(size)  //copy
+    ,'qx'  : new Float64Array(size)  //copies
     ,'qy'  : new Float64Array(size)
     ,'qz'  : new Float64Array(size)
-    ,'g'   : new Float64Array(size)   //weight
-    ,'c'   : new Float64Array(size)   //charge
-    ,'grp'   : new Uint32Array(size)  //group 
-    ,'knd'   : new Uint32Array(size)  //kind
-    ,'bcolor' : new Float32Array(size*3)
-    ,'ccolor' : new Float32Array(size*3)
+    ,'tx'  : new Float64Array(size)  //copies for tempering
+    ,'ty'  : new Float64Array(size)
+    ,'tz'  : new Float64Array(size)
+    ,'g'   : new Float64Array(size)   //weight   - roll into knd
+    ,'c'   : new Float64Array(size)   //charge   - toll into knd
+    ,'grp'  : new Uint32Array(size)  //group 
+    ,'knd'   : new Uint32Array(size)  //jkind
+    ,'bcolor' : new Float32Array(size*3) //basecol should be in knd
+    ,'ccolor' : new Float32Array(size*3) //crntcol should be in renderer
   }
   
-  var kind={ nom:[] ,rad:[] ,flags:[] }
+  var jkind  = { 
+    nom:[] ,rad:[] 
+   ,flags:[]         //is grouped?
+  }
+  
+  var jgroup = {        //0 group is ? , encode info in groupname?
+    roll: new Uint32Array(size)
+   ,anch:[]            //jotei=jg.roll[jg.anch[grp]..to+jg.span[grp]]
+   ,span:[]
+   ,nom:[]             //le nom
+   ,nat:[]             //nature of group...
+  }
 
   var abs=Math.abs, floor=Math.floor, Sqrt =Math.sqrt 
   var Tau=2*Math.PI ,Pi=Math.PI, hPi=Pi/2, tPi=Pi/3
@@ -50,6 +64,16 @@ function newFigment(size){ return (function(size){
   var Drand=Fdrandom.pot("hm"), Hrand=Fdrandom.hot()
      ,rndu=Drand.f48, rndh=Hrand.f48 
         
+  
+  var _lastknd
+  function namedknd(nm){
+    if(jkind.nom[_lastknd]===nm){ return _lastknd }
+    for( _lastknd=jknd.nom.length;_lastknd>0;_lastknd--){
+      if(jkind.nom[_lastknd]===nm){ return _lastknd } 
+    }
+    return _lastknd
+  }
+  
   function velmove(t)
   {
     for(var i=0; i<jote.top; i++)
@@ -73,7 +97,8 @@ function newFigment(size){ return (function(size){
      velmove:velmove 
     ,recycle:recycle
     ,jote:jote
-    ,kind:kind
+    ,jkind:jkind
+    ,jgroup:jgroup
     ,Tau:Tau ,Pi:Pi, hPi:hPi, tPi:tPi
     ,abs:abs ,floor:floor ,Sqrt:Sqrt
     ,Drand:Drand, Hrand:Hrand, rndu:rndu, rndh:rndh 

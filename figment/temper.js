@@ -22,9 +22,9 @@ function addTemper(fig){
     cvfac=cvfac||0
     
     for(var i=0; i < jote.top; i++) 
-    { jote.qx[i]=jote.vx[i]  //stash velocity values
-      jote.qy[i]=jote.vy[i]
-      jote.qz[i]=jote.vz[i]
+    { jote.tx[i]=jote.vx[i]  //stash velocity values
+      jote.ty[i]=jote.vy[i]
+      jote.tz[i]=jote.vz[i]
     }
         
     var r=-0
@@ -36,18 +36,18 @@ function addTemper(fig){
       
       for(i=0; i<jote.top; i++)
       { r=2*Math.acos(
-          (jote.qx[i]*jote.vx[i] +jote.qy[i]*jote.vy[i] +jote.qz[i]*jote.vz[i])
+          (jote.tx[i]*jote.vx[i] +jote.ty[i]*jote.vy[i] +jote.tz[i]*jote.vz[i])
           /Sqrt(
-           (jote.qx[i]*jote.qx[i] +jote.qy[i]*jote.qy[i] +jote.qz[i]*jote.qz[i])
+           (jote.tx[i]*jote.tx[i] +jote.ty[i]*jote.ty[i] +jote.tz[i]*jote.tz[i])
            *(jote.vx[i]*jote.vx[i] +jote.vy[i]*jote.vy[i] +jote.vz[i]*jote.vz[i])
           )
         )
         //vel/mov = r/sin r ,, curve the hypotenus 
         toAnalog= r? r/Math.sin(r) : 1
         
-        jote.vx[i]=jote.qx[i]= jote.vx[i]*toAnalog
-        jote.vy[i]=jote.qy[i]= jote.vy[i]*toAnalog
-        jote.vz[i]=jote.qz[i]= jote.vz[i]*toAnalog
+        jote.vx[i]=jote.tx[i]= jote.vx[i]*toAnalog
+        jote.vy[i]=jote.ty[i]= jote.vy[i]*toAnalog
+        jote.vz[i]=jote.tz[i]= jote.vz[i]*toAnalog
         
       }
     }
@@ -60,9 +60,9 @@ function addTemper(fig){
       
       for(i=0; i<jote.top; i++)
       { r=2*Math.acos(
-          (jote.qx[i]*jote.vx[i] +jote.qy[i]*jote.vy[i] +jote.qz[i]*jote.vz[i])
+          (jote.tx[i]*jote.vx[i] +jote.ty[i]*jote.vy[i] +jote.tz[i]*jote.vz[i])
           /Sqrt(
-           (jote.qx[i]*jote.qx[i] +jote.qy[i]*jote.qy[i] +jote.qz[i]*jote.qz[i])
+           (jote.tx[i]*jote.tx[i] +jote.ty[i]*jote.ty[i] +jote.tz[i]*jote.tz[i])
            *(jote.vx[i]*jote.vx[i] +jote.vy[i]*jote.vy[i] +jote.vz[i]*jote.vz[i])
           )
         )
@@ -77,7 +77,7 @@ function addTemper(fig){
     }
     
     //reset qs
-    for(i=0; i<jote.top; i++){ jote.qx[i] = jote.qy[i] = jote.qz[i] = -0 }	
+    for(i=0; i<jote.top; i++){ jote.tx[i] = jote.ty[i] = jote.tz[i] = -0 }	
   }	
 
 

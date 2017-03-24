@@ -21,7 +21,7 @@ var vplay = {
    ,10:{name:"47 Tuc X9",desc:""}
   }
     
-  ,seed:0 ,world:3
+  ,seed:0 ,world:9, seespots:-1
   ,geometry:{}, camera:{}, scene:{} 
   ,renderer:{}, displaybugi:20 //avoiding scrollbar
   
@@ -69,15 +69,21 @@ var vplay = {
   }
 }
 
+var urlpar=[]
 if(window.location.hash) {
-  var wrlda = window.location.hash.substring(1);
-  if(isFinite(wrlda)){ vplay.world=wrlda; vplay.unpause=1 }
+  var patt=/#[^\d]*(\d{1,2})?[^p]*(pau)?[^s]*(spots)?/
+  urlpar=window.location.hash.match(patt);
+ 
+  if(isFinite(urlpar[1])){ vplay.world=urlpar[1] }
 }
 
 var Fgm,Vpr
 
 setupfigview(vplay.world)
 
+if(urlpar[1]){ vplay.paused=0 }
+if(urlpar[2]){ vplay.paused=1 }
+if(urlpar[3]){ vplay.seespots=1 }
 
 //init make create instantiate
 function setupfigview(fig){
@@ -102,7 +108,8 @@ function setupfigview(fig){
   if(vplay.unpause){ vplay.unpause=vplay.paused=0 }
   
   addForces(Fgm,vplay)  //adds service function
-
+  addSpotgrav(Fgm,vplay)
+  
   Fgm.applyforces={
    0:Fgm.nbodygrav
   ,1:Fgm.nbodygravelec
@@ -110,7 +117,6 @@ function setupfigview(fig){
   }[vplay.forces]
 
   addTemper(Fgm,vplay)  //adds service function
-  
       
   //~ if(!Vpr)    //i shouldnt have to recreate this ..
   Vpr=newViewport(Fgm,vplay)
@@ -259,12 +265,12 @@ function donature(){
   
   if(vplay.nature==0){ 
     Fgm.applyforces()
-  }else if(vplay.nature==1){
-    Fgm.bulk_load()
-    Fgm.measure_spots()
-    Fgm.grav_spots()
-    Fgm.descend_accel()
-    Fgm.acceltovel()
+  }else if(vplay.nature==1){ //not used, used for collision or something
+    //~ Fgm.bulk_load()
+    //~ Fgm.measure_spots()
+    //~ Fgm.grav_spots()
+    //~ Fgm.descend_accel()
+    //~ Fgm.acceltovel()
   }
 }
 
@@ -276,6 +282,7 @@ function donature(){
 //~ }
 
 function togglePause(){ vplay.paused = (vplay.paused)^1 }
+function toggleSeespots(){ vplay.seespots = (vplay.seespots)*-1 }
 function toggleExplode(){ vplay.explode = (vplay.explode)^1 }
 
 function setkeys(){
@@ -310,6 +317,7 @@ function setkeys(){
   keysys.whenup("z"     , setgp , ["keyR", 0] )
   keysys.whenup("ctrl"  , setgp , ["keyCtrl", 0] )
 
+  keysys.whenst ("s"    , toggleSeespots )
   keysys.whenst ("c"    , togglePause )
   keysys.whenst ("x"    , toggleExplode )
   //~ keysys.whenst ("w"    , function(){ vplay.spincam = (vplay.spincam)^1 } )

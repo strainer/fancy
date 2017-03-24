@@ -306,7 +306,7 @@ function createC2(){ //trappist-1 data
    ,['exop-f' ,0.68 ,0.037   ,89.68 ,1.045, 0.5 ,1.5 ,0.8, smass ]
    ,['exop-g' ,1.34 ,0.045   ,89.71 ,1.127, 1.1 ,0.8 ,1.8, smass ]
    ,['exop-h' ,0.9  ,0.063   ,89.80 ,0.755, 1.3 ,1.0 ,0.7, smass ]
-   ,['acomet'  ,0.1  ,0.123   ,46.80 ,0.255, 1.4 ,0.3 ,1.1, smass*0.08 ]
+   ,['acomet'  ,0.1  ,0.123   ,26.80 ,0.255, 1.4 ,0.3 ,1.1, smass*0.08 ]
   ]
   
   
@@ -317,7 +317,7 @@ function createC2(){ //trappist-1 data
     
     var rw=trappdat[p] 
     var nom=rw[0]  ,mss=rw[1]*emass  ,orb=rw[2] 
-     ,inkle=rw[3]*Math.Pi/180 ,rad=rw[4]*erad, smss=rw[8]
+     ,inkle=(rw[3]-90)*Math.PI/180 ,rad=rw[4]*erad, smss=rw[8]
      
     Talter.addspinring({
        num:1, rad:au*orb, phi:inkle, pull:smss
@@ -355,6 +355,7 @@ function createC3(){ //1 + 4 gbody and disk
    camRad:540,
    runcycle_step: 1.5 
    ,pradius:40
+   ,forces:0
    }
 
   var nn=7
@@ -619,7 +620,9 @@ function createC5(){
   //a ring of rnd mass particles
   
   vplay.instaprops=
-  { pradius:60 }
+  { pradius:60
+   ,forces:2
+  }
   
   Talter.setpos(0,0,0)
   Talter.setvel(0,0,0)
@@ -879,10 +882,10 @@ function createC9(){ //4 rough rings of rnd mass particles
   vplay.instaprops=
   { pradius:70.8
    ,runcycle_step:1.5
-   ,forces:1
+   ,forces:2
   }
 
-  var nn=1
+  var nn=4
   
   Talter.setpos(0,0,0)
   Talter.setvel(0,0,0)
@@ -906,7 +909,7 @@ function createC9(){ //4 rough rings of rnd mass particles
   Talter.colorprev({ r:2,g:0.9,b:4.5,rfun:0,bfun:0,gfun:0 })
  
   Talter.addspinring({
-    num:(120*nn), rad:2.4, phi:0, pull:1
+    num:(120*nn), rad:2.4, phi:0.1, pull:1
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gnorm( 0.96,1.04)} 
     ,velf:function(){return Drand.gnorm(-0.09,0.09)} 
@@ -915,7 +918,7 @@ function createC9(){ //4 rough rings of rnd mass particles
   Talter.colorprev({ r:6,g:0.9,b:0.9,rfun:0,bfun:0,gfun:0 })
   
   Talter.addspinring({
-    num:(180*nn), rad:3.6, phi:0, pull:1
+    num:(180*nn), rad:3.6, phi:0.2, pull:1
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gnorm( 0.90,1.10)} 
     ,velf:function(){return Drand.gnorm(-0.05,0.05)} 
@@ -924,7 +927,7 @@ function createC9(){ //4 rough rings of rnd mass particles
   Talter.colorprev({ r:1.9,g:3.9,b:1.5,rfun:0,bfun:0,gfun:0 })
      
   Talter.addspinring({
-    num:(270*nn), rad:5.4, phi:0, pull:1
+    num:(270*nn), rad:5.4, phi:0.5, pull:1
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gnorm( 0.96,1.04)} 
     ,velf:function(){return Drand.gnorm(-0.05,0.05)} 
@@ -971,9 +974,23 @@ function createC10(){ //47 Tuc X9
   })	
   
   var orbitals=[
-  { nom:'star', cmass:solmas, amass:bhmass, axis:2.5*3.84402e+05, 
-    tiltx:89.65, cradius:sunrad    , r:1.8, g:1.8, b:1.8
+  { nom:'star', cmass:solmas, cradius:sunrad, tiltx:180.65
+   ,axel:0, axis:2.5*3.84402e+05
+   ,r:1.8, g:1.8, b:1.8
+  },
+  
+  { nom:'ext-a', cmass:solmas/2, cradius:sunrad/5, tiltx:-20.65
+   ,axel:0, axis:5.14402e+06
+  }, 
+  
+  { nom:'ext-b', cmass:solmas/5, cradius:sunrad/14, tiltx:32.65
+   ,axel:2, axis:0.89402e+06
+  },
+  
+  { nom:'ext-c', cmass:solmas/9, cradius:sunrad/19, tiltx:114.65
+   ,axel:3, axis:1.64402e+05
   }
+
   //~ ,{ nom:'star', cmass:solmas, amass:bhmass, axis:2.5*3.84402e+05, 
     //~ tiltx:89.65, cradius:sunrad    , r:1.8, g:1.8, b:1.8
   //~ }
@@ -984,19 +1001,26 @@ function createC10(){ //47 Tuc X9
     p<orbitals.length ; 
     orb=orbitals[++p]
   ){
+    Talter.setaslast(orb.axel)
+    var omass=Talter.jote.g[orb.axel]*bigG*(orb.amass||1)
+    
     Talter.addspinring({
-       num:1, rad:orb.axis, phi: orb.tiltx *Math.Pi/180, 
-       pull:orb.amass*bigG
+       num:1, rad:orb.axis, phi: orb.tiltx *Math.PI/180, 
+       pull:omass
       ,radf:function(){return Drand.gnorm( 0.999999998,1.0000000002  ) } 
       ,velf:function(){return Drand.gnorm( -0.00000001,0.00000001 ) } 
       ,thkf:function(){return Drand.gnorm( -0.00000001,0.00000001  ) }
-      ,inskip:function(){ return Drand.gskip() }
+      ,inskip:orb.theta||function(){ return Drand.gskip() }
     }) 
     
     //jote: knd: rad: mass: charge:
-    Talter.jsetlast(
-    { knd:orb.nom ,rad:orb.cradius ,mass:orb.cmass
-     ,r:orb.r ,g:orb.g ,b:orb.b }) 
+    Talter.jsetlast({ 
+      knd:orb.nom ,rad:orb.cradius ,mass:orb.cmass
+     ,r:(orb.r)||Drand.gskip()*3+0.4 
+     ,g:(orb.g)||Drand.gskip()*3+0.4
+     ,b:(orb.b)||Drand.gskip()*3+0.4
+     }) 
+    
     }
   
   //~ Talter.setaslast(2)

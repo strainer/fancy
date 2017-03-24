@@ -9,12 +9,11 @@
 function addSpotgrav(fig,vplay) { 
   'use strict'
     
-  var jote=fig.jote, spot=fig.spot 
+  var jote=fig.jote, spot=fig.spot, dlns=fig.dlns 
      ,Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
      ,Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
      ,Drand=fig.Drand ,Hrand=fig.Hrand
      ,rndu=fig.rndu, rndh=fig.rndh
-     ,dlns=fig.dlns
      
   var epsila=Math.pow(0.5,52)
   var epsilb=Math.pow(0.5,43)
@@ -41,42 +40,41 @@ function addSpotgrav(fig,vplay) {
   } 
 
 
-  var mingdis,_throt
-  var _tfac,tripper //tripper*=tfac
+  var mingdis
   
-  function grav_spots(){  //begin recursive gravitation 
+  function grav_spots(p){  //begin recursive gravitation 
+        
+    pace=p||vplay.model_pace
+     
+    throt=vplay.max_force/abs(pace) 
     
-    _tfac=vplay.model_pace, tripper=0.5  //higher tripper is more approx
-    tripper*=_tfac
+    fig.prefit_spotmap() 
     
     //~ tell=tella=logtell=nullfunc
     logspot=0
-    mingdis=16.0, _throt=4*abs(vplay.model_pace) //10 - 100
+    mingdis=16.0
     _klev=-1;
+
     //~ spot.fchild[1]=0 //testing
     interplyspot(1)
-    //~ infollowspot(1)
     
-    //~ logtell() /// /// /// /// /// /// /// /// /// /// /// /// /// /// ///
-  }
-  
-  
-  function gnbody_spot(){  //begin recursive gravitation 
-    _klev=-1;
-    spot.fchild[1]=0 //testing
-    interplyspot(1)
-    acceltovel() 
-  }
+    logtell() 
+    fig.postfit_spotmap() 
 
+  }
+  
   
   function interplyspot(par){ //inpit
     //tella('assess','inmate spot'+par)
     var kn=_listkids(par)
     //for(var g=0;g<kn;g++) tella('assess','inmt kid'+_kcac[_klev][g])
     if(!kn){ 
-      tell('inleafed');
+      tell('inleafed')
       //tella('assess','inmt leaf'+par); 
-      intermateleaf(par); return }
+      intermateleaf(par) 
+      return 
+    }
+    
     var kids=_kcac[_klev]
     for(var i=0 ; i<kn; i++ )
     { for(var j=i+1 ;j<kn; j++ )
@@ -88,7 +86,6 @@ function addSpotgrav(fig,vplay) {
     }
     _klev-- //kid list cache
   }
-
   
   function multiply_spots(sa,sb){
     
@@ -165,7 +162,7 @@ function addSpotgrav(fig,vplay) {
     
   
   function jote_accel(cp,cq){
-
+    
     var jp=dlns[cp],jq=dlns[cq]
     _pnt_accel(
      jote.x[jp],jote.y[jp],jote.z[jp],jote.g[jp]
@@ -209,6 +206,32 @@ function addSpotgrav(fig,vplay) {
   }
           
   
+  //dumb copy from forces.js
+  
+  var pace,throt,_cpx=-1,_cpy=-1,_cpz=-1,_cqx=-1,_cqy=-1,_cqz=-1
+  
+  function _pnt_accel(px,py,pz,pg,qx,qy,qz,qg)
+  { 
+    var dx=px-qx, dy=py-qy, dz=pz-qz
+    var cf=(dx*dx + dy*dy + dz*dz)
+    var hyp=Sqrt(cf)
+    
+    //proximity limit mechanism seems resposible
+    //for difference in upscale gravity resolution... 
+    cf=vplay.gravity/cf 
+    if(cf>throt){ cf= throt*(2-(0.6*(cf-throt)+cf)/cf)  }
+    cf=cf*pace/hyp //note fa is no longer sqrt f
+    
+    if(qg){ //move p also
+      var pf= -cf*qg, qf=cf*pg
+      _cpx = dx*pf, _cpy = dy*pf, _cpz = dz*pf
+      _cqx = dx*qf, _cqy = dy*qf, _cqz = dz*qf
+    }else //move only q
+    { cf*=pg, _cqx = dx*cf, _cqy = dy*cf, _cqz = dz*cf
+      _cpx=_cpy=_cpz= -0 }
+  }
+
+  
   // - - - begin logger mess
   
   var nullfunc=function(){}
@@ -230,8 +253,9 @@ function addSpotgrav(fig,vplay) {
   }
   
   var logspot = 1 
-  var logtell = function(){
-    var lg="",sr=[]
+
+  var logtell = function(){ ////////////////////////////////////////////////////
+    var lg="",sr=[],_dsui =spot.top
     for(var p in tll){ 
       if(isFinite(tll[p])){ sr.push(p) }
     }
