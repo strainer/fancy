@@ -334,7 +334,7 @@ function createC2(){ //trappist-1 data
   Talter.setaslast(2)
   
   Talter.addspinring({
-     num:1, rad:au*0.00015, phi:inkle, pull:1.38*emass*6.67408e-8
+     num:1, rad:au*0.00021, phi:(45-90)*Math.PI/180, pull:1.38*emass*6.67408e-8
     ,radf:function(){return Drand.gspire( 0.999999998,1.0000000002  ) } 
     ,velf:function(){return Drand.gspire( -0.00000001,0.00000001 ) } 
     ,thkf:function(){return Drand.gspire( -0.00000001,0.00000001  ) }
