@@ -71,7 +71,7 @@ var vplay = {
 
 var urlpar=[]
 if(window.location.hash) {
-  var patt=/#[^\d]*(\d{1,2})?[^p]*(pau)?[^s]*(spots)?/
+  var patt=/#[^\d]*(\d{1,2})?[^ps]*(pau)?s?[^s]*(spots)?/
   urlpar=window.location.hash.match(patt)
   //~ console.log("urls",urlpar)
   if(isFinite(urlpar[1])){ vplay.world=parseInt(urlpar[1]) }
