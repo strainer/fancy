@@ -62,10 +62,12 @@ var vplay = {
     ,gravityoff:0
     ,gravity:1
     ,Gtweak:1 
+    ,gravqual:0.005
     ,velfz:0.15
     ,colorfac:0.5
     ,pradius:2
     ,printtime:function(a){ return (a).toFixed(2) }
+    ,fps:0
   }
 }
 
@@ -174,7 +176,9 @@ function refreshrender(){
 var stilltime=300
 
 function framemaster() { // master frame dispatch
-                         
+  
+  tickwatch('fps')
+  vplay.fps=(1000/(readwatch('fps')[0])) 
   requestAnimationFrame(framemaster)
   
   vplay.allframe_clock++
@@ -203,9 +207,9 @@ function framemaster() { // master frame dispatch
     { liveframe(); vplay.pausetime=0  } 
       
     refreshrender()
-
+    //~ vplay.fps=readwatch('fps')[0]
   }
-  
+
 }
 
 var done=0

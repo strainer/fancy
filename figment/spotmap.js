@@ -106,39 +106,38 @@ function addSpotmap(fig,vplay) {
   var epsila=Math.pow(0.5,52)
   var epsilb=Math.pow(0.5,43)
 
-  var maxsp=8000 //Math.pow(2,16) //~max spots ?
   var _dsui=1    //due sui, 0 is not valid 
   
-  var spot = //13*4+3*2 bytes per spot - about 3 Mb for 50k
-  {
-    deep          : 0                       //depth of plant
-   ,top           : 0
-   ,depth         : new Uint8Array(maxsp)
-   ,dln_anchor    : new Uint16Array(maxsp)
-   ,dln_span      : new Uint16Array(maxsp)
-   ,parent : new Uint16Array(maxsp)
-   ,fchild : new Uint16Array(maxsp) //defered runtime calculation
-   // first child writes this to parent when level sweeping 
+  function spotsize(maxsp){
+     spot.deep= 0 
+     spot.top= 0 
+     spot.max= maxsp
+     spot.depth         = new Uint8Array(maxsp)
+     spot.dln_anchor    = new Uint16Array(maxsp)
+     spot.dln_span      = new Uint16Array(maxsp)
+     spot.parent = new Uint16Array(maxsp)
+     spot.fchild = new Uint16Array(maxsp) //defered runtime calculation
+     // first child writes this to parent when level sweeping 
+      
+     spot.lbx = new Float64Array(maxsp)  //low bound x
+     spot.lby = new Float64Array(maxsp)
+     spot.lbz = new Float64Array(maxsp)
+     
+     spot.hbx = new Float64Array(maxsp)  //high bound x
+     spot.hby = new Float64Array(maxsp)
+     spot.hbz = new Float64Array(maxsp)
+     
+     spot.grd = new Float64Array(maxsp)  //spot diagonal
+     
+     spot.grm = new Float64Array(maxsp)  //gravity mass
+     spot.grx = new Float64Array(maxsp)  //center gravity x
+     spot.gry = new Float64Array(maxsp)
+     spot.grz = new Float64Array(maxsp)
+     
+     spot.calcx = new Float64Array(maxsp) //spot calculation registers
+     spot.calcy = new Float64Array(maxsp)
+     spot.calcz = new Float64Array(maxsp)
     
-   ,lbx : new Float64Array(maxsp)  //low bound x
-   ,lby : new Float64Array(maxsp)
-   ,lbz : new Float64Array(maxsp)
-  
-   ,hbx : new Float64Array(maxsp)  //high bound x
-   ,hby : new Float64Array(maxsp)
-   ,hbz : new Float64Array(maxsp)
-   
-   ,grd : new Float64Array(maxsp)  //spot diagonal
-  
-   ,grm : new Float64Array(maxsp)  //gravity mass
-   ,grx : new Float64Array(maxsp)  //center gravity x
-   ,gry : new Float64Array(maxsp)
-   ,grz : new Float64Array(maxsp)
-  
-   ,calcx : new Float64Array(maxsp) //spot calculation registers
-   ,calcy : new Float64Array(maxsp)
-   ,calcz : new Float64Array(maxsp)
-  
   }
 
   var cell_at_dlsi = new Uint16Array (jote.x.length) 
@@ -146,14 +145,18 @@ function addSpotmap(fig,vplay) {
   //Uint8 would fit max of 256 subvoxs but not larger 
   //and may involve a cast from addresses by voxid
   
+  var spot = {}
+  spotsize(100)
   var jcach_dlsq = new Uint16Array(jote.x.length)//contains jote who is at dsline.pos
   var dlns       = new Uint16Array(jote.x.length)//jotes in a vox delineation seq
 
   var _divn=[ -1, -1, -1 ]  //grid division vector
   var	_divm=[ -1, -1, -1 ]  //grid div measure vector
 
-  var max_subcell = 25     //max subdivision of space per iteration
-  var endsize=5            //endcell must be smaller than this population
+  //25 to 45 working best
+  var max_subcell = 30     //max subdivision of space per iteration
+  //5 to 10 working best
+  var endsize=7            //endcell must be smaller than this population
     
   ///Cell recursion detail object:Crdo notes per level*sbvox
   // caches the recursively used details of cells
@@ -178,6 +181,12 @@ function addSpotmap(fig,vplay) {
  
   function bulk_load(ej)
   { 
+    var spotfac=0.7
+    var spm=Math.floor( (jote.x.length)*spotfac )
+    if( spot.max<spm*0.9 || spot.max>spm*1.2 ){
+      spotsize(spm) 
+    }
+    
     ej=ej||jote.top
     ej=topcell(ej)
         
@@ -207,7 +216,7 @@ function addSpotmap(fig,vplay) {
     if(bcl_lv>18){ enddeep(bcl_lv, bcelli,bpop); return }
     
     var celln_trgt= floor(2+(bpop/endsize)*Drand.range(0.5,1))
-    if (celln_trgt>max_subcell) { celln_trgt=max_subcell-1; }
+    if(celln_trgt>max_subcell) { celln_trgt=max_subcell-1; }
     
     survey_cell( bcl_lv, bcelli, celln_trgt ) 
     
@@ -487,26 +496,26 @@ function addSpotmap(fig,vplay) {
     return sx?spot.dln_anchor[sx+1]:_jtlen 
   } 
 
-
-  //make first vox 1 (not 0) - seemingly done
-  var _spt_deep=0
-  
-  function measure_spots(){ //without vel for force
+  function apre_load(){
     spot.top=_dsui
-    _spt_deep=0
+    spot.deep=0
         
-    for(var sui=1;sui<_dsui;sui++){
+    for(var sui=1;sui<spot.top;sui++){
       spot.fchild[ sui ]=0
-      if(spot.depth[sui]>_spt_deep){ _spt_deep=spot.depth[sui] }
+      if(spot.depth[sui]>spot.deep){ spot.deep=spot.depth[sui] }
     }
-    spot.parent[_dsui]=0; //clean after end spot
+    spot.parent[spot.top]=0; //clean after end spot
     
-    for(var sui=1;sui<_dsui;sui++){
+    for(var sui=1;sui<spot.top;sui++){
       
       if(spot.fchild[ spot.parent[sui] ]===0){
         spot.fchild[ spot.parent[sui] ]=sui
       } //sui 0 is null
     }
+        
+  }
+  
+  function measure_spots(){ //without vel for force
     
     var lwx,hix, lwy,hiy, lwz,hiz
     var cgx,cgy,cgz,cmass_tot
@@ -515,11 +524,12 @@ function addSpotmap(fig,vplay) {
     //spotat[lv][sui] and spotnat[lv] to stop redundant sweeps
     //(sparse js created arrays) 
 
-    for(var sui=1,spd=_spt_deep; spd>-1; sui++){ /// or spd>0 ??
-      if(sui===_dsui){ sui=1;spd-- } //1 redundant test when sui=1,spd=-1
+    for(var sui=1,spd=spot.deep; spd>-1; sui++){ /// or spd>0 ??
+      
+      if(sui===spot.top){ sui=1;spd-- } //1 redundant test when sui=1,spd=-1
       
       if(spot.depth[sui]===spd){
-
+        
         cgx=-0, cgy=-0, cgz=-0, cmass_tot=-0
         
         if(spot.fchild[sui]===0) //its a leaf spot
@@ -546,13 +556,11 @@ function addSpotmap(fig,vplay) {
             cgx+=jote.x[j]*jote.g[j] //center grav tally
             cgy+=jote.y[j]*jote.g[j]
             cgz+=jote.z[j]*jote.g[j]
-            cmass_tot+=jote.g[j]
-            
+            cmass_tot+=jote.g[j] 
           }	
-        
-        }
-        else //its an internal node
-        { 
+          
+        }else{ //its an internal node
+       
           var c=spot.fchild[sui]
           lwx=spot.lbx[c],lwy=spot.lby[c],lwz=spot.lbz[c]
           hix=spot.hbx[c],hiy=spot.hby[c],hiz=spot.hbz[c]
@@ -574,12 +582,10 @@ function addSpotmap(fig,vplay) {
             cgy+=spot.gry[c]*spot.grm[c]
             cgz+=spot.grz[c]*spot.grm[c]
             cmass_tot+=spot.grm[c]
-          }
-        
+          } 
         }
-        //mass_total
-        
-        spot.grm[sui]=cmass_tot; 
+    
+        spot.grm[sui]=cmass_tot 
         if(cmass_tot)
         { cmass_tot=1/cmass_tot 
           spot.grx[sui]=cgx*cmass_tot	
@@ -594,18 +600,12 @@ function addSpotmap(fig,vplay) {
         //~ spot.gry[sui]=(lwy+hiy)/2	
         //~ spot.grz[sui]=(lwz+hiz)/2	
         
-        spot.lbx[sui]=lwx	
-        spot.lby[sui]=lwy	
-        spot.lbz[sui]=lwz	
-        
-        spot.hbx[sui]=hix	
-        spot.hby[sui]=hiy	
-        spot.hbz[sui]=hiz	
+        spot.lbx[sui]=lwx	,spot.lby[sui]=lwy	,spot.lbz[sui]=lwz	
+        spot.hbx[sui]=hix	,spot.hby[sui]=hiy	,spot.hbz[sui]=hiz	
         
         spot.grd[sui]=(hix-lwx)*(hix-lwx)+(hiy-lwy)*(hiy-lwy)+(hiz-lwz)*(hiz-lwz)	
         
         logtest(sui)
- 
       } 
     }
   }
@@ -619,7 +619,7 @@ function addSpotmap(fig,vplay) {
     //spotat[lv][sui] and spotnat[lv] to stop redundant sweeps
     //(sparse js created arrays) 
 
-    for(var sui=1,spd=_spt_deep; spd>-1; sui++){ /// or spd>0 ??
+    for(var sui=1,spd=spot.deep; spd>-1; sui++){ /// or spd>0 ??
       if(sui===_dsui){ sui=1;spd-- } //1 redundant test when sui=1,spd=-1
       
       if(spot.depth[sui]===spd){
@@ -912,8 +912,15 @@ function addSpotmap(fig,vplay) {
   var _runs=0
 
   function prefit_spotmap(){
-    if(_runs++%5===0){ bulk_load() }
+    if(_runs++%5===0){
+      startwatch('load') 
+      bulk_load()
+      apre_load()
+      stopwatch('load') 
+    }
+    startwatch('measure')
     measure_spots()
+    stopwatch('measure')
   }
 
   function postfit_spotmap(){ 

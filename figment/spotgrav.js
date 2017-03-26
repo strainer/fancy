@@ -39,30 +39,37 @@ function addSpotgrav(fig,vplay) {
     return ki
   } 
 
-
   var mingdis
   
   function grav_spots(p){  //begin recursive gravitation 
-        
+    
+    squality=1000000*(vplay.gravqual||1)*(vplay.gravqual||1)
     pace=p||vplay.model_pace
      
     throt=vplay.max_force/abs(pace) 
-    
+
+    startwatch('ALLgrav') 
     fig.prefit_spotmap() 
     
     //~ tell=tella=logtell=nullfunc
-    logspot=0
+    logspot=0 //dont dump the spotmap object
     mingdis=16.0
     _klev=-1;
 
     //~ spot.fchild[1]=0 //testing
+    startwatch('ply')
     interplyspot(1)
+    stopwatch('ply')
     
-    logtell() 
+    //logtell()
+     
     fig.postfit_spotmap() 
 
+    stopwatch('ALLgrav')
+
+    //~ cologwatch( ['ALLgrav','ply','load','measure'],5 )
+
   }
-  
   
   function interplyspot(par){ //inpit
     //tella('assess','inmate spot'+par)
@@ -87,58 +94,65 @@ function addSpotgrav(fig,vplay) {
     _klev-- //kid list cache
   }
   
+  var squality=-1
   function multiply_spots(sa,sb){
     
     //tella("assess","assessing spots "+sa+" "+sb)
     
-    var calibgrav=0.5, calibsplita=4, calibsplitb=2, calibratio=2
+    //~ var calibgrav=0.5, calibsplita=4, calibsplitb=2, calibratio=2
         
-    var foldspread=spot.grd[sa]+spot.grd[sb]
-    var foldsep   =
-      abs(spot.grx[sa]-spot.grx[sb])
-     +abs(spot.gry[sa]-spot.gry[sb])
-     +abs(spot.grz[sa]-spot.grz[sb])
-     
-    var minsep=(foldsep-foldspread)
-                   
-    if( minsep>foldspread*mingdis*(spot.grm[sa]+spot.grm[sb]) )
-    { tell('_spotspot'); 
+    var idiag=spot.grd[sa]+spot.grd[sb]+0.1
+    var tm=spot.grm[sa]+spot.grm[sb]
+    
+    if(tm===0){ 
+      //tell('matelf_spsp',leafsinspot(sa)*leafsinspot(sb))
+      return 
+    }
+    
+    var idist   =
+     (spot.grx[sa]-spot.grx[sb])*(spot.grx[sa]-spot.grx[sb])
+    +(spot.gry[sa]-spot.gry[sb])*(spot.gry[sa]-spot.gry[sb])
+    +(spot.grz[sa]-spot.grz[sb])*(spot.grz[sa]-spot.grz[sb])
+     //squality
+    if( idist>squality*idiag*tm )
+    { tell('mate_spsp')
       //tella("assess","a- pairing "+sa+"+"+sb); 
-      matespots(sa,sb);
-      tell('_apairs',leafsinspot(sa)*leafsinspot(sb))
+      matespots(sa,sb)
+      //tell('matelf_spsp',leafsinspot(sa)*leafsinspot(sb))
       return } //spot v spot 
     else 
     { //if has leaf node, or small node, or a bit far only split bigger
       var leaf=0,spt=0
       if(!spot.fchild[sa]){ leaf=sa,spt=sb }
-      if(!spot.fchild[sb]){ 
-        if(leaf){ 
+      if(!spot.fchild[sb]){ //sb is leaf
+        if(leaf){           //sa was leaf
           multimateleafs(sa,sb); 
           //tella("assess","a- leafing "+sa+" "+sb); 
-          tell('_leafleaf'); 
-          tell('_apairs'); return }
-        else leaf=sb,spt=sa }
+          tell('matelf_lflf'); 
+          return 
+        }else leaf=sb,spt=sa //sb is leaf, sa wasnt
+      }
    
-      if(leaf) //a leaf nodes
+      if(leaf) //there is a leaf
       { 
-        tell('splitone');
+        tell('split_lfsp');
         //leaf or small spot is sc
         //tella("assess","a- split leaf "+leaf)
         for(var kd=spot.fchild[spt]; kd; kd=nextkid(spt,kd) )
-        { tell('assess2'); 
-         // tella("assess","a- split with "+kd) 
+        { //tell('assess2'); 
+          // tella("assess","a- split with "+kd) 
           multiply_spots(kd,leaf) }
         //tella("assess","a- ret aft splt leaf")
         return
       }
                 
-      tell('splitboth');
+      tell('split_spsp');
       var kn=_listkids(sa),kids=_kcac[_klev]
       
       for(var kb=spot.fchild[sb]; kb; kb=nextkid(sb,kb) )
       { 
         for( var ka=0 ; ka<kn ; ka++  ) 
-        { tell('assess3'); 
+        { //tell('assess3'); 
           //tella("assess","a- split both "+kb+"&"+kids[ka]); 
           multiply_spots(kb,kids[ka]) }
       }	
@@ -256,19 +270,33 @@ function addSpotgrav(fig,vplay) {
 
   var logtell = function(){ ////////////////////////////////////////////////////
     var lg="",sr=[],_dsui =spot.top
-    for(var p in tll){ 
-      if(isFinite(tll[p])){ sr.push(p) }
+    
+    var sr=[],mr=[
+      'split_lfsp' ,'split_spsp'
+      ,'matelf_lflf','matelf_spsp'
+      ,'mate_spsp'
+    ]
+    
+    for(var p=0;p<mr.length;p++ ){ 
+      if(!tll[mr[p]]){ tll[mr[p]]=0 }
     }
+    
+    for(var p in tll){ if(isFinite(tll[p])) sr.push(p) }
+    
     sr.sort()
-    var lefs=tll['totalleafs'],lefp=(lefs*(lefs-1))*0.5
+    var lefs=leafsinspot(0)
+    ,lefp=(lefs*(lefs-1))*0.5
+    var ter=(_dsui*(_dsui-1))*0.5
+    console.log()
+    console.log("Number spots:",_dsui," spotmuls:",ter)
+    console.log("Nb leafs:",lefs," leafmuls:",lefp)
+    console.log("check lflf+spsp:",tll['matelf_lflf'],"+",tll['matelf_spsp'],"=",lefp)
 
     for(var i=0;i<sr.length;i++)
     { lg=lg+sr[i]+":"+tll[sr[i]]+" ";tll[sr[i]]=0 }
-    
-    var ter=(_dsui*(_dsui-1))*0.5
-    console.log("Telling of spots:",_dsui,"sprs:",ter,"leafs:",lefs,"lprs:",lefp)
+
     console.log(lg)
-    for(p in tll){
+    for(p in tll){ //printing telled arrays
       if(((tll[p]).length)) { console.info(p,tll[p]); tll[p]=[] }
     } 
     if(told++>tellend){ tell=logtell=nullfunc }

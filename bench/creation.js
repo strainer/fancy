@@ -50,6 +50,8 @@ function createC0(){ //solar system jpl data
    ,printtime:hourtime
    ,rendermode:1
    ,camRad:2057500000
+   ,forces:2
+   ,gravqual:0.10
   }
 
   var pld=planetdatas //file planetdat.js
@@ -355,7 +357,7 @@ function createC3(){ //1 + 4 gbody and disk
    camRad:540,
    runcycle_step: 1.5 
    ,pradius:40
-   ,forces:0
+   //~ ,forces:2
    }
 
   var nn=7
@@ -622,6 +624,7 @@ function createC5(){
   vplay.instaprops=
   { pradius:60
    ,forces:2
+   ,gravqual:0.65
   }
   
   Talter.setpos(0,0,0)
@@ -876,16 +879,16 @@ function createC8(){ //pattern
 }
 
 
-
 function createC9(){ //4 rough rings of rnd mass particles
   
   vplay.instaprops=
   { pradius:70.8
    ,runcycle_step:1.5
    ,forces:2
+   ,gravqual:0.10
   }
 
-  var nn=4
+  var nn=2
   
   Talter.setpos(0,0,0)
   Talter.setvel(0,0,0)
@@ -894,13 +897,13 @@ function createC9(){ //4 rough rings of rnd mass particles
   Talter.setgroup(0)
   Talter.setbasecol(0)
   
-  Talter.addjote(0,0,0,1)
+  Talter.addjote(0,0,0,0.95)
   //~ Talter.colorprev({r:6,g:1,b:0.5})
   
   //~ Talter.addspherea({num:200,rad:2,hot:0.9})
     
   Talter.addspinring({
-    num:(80*nn), rad:1.6, phi:0, pull:1
+    num:(80*nn), rad:1.6, phi:0, pull:0.95
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gnorm( 0.96,1.04)} 
     ,velf:function(){return Drand.gnorm(-0.05,0.05)} 
@@ -909,7 +912,7 @@ function createC9(){ //4 rough rings of rnd mass particles
   Talter.colorprev({ r:2,g:0.9,b:4.5,rfun:0,bfun:0,gfun:0 })
  
   Talter.addspinring({
-    num:(120*nn), rad:2.4, phi:0.1, pull:1
+    num:(120*nn), rad:2.4, phi:0.1, pull:0.97
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gnorm( 0.96,1.04)} 
     ,velf:function(){return Drand.gnorm(-0.09,0.09)} 
@@ -918,7 +921,7 @@ function createC9(){ //4 rough rings of rnd mass particles
   Talter.colorprev({ r:6,g:0.9,b:0.9,rfun:0,bfun:0,gfun:0 })
   
   Talter.addspinring({
-    num:(180*nn), rad:3.6, phi:0.2, pull:1
+    num:(180*nn), rad:3.6, phi:0.2, pull:0.985
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gnorm( 0.90,1.10)} 
     ,velf:function(){return Drand.gnorm(-0.05,0.05)} 
@@ -927,7 +930,7 @@ function createC9(){ //4 rough rings of rnd mass particles
   Talter.colorprev({ r:1.9,g:3.9,b:1.5,rfun:0,bfun:0,gfun:0 })
      
   Talter.addspinring({
-    num:(270*nn), rad:5.4, phi:0.5, pull:1
+    num:(270*nn), rad:5.4, phi:0.5, pull:0.98
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gnorm( 0.96,1.04)} 
     ,velf:function(){return Drand.gnorm(-0.05,0.05)} 
@@ -936,7 +939,7 @@ function createC9(){ //4 rough rings of rnd mass particles
   Talter.colorprev({ r:1.1,g:1.8,b:4.5,rfun:0,bfun:0,gfun:0 })
      
   //~ Talter.massallzeros(1,function(){return Drand.gbowl(0,0.3)})
-  Talter.massallzeros(0.0001/nn,function(){return 1})
+  Talter.massallzeros(0.0002/nn,function(){return 1})
 }
 
 

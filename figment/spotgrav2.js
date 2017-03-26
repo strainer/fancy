@@ -173,7 +173,7 @@ function addSpotgrav2(fig,vplay) {
   } 
     
   
-  fig.grav_spots = grav_spots
+  fig.grav_spots2 = grav_spots
   
   return fig
 

@@ -79,7 +79,7 @@ function setdash(cdash,vplay){
     seat:cdash
    ,style:{
      position:'absolute'
-    ,top:mez*21.5+'px',left:mez*brd+"px",width:fez*18+"px"
+    ,top:mez*23.0+'px',left:mez*brd+"px",width:fez*18+"px"
     }
     ,group:'dtop'	
    })
@@ -195,6 +195,10 @@ function setdash(cdash,vplay){
      ,type:'runav'
      ,legend:'movsprfrm:'
      ,varkey:'movperframe'
+    },{
+      seat:dsreadings
+     ,legend:'fps:'
+     ,varkey:'fps'
     }
   ]
 
