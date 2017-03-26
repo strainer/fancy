@@ -39,15 +39,16 @@ function addSpotgrav(fig,vplay) {
     return ki
   } 
 
-
   var mingdis
   
   function grav_spots(p){  //begin recursive gravitation 
-        
+    
+    squality=1000000*(vplay.gravqual||1)*(vplay.gravqual||1)
     pace=p||vplay.model_pace
      
     throt=vplay.max_force/abs(pace) 
-    
+
+    startwatch('ALLgrav') 
     fig.prefit_spotmap() 
     
     //~ tell=tella=logtell=nullfunc
@@ -56,14 +57,19 @@ function addSpotgrav(fig,vplay) {
     _klev=-1;
 
     //~ spot.fchild[1]=0 //testing
+    startwatch('ply')
     interplyspot(1)
+    stopwatch('ply')
     
-    logtell()
+    //logtell()
      
     fig.postfit_spotmap() 
 
+    stopwatch('ALLgrav')
+
+    //~ cologwatch( ['ALLgrav','ply','load','measure'],5 )
+
   }
-  
   
   function interplyspot(par){ //inpit
     //tella('assess','inmate spot'+par)
@@ -88,25 +94,31 @@ function addSpotgrav(fig,vplay) {
     _klev-- //kid list cache
   }
   
+  var squality=-1
   function multiply_spots(sa,sb){
     
     //tella("assess","assessing spots "+sa+" "+sb)
     
-    var calibgrav=0.5, calibsplita=4, calibsplitb=2, calibratio=2
+    //~ var calibgrav=0.5, calibsplita=4, calibsplitb=2, calibratio=2
         
-    var foldspread=spot.grd[sa]+spot.grd[sb]
-    var foldsep   =
-      abs(spot.grx[sa]-spot.grx[sb])
-     +abs(spot.gry[sa]-spot.gry[sb])
-     +abs(spot.grz[sa]-spot.grz[sb])
-     
-    var minsep=(foldsep-foldspread)
-                   
-    if( minsep>foldspread*mingdis*(spot.grm[sa]+spot.grm[sb]) )
-    { tell('mate_spsp'); 
+    var idiag=spot.grd[sa]+spot.grd[sb]+0.1
+    var tm=spot.grm[sa]+spot.grm[sb]
+    
+    if(tm===0){ 
+      //tell('matelf_spsp',leafsinspot(sa)*leafsinspot(sb))
+      return 
+    }
+    
+    var idist   =
+     (spot.grx[sa]-spot.grx[sb])*(spot.grx[sa]-spot.grx[sb])
+    +(spot.gry[sa]-spot.gry[sb])*(spot.gry[sa]-spot.gry[sb])
+    +(spot.grz[sa]-spot.grz[sb])*(spot.grz[sa]-spot.grz[sb])
+     //squality
+    if( idist>squality*idiag*tm )
+    { tell('mate_spsp')
       //tella("assess","a- pairing "+sa+"+"+sb); 
-      matespots(sa,sb);
-      tell('matelf_spsp',leafsinspot(sa)*leafsinspot(sb))
+      matespots(sa,sb)
+      //tell('matelf_spsp',leafsinspot(sa)*leafsinspot(sb))
       return } //spot v spot 
     else 
     { //if has leaf node, or small node, or a bit far only split bigger
@@ -269,15 +281,11 @@ function addSpotgrav(fig,vplay) {
       if(!tll[mr[p]]){ tll[mr[p]]=0 }
     }
     
-    for(var p in tll){ 
-      if(isFinite(tll[p])){ sr.push(p) }
-    }
+    for(var p in tll){ if(isFinite(tll[p])) sr.push(p) }
     
     sr.sort()
     var lefs=leafsinspot(0)
     ,lefp=(lefs*(lefs-1))*0.5
-
-    
     var ter=(_dsui*(_dsui-1))*0.5
     console.log()
     console.log("Number spots:",_dsui," spotmuls:",ter)
