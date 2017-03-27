@@ -2,7 +2,7 @@
 
 `times = ( +/-Sqrt( (d*d-P感)*V慎 + V感*V感 ) -V感 ) / V慎`
 
-Thanks go to Mr. Joshua de Bellis who once worked this equation out for me - as a stranger in a library, on being presented with my tricky notes. He showed me the trick is to think about vectors. The solution equation is closely related to 'the raycasting formula' that is commonly used in raycasting and collision detection programming, only it is more concise than commonly found.
+Thanks to Joshua de Bellis who worked this equation out for me after (as a stranger in a library) i petitioned him with my tricky notes! He showed me the trick was to think about Vectors. His solution equation was closely related to 'the raycasting formula' that is commonly used in raycasting and in collision detection programming, only it is more concise than commonly found.
 
 Im very far from fluency in the magic realm of vectors but here are some thoughts on the formula. 
  
@@ -51,7 +51,9 @@ distance of proximas from the minima?
  Sqrt( (d*d-P感)*V慎 + V感*V感 )
  
  
- 
+
+//draft copy >>>>>>>>
+
 
   times = ( +/-Sqrt( (d*d-P感)*V慎 + V感*V感 ) -V感 ) / V慎
   
