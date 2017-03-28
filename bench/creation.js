@@ -1029,6 +1029,73 @@ function createC10(){ //47 Tuc X9
   //~ Talter.setaslast(2)
 }
 
+function createC11(){ //cloud
+  
+  vplay.instaprops=
+  {  forces:0
+    ,max_force:  2
+    ,pradius:60.0
+    ,firstfocus:-1
+    ,runcycle_step : 2.5
+    ,camRad:600
+  }
+
+  var nh=15
+  var sp=2
+  
+  Talter.setpos(0,0,0)
+  Talter.setvel(0,0,0)
+  Talter.setmass(0)
+  Talter.setseam(1)
+  Talter.setgroup(0)
+  Talter.setbasecol(0)
+  
+  
+  Talter.addspinball({
+    num:nh*25, rad:spc*3, phi:0, pull:0
+    //~ ,radf:0, crvf:0, velf:0
+    ,radf:function(){ return Drand.range( 0.0,1.0) } 
+    ,velf:function(){ return Drand.gnorm( 0.0,0.0) } 
+    ,thkf:function(){ return Drand.gnorm( 0.0,0.0) } 
+  }) 
+ 
+  //Talter.massuncolored(0.0)
+ 
+  Talter.massuncolored(
+    function(){ return Drand.gteat( 0.015,0.025 ) }
+  ) 
+  
+  Talter.colorprev({ r:4.5,g:1.1,b:0.1,
+    rfun:function(x){return Drand.gteat(0.3,1.25)*x}
+   ,bfun:function(x){return Drand.gteat(0.3,1.25)*x}
+   ,gfun:function(x){return Drand.gteat(0.3,2.25)*x} 
+   })
+
+  Talter.addspinball({
+    num:nh*4, rad:spc*7, phi:0, pull:pl*10
+    //~ ,radf:0, crvf:0, velf:0
+    ,radf:function(){ return Drand.gnorm( 0.6,1.5)   } 
+    ,velf:function(){ return Drand.gnorm( 0.9,1.1) } 
+    ,thkf:function(){ return Drand.gnorm( 0.9,1.1) } 
+  })
+    
+  //Talter.massuncolored(0.0)
+ 
+  Talter.massuncolored(
+    function(){ return Drand.gteat( 0.025,0.035 ) }
+  ) 
+  Talter.chargeuncolored(
+    function(){ return Drand.gteat( -0.1,-0.2 ) }
+  )
+  
+  Talter.colorprev({ r:0.1,g:2.2,b:4.9
+   ,rfun:function(x){return Drand.gteat(0.3,1.25)*x}
+   ,bfun:function(x){return Drand.gteat(0.3,1.25)*x}
+   ,gfun:function(x){return Drand.gteat(0.3,1.25)*x} 
+  })
+      
+}
+
 
 
 
