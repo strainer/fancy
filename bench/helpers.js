@@ -107,3 +107,5 @@ function cologwatch(wa,gap){
   }
   //~ console.log(w_starts)
 }
+
+conlog=console.log.bind( console )
