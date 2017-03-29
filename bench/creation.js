@@ -20,6 +20,7 @@ if(vplay.world==7){ createC7() }
 if(vplay.world==8){ createC8() }
 if(vplay.world==9){ createC9() }
 if(vplay.world==10){ createC10() }
+if(vplay.world==11){ createC11() }
 
 Talter.settop()
 
@@ -357,7 +358,7 @@ function createC3(){ //1 + 4 gbody and disk
    camRad:540,
    runcycle_step: 1.5 
    ,pradius:40
-   ,forces:2
+   //~ ,forces:2
    }
 
   var nn=7
@@ -1027,6 +1028,49 @@ function createC10(){ //47 Tuc X9
     }
   
   //~ Talter.setaslast(2)
+}
+
+function createC11(){ //cloud
+  
+  vplay.instaprops=
+  {  forces:2
+    ,max_force:  2
+    ,pradius:40.0
+    ,firstfocus:-1
+    ,runcycle_step : 1.5
+    ,camRad:600
+  }
+
+  var nh=2 ,spc=2
+  
+  //~ Talter.setpos(0,0,0)
+  //~ Talter.setvel(0,0,0)
+  //~ Talter.setmass(0)
+  //~ Talter.setseam(1)
+  //~ Talter.setgroup(0)
+  //~ Talter.setbasecol(0)
+  
+  Talter.addspinball({
+    num:50, rad:spc*5, phi:0, pull:0
+    //~ ,radf:0, crvf:0, velf:0
+    ,radf:function(){ return Drand.gteat( 0.0,1.0) } 
+    ,velf:function(){ return Drand.gnorm( 0.0,0.0) } 
+    ,thkf:function(){ return Drand.gnorm( 0.0,0.0) } 
+  }) 
+ 
+  //Talter.massuncolored(0.0)
+ 
+  Talter.masschargcol_prev({ //{ ar:,ag:,ab:,mb:,cb:,mfun:,cfun:,m:,c: }
+    
+    ar:0.2 ,ag:0.2 ,ab:0.2
+   ,mr:2.2 ,mg:2.2 ,mb:2.2
+   ,cr:0.4 ,cg:0.4 ,cb:0.4
+    
+   ,mfun:function(){ return Drand.gteat(0.1,1) } ,m:0.0001
+   ,cfun:function(){ return Drand.gteat(0.1,1) } ,c:0 
+  })
+   
+  //~ addconstellations(100,100) 
 }
 
 

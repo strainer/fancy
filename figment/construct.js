@@ -327,6 +327,37 @@ function addConstruct(fig) {
     
     jote.top=ins.bfrclr=ins.due
   }
+  
+  function masschargcol_prev(cl) //{ ar:,ag:,ab:,mb:,cb:,mfun:,cfun:,m:,c: }
+  {
+    var ar,ag,ab,mr,mg,mb,cr,cg,cb,mfun,cfun,mss,chs
+    
+    if(!cl){ /*blah*/ }
+    else{
+
+      ar=cl.ar, ag=cl.ag, ab=cl.ab //base color 
+      mr=cl.mr, mg=cl.mg, mb=cl.mb //mass   color weightings 
+      cr=cl.cr, cg=cl.cg, cb=cl.cb //charge color weightings
+
+      mfun=getprop(cl,'mfun',fndef,fnbyp) //mass variation
+      cfun=getprop(cl,'cfun',fndef,fnbyp) //charge variation
+      mss=cl.m ,chs=cl.c                   //mass and charge scale
+    }
+    
+    for(var j=ins.bfrclr,i=j*3;j<ins.due;j++)
+    {
+      var chf=cfun(),msf=mfun()
+      var cmr=mr*msf,cmg=mg*msf,cmb=mb*msf
+      var ccr=cr*chf,ccg=cg*chf,ccb=cb*chf
+      
+      jote.g[j]=msf*mss ,jote.c[j]=chf*chs
+      jote.bcolor[i++]= ar + cmr + ccr
+      jote.bcolor[i++]= ag + cmg + ccg
+      jote.bcolor[i++]= ab + cmb + ccb
+    }
+    
+    jote.top=ins.bfrclr=ins.due
+  }
 
 
   function proplast(p) //{g: ,grp:, knd:, gfun:}
@@ -465,6 +496,7 @@ function addConstruct(fig) {
   fig.tocarte           = tocarte 
   fig.massallzeros      = massallzeros 
   fig.massuncolored     = massuncolored 
+  fig.masschargcol_prev = masschargcol_prev 
   fig.chargeuncolored   = chargeuncolored 
   fig.rndchargeall      = rndchargeall 
   fig.jsetlast          = jsetlast 
