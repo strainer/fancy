@@ -108,7 +108,7 @@ function addSpotmap(fig,vplay) {
 
   var _dsui=1    //due sui, 0 is not valid 
   
-  function spotsize(maxsp){
+  function setspotsize(maxsp){
      spot.deep= 0 
      spot.top= 0 
      spot.max= maxsp
@@ -140,13 +140,14 @@ function addSpotmap(fig,vplay) {
     
   }
 
+  var spot = {}
+  setspotsize(100)
+
   var cell_at_dlsi = new Uint16Array (jote.x.length) 
   //contains dvoxs of jts in dsline section
   //Uint8 would fit max of 256 subvoxs but not larger 
   //and may involve a cast from addresses by voxid
   
-  var spot = {}
-  spotsize(100)
   var jcach_dlsq = new Uint16Array(jote.x.length)//contains jote who is at dsline.pos
   var dlns       = new Uint16Array(jote.x.length)//jotes in a vox delineation seq
 
@@ -155,8 +156,10 @@ function addSpotmap(fig,vplay) {
 
   //25 to 45 working best
   var max_subcell = 30     //max subdivision of space per iteration
+  max_subcell = 6     //max subdivision of space per iteration
   //5 to 10 working best
   var endsize=7            //endcell must be smaller than this population
+  endsize=3            //endcell must be smaller than this population
     
   ///Cell recursion detail object:Crdo notes per level*sbvox
   // caches the recursively used details of cells
@@ -184,7 +187,7 @@ function addSpotmap(fig,vplay) {
     var spotfac=0.7
     var spm=Math.floor( (jote.x.length)*spotfac )
     if( spot.max<spm*0.9 || spot.max>spm*1.2 ){
-      spotsize(spm) 
+      setspotsize(spm) 
     }
     
     ej=ej||jote.top
@@ -502,7 +505,9 @@ function addSpotmap(fig,vplay) {
         
     for(var sui=1;sui<spot.top;sui++){
       spot.fchild[ sui ]=0
-      if(spot.depth[sui]>spot.deep){ spot.deep=spot.depth[sui] }
+      if(spot.depth[sui]>spot.deep){ 
+        spot.deep=spot.depth[sui] 
+      }
     }
     spot.parent[spot.top]=0; //clean after end spot
     
@@ -605,9 +610,43 @@ function addSpotmap(fig,vplay) {
         
         spot.grd[sui]=(hix-lwx)*(hix-lwx)+(hiy-lwy)*(hiy-lwy)+(hiz-lwz)*(hiz-lwz)	
         
-        logtest(sui)
+        //~ logtest(sui)
       } 
     }
+  }
+
+  var ffstop=0
+  function log_spotsui(){ //log spotmaps less than 62 sui, 80 jotes
+    
+    if(ffstop++!=0) return
+    
+    var fex="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ***************************************************************".split("")
+    
+    var logline=[],logmat=[]
+    
+    for(var j=0;j<jote.top;j++){ logline[j]=" "} //empty line
+    
+    for(var sui=1,spd=spot.deep; spd>-1; sui++){ /// or spd>0 ??
+      
+      if(sui===spot.top){ 
+     
+        logmat.push(logline.join(""))
+        sui=1;spd--
+        for(var j=0;j<jote.top;j++){ logline[j]=" " } //clear line
+      } 
+      
+      if(spot.depth[sui]===spd){
+        for( var 
+              j=spot.dln_anchor[sui]
+             ,e=j+spot.dln_span[sui]
+          ;j<e ;j++
+        ){
+          logline[j]=fex[sui]
+        }
+      }
+    }
+    console.log("spotstuff:")
+    for(var j=logmat.length-1;j>=0;--j){ console.log(logmat[j]) }
   }
 
   function bimeasure_spots(tms){ //with vel for collision
@@ -686,16 +725,11 @@ function addSpotmap(fig,vplay) {
   { var xsec,ysec,zsec
     
     //this works
-    var R=Isec/dvn[0] , U=Math.floor(R)	
-    ysec=U%dvn[1]
-    xsec=Isec-U*dvn[0]
-    zsec=(U-ysec)/dvn[1]
+    var zz,yy=Math.floor(Isec/dvn[0])	
+    zsec=Math.floor(yy/dvn[1])
+    ysec=yy-(zz=zsec*dvn[1])
+    xsec=Isec-(zz+ysec)*dvn[0]
 
-    //this works too
-    //~ zsec=Math.floor(Isec/(dvn[0]*dvn[1]))
-    //~ Isec-=zsec*dvn[0]*dvn[1]
-    //~ ysec=Math.floor(Isec/dvn[0])
-    //~ xsec=Isec-ysec*dvn[0]
     //return [low[0]+xsec*dvm[0],low[1]+ysec*dvm[1],low[2]+zsec*dvm[2]]
     
     _lw3[0]= low[0] + xsec*dvm[0] 
@@ -916,6 +950,7 @@ function addSpotmap(fig,vplay) {
       startwatch('load') 
       bulk_load()
       apre_load()
+      //~ log_spotsui()
       stopwatch('load') 
     }
     startwatch('measure')
