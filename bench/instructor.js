@@ -19,7 +19,7 @@ var vplay = {
    ,8:{name:"Pattern",desc:""}
    ,9:{name:"4MassRing",desc:""}
    ,10:{name:"47 Tuc X9",desc:""}
-   ,11:{name:"Cloud",desc:""}
+   ,11:{name:"Point Cloud",desc:""}
   }
     
   ,seed:0 ,world:11, seespots:-1
