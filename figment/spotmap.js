@@ -9,93 +9,88 @@
 function addSpotmap(fig,vplay) { 
   'use strict'
   
-  //debug logging stuff
+  // // // debug logging functions // // //
   var nullfunc=function(){}
-  var conlog=console.log.bind( console )
-  var biglog=nullfunc,biglogcnt=0
   
-  var tll={},told=0,tellend=5
+  var metrec={} ,metlogged=0 ,metlogstp=50
   
-  var tell = function(p,v){
-    if(p in tll){tll[p]+=v||1}
-    else{tll[p]=1}
+  var metlistspots = 0 //a dumb raw listing of spots,parent,child 
+  
+  var metinc = function(p,v){
+    if(p in metrec){metrec[p]+=v||1}
+    else{metrec[p]=1}
   }
 
-  var tella = function(p,v){
+  var metary = function(p,v){
     if(p==="assess"){v=levstr()+v}
-    if(p in tll){(tll[p]).push(v)}
-    else{tll[p]=[v]}
+    if(p in metrec){(metrec[p]).push(v)}
+    else{metrec[p]=[v]}
   }
-  
-  var logspot = 1 
-  var logtell = function(){
-    var lg="",sr=[]
-    for(var p in tll){ 
-      if(isFinite(tll[p])){ sr.push(p) }
-    }
-    sr.sort()
-    var lefs=tll['totalleafs'],lefp=(lefs*(lefs-1))*0.5
 
-    for(var i=0;i<sr.length;i++)
-    { lg=lg+sr[i]+":"+tll[sr[i]]+" ";tll[sr[i]]=0 }
+  var logmeters = function(){
     
-    var ter=(_dsui*(_dsui-1))*0.5
-    console.log("Telling of spots:",_dsui,"sprs:",ter,"leafs:",lefs,"lprs:",lefp)
-    console.log(lg)
-    for(p in tll){
-      if(((tll[p]).length)) { console.info(p,tll[p]); tll[p]=[] }
+    var mrecs="",numkeys=[]
+    for(var p in metrec){ 
+      if(isFinite(metrec[p])){ numkeys.push(p) }
+    }
+    numkeys.sort()
+    var lefs=metrec['totalleafs'],lefp=(lefs*(lefs-1))*0.5
+
+    for(var i=0;i<numkeys.length;i++)
+    { mrecs=mrecs+numkeys[i]+":"+metrec[numkeys[i]]+" ";metrec[numkeys[i]]=0 }
+    
+    var tria=(_dsui*(_dsui-1))*0.5
+    console.log("Telling of spots:",_dsui,"sppairs:",tria,"leafs:",lefs,"lfpairs:",lefp)
+    console.log(mrecs)
+    for(p in metrec){
+      if(((metrec[p]).length)) { console.info(p,metrec[p]); metrec[p]=[] }
     } 
-    if(told++>tellend){ tell=logtell=nullfunc }
-    
+        
     //~ console.log("heavy spots",list_kin(spot0))
-    if(logspot)for(var s=0;s<_dsui;s++){
+    if(metlistspots)for(var s=0;s<_dsui;s++){
       console.log(
-       "ui:",s,"lv:",spot.depth[s],"pa:",spot.parent[s]
-       ,"ch:",spot.fchild[s],"gm:",spot.grm[s],spot.calcx[s]
+       "ui:",s,"lvl:",spot.depth[s],"par:",spot.parent[s]
+       ,"chld:",spot.fchild[s],"g:",spot.grm[s]
       ) 
     }
-  }
-  
-  //~ tell=tella=logtell=nullfunc
- 
- 
-  /////////////////
     
-  function logtest(sui){
+    if(metlogged++>metlogstp){ metinc=logmeters=nullfunc }
+  }
+   
+  function dmcheckspot(sui){
       
-    //~ var te=dln_end(sui)
     var te=spot.dln_anchor[sui]+spot.dln_span[sui]
 
     if(te!==dln_end(sui))
-    { biglog("wrong end! sui,alg,store",sui,te,dln_end(sui)) 
+    { conlog("wrong end! sui,alg,store",sui,te,dln_end(sui)) 
       var fchil=spot.fchild[sui]
-      biglog("ds",_dsui,"fchild:",fchil,"sui:",sui
+      conlog("ds",_dsui,"fchild:",fchil,"sui:",sui
        ,"fam",list_kin(spot.dln_anchor[sui],te)) 
-      biglog("parent n,n+1:",spot.parent[sui],spot.parent[sui])
+      conlog("parent n,n+1:",spot.parent[sui],spot.parent[sui])
     }
 
     for( var ts=spot.dln_anchor[sui];ts<te;ts++)
     {
       var j= dlns[ts],p=0
-      if(jote.x[j]< spot.lbx[sui]) { p=1;biglog("low x",sui,te-ts,spot.dln_span[sui])}
-      if(jote.y[j]< spot.lby[sui]) { p=1;biglog("low y",sui,te-ts,spot.dln_span[sui])}
-      if(jote.z[j]< spot.lbz[sui]) { p=1;biglog("low z",sui,te-ts,spot.dln_span[sui])}
-      if(jote.x[j]> spot.hbx[sui]) { p=1;biglog("hig x",sui,te-ts,spot.dln_span[sui])}
-      if(jote.y[j]> spot.hby[sui]) { p=1;biglog("hig y",sui,te-ts,spot.dln_span[sui])}
-      if(jote.z[j]> spot.hbz[sui]) { p=1;biglog("hig z",sui,te-ts,spot.dln_span[sui])}
+      if(jote.x[j]< spot.lbx[sui]) { p=1;conlog("low x",sui,te-ts,spot.dln_span[sui])}
+      if(jote.y[j]< spot.lby[sui]) { p=1;conlog("low y",sui,te-ts,spot.dln_span[sui])}
+      if(jote.z[j]< spot.lbz[sui]) { p=1;conlog("low z",sui,te-ts,spot.dln_span[sui])}
+      if(jote.x[j]> spot.hbx[sui]) { p=1;conlog("hig x",sui,te-ts,spot.dln_span[sui])}
+      if(jote.y[j]> spot.hby[sui]) { p=1;conlog("hig y",sui,te-ts,spot.dln_span[sui])}
+      if(jote.z[j]> spot.hbz[sui]) { p=1;conlog("hig z",sui,te-ts,spot.dln_span[sui])}
       
       if(p){
         var fchil=spot.fchild[sui]
-        biglog("ds",_dsui,"fchild:",fchil,"sui:",sui,"dlni",ts,"fam",list_kin(ts))
-        
-        var nx=fchil
-        //~ while(nx){ 
-        //~ }
+        conlog(
+         "problemo ds",_dsui,"fchild:",fchil,"sui:",sui,"dlni",ts
+        )
+        conlog("family",list_kin(ts) )
       }
     }
   }
+  //~ metinc=metary=logmeters=nullfunc
  
- ///////////////////////////
+// // // // // // // // // // // // // // // // // // // // // //
  
   var jote=fig.jote 
      ,Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
@@ -108,7 +103,7 @@ function addSpotmap(fig,vplay) {
 
   var _dsui=1    //due sui, 0 is not valid 
   
-  function spotsize(maxsp){
+  function setspotmax(maxsp){
      spot.deep= 0 
      spot.top= 0 
      spot.max= maxsp
@@ -140,13 +135,14 @@ function addSpotmap(fig,vplay) {
     
   }
 
+  var spot = {}
+  setspotmax(100)
+
   var cell_at_dlsi = new Uint16Array (jote.x.length) 
   //contains dvoxs of jts in dsline section
   //Uint8 would fit max of 256 subvoxs but not larger 
   //and may involve a cast from addresses by voxid
   
-  var spot = {}
-  spotsize(100)
   var jcach_dlsq = new Uint16Array(jote.x.length)//contains jote who is at dsline.pos
   var dlns       = new Uint16Array(jote.x.length)//jotes in a vox delineation seq
 
@@ -158,6 +154,9 @@ function addSpotmap(fig,vplay) {
   //5 to 10 working best
   var endsize=7            //endcell must be smaller than this population
     
+  // max_subcell=30,endsize=7 performing best 
+  // making approx 35% many spots as jotes
+  
   ///Cell recursion detail object:Crdo notes per level*sbvox
   // caches the recursively used details of cells
   // approx maxlevel * celln in bulk ~= 256*10 2500
@@ -184,7 +183,7 @@ function addSpotmap(fig,vplay) {
     var spotfac=0.7
     var spm=Math.floor( (jote.x.length)*spotfac )
     if( spot.max<spm*0.9 || spot.max>spm*1.2 ){
-      spotsize(spm) 
+      setspotmax(spm) 
     }
     
     ej=ej||jote.top
@@ -195,7 +194,6 @@ function addSpotmap(fig,vplay) {
     else
     { digest_cell( 0, 0 )	}  // (lvlnum,cellnum)
     
-    //~ logtell()
   }
   
   //surveys vox then loops through all subvoxs, calculating their jtpopuls
@@ -211,7 +209,7 @@ function addSpotmap(fig,vplay) {
     // 
     var bpop=curdet[bcl_lv].cellanchor[bcelli+1]-curdet[bcl_lv].cellanchor[bcelli]
     
-    //biglog("bcl_lv",bcl_lv,"i",bcelli,"cellsize",bpop)
+    //conlog("bcl_lv",bcl_lv,"i",bcelli,"cellsize",bpop)
     
     if(bcl_lv>18){ enddeep(bcl_lv, bcelli,bpop); return }
     
@@ -222,12 +220,12 @@ function addSpotmap(fig,vplay) {
     
     var lv=bcl_lv+1
     
+    //~ var cdim=[0,0,0], dim=sorti012(curdet[lv].divn , _dcllr) 
+    //fewer sparse leafs might be made, by snaking coord here but is complex
+    //so questionable to spend time on... doh cells have to be sorted snaked too. 
+           
     for(var ci=0; ci<curdet[lv].cellqty; ci++) //loop through fresh celln 
-    {
-      //~ while(curdet[lv].cellanchor[ci] === (ci<curdet[lv].cellqty)?curdet[lv].cellanchor[ci=ci+1]:-2){}
-      //~ if(ci>curdet[lv].cellqty){ continue }	
-      //~ var cpop=curdet[lv].cellanchor[ci] - curdet[lv].cellanchor[--ci] //popl of ci
-
+    { 
       var cpop=curdet[lv].cellanchor[ci+1] - curdet[lv].cellanchor[ci] //popl of ci
       if(cpop==0){ continue }	
       
@@ -243,10 +241,10 @@ function addSpotmap(fig,vplay) {
         ) { 
           endcell( curdet[lv].cellanchor[ci], curdet[lv].cellanchor[ci+2],lv )
           ci++ 
-          tell.dbl_end+=2
+          metinc.dbl_end+=2
         } else { 
           endcell( curdet[lv].cellanchor[ci], curdet[lv].cellanchor[ci+1],lv )
-          tell.sngl_end++ 
+          metinc.sngl_end++ 
         }
       }
     }
@@ -254,7 +252,7 @@ function addSpotmap(fig,vplay) {
   }
   
   function enddeep(bcl_lv, bcelli,bpop){
-    tell("cellsoverdeep")
+    metinc("cellsoverdeep")
     endcell( 
       curdet[bcl_lv].cellanchor[bcelli]
      ,curdet[bcl_lv].cellanchor[bcelli+1] 
@@ -270,8 +268,8 @@ function addSpotmap(fig,vplay) {
       var j=dlns[i]
       q.push(","+jote.x[j]+" "+jote.y[j]+" "+jote.z[j]+" ") 
     } 
-    tella('odeepjts',q)
-    tella('odeepdets',curdet[bcl_lv])	
+    metary('odeepjts',q)
+    metary('odeepdets',curdet[bcl_lv])	
   }
 
   function topcell(ej)
@@ -310,9 +308,8 @@ function addSpotmap(fig,vplay) {
       else if(jote.z[i]>hiz) { hiz=jote.z[i] }
       
       //~ if(!(isFinite(jote.z[I])&&isFinite(jote.z[I-1])&&isFinite(jote.z[I-2]))){
-          //~ biglog("ziigled! ")
-          //~ biglog(Math.floor(I/3),jote.z[I],jote.z[I-1],jote.z[I-2])
-          //~ debugger
+          //~ conlog("ziigled! ")
+          //~ conlog(Math.floor(I/3),jote.z[I],jote.z[I-1],jote.z[I-2])
       //~ }
     }
     
@@ -371,7 +368,7 @@ function addSpotmap(fig,vplay) {
     //configure loc_to_subcell function with curdets
     note_loctosubs()
      
-    if(celln>max_subcell) { tell.gp_sz_err++ }
+    if(celln>max_subcell) { metinc.gp_sz_err++ }
        
     //reset all potential cellppls 
     for(var i=0; i<=celln; i++) { celfill[i]=0; cellppl[i]=0 }
@@ -384,7 +381,7 @@ function addSpotmap(fig,vplay) {
         jote.x[dlns[uri]], jote.y[dlns[uri]], jote.z[dlns[uri]]
       ))//%celln //seems unnecessary, Math.abs(cel)%celln or (cel+celln*celln)%celln
       
-      if(!(cel>=0&&cel<=celln)) { tella("celleryman", {'cel':cel,x:jote.x[dlns[uri]]
+      if(!(cel>=0&&cel<=celln)) { metary("celleryman", {'cel':cel,x:jote.x[dlns[uri]]
           ,y:jote.y[dlns[uri]], z:jote.z[dlns[uri]],low:_lw3,hi:_hi3} ) }
     
       jcach_dlsq[uri]= dlns[uri] //cache the section of dlns
@@ -412,7 +409,7 @@ function addSpotmap(fig,vplay) {
       &&  abs(_lw3[2]-_hi3[2])<epsilb )
       { //a singularity hehe 
         //split..  set divn and m too..
-        tell('cellsingularity')
+        metinc('cellsingularity')
         celln=cellnb
         _divm[0]=_divm[1]=_divm[2]= 0
         _divn[0]=celln, _divn[1]=_divn[2]=1 
@@ -423,7 +420,7 @@ function addSpotmap(fig,vplay) {
           cellppl[cel]++
         }
       }else{
-        //~ tell('cellshrink')
+        //~ metinc('cellshrink')
         celln=note_bestgrid(cellnb) //sets _divn and _divm
         note_loctosubs()
         //celln=_divn[0]*_divn[1]*_divn[2]
@@ -432,7 +429,7 @@ function addSpotmap(fig,vplay) {
             jote.x[dlns[uri]], jote.y[dlns[uri]], jote.z[dlns[uri]]
           ))//%celln //seems unnecessary 
           if(cel<0||cel>=celln) { 
-            tella("cellerymum", {'cel':cel,x:jote.x[dlns[uri]], 
+            metary("cellerymum", {'cel':cel,x:jote.x[dlns[uri]], 
               y:jote.y[dlns[uri]], z:jote.z[dlns[uri]],low:_lw3,hi:_hi3} ) }
           cell_at_dlsi[uri]= cel  //the dwnsector of the jote in the line
           cellppl[cel]++          //population of cel
@@ -454,7 +451,7 @@ function addSpotmap(fig,vplay) {
     
     curdet[clv].cellqty=celln
     
-    if(celln!==_divn[0]*_divn[1]*_divn[2]){ tella("nansspotted",{clevel:clv,det:curdet[clv]}) }
+    if(celln!==_divn[0]*_divn[1]*_divn[2]){ metary("nansspotted",{clevel:clv,det:curdet[clv]}) }
     // each of st to ov in dlns, 
     // sector is noted in cell_at_dlsi, 
     // tacki is note in jcach_dlsq
@@ -502,7 +499,9 @@ function addSpotmap(fig,vplay) {
         
     for(var sui=1;sui<spot.top;sui++){
       spot.fchild[ sui ]=0
-      if(spot.depth[sui]>spot.deep){ spot.deep=spot.depth[sui] }
+      if(spot.depth[sui]>spot.deep){ 
+        spot.deep=spot.depth[sui] 
+      }
     }
     spot.parent[spot.top]=0; //clean after end spot
     
@@ -533,7 +532,7 @@ function addSpotmap(fig,vplay) {
         cgx=-0, cgy=-0, cgz=-0, cmass_tot=-0
         
         if(spot.fchild[sui]===0) //its a leaf spot
-        { tell('totalleafs');
+        { metinc('totalleafs');
           var ja=spot.dln_anchor[sui], jb=ja+spot.dln_span[sui]
           
           //testing if leaf spots need end marker
@@ -605,9 +604,44 @@ function addSpotmap(fig,vplay) {
         
         spot.grd[sui]=(hix-lwx)*(hix-lwx)+(hiy-lwy)*(hiy-lwy)+(hiz-lwz)*(hiz-lwz)	
         
-        logtest(sui)
+        //~ dmcheckspot(sui)
       } 
     }
+  }
+
+  var ffstop=0
+  function metspots(){ //log spotmaps first 60 jotes
+    
+    if(ffstop++>=metlogstp) return
+    
+    var fex="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ***************************************************************".split("")
+    
+    var logline=[],logmat=[]
+    var jotp=jote.top, jotp=jotp<75?jotp:75
+    for(var j=0;j<jotp;j++){ logline[j]=" "} //empty line
+    
+    for(var sui=1,spd=spot.deep; spd>-1; sui++){ /// or spd>0 ??
+      
+      if(sui===spot.top){ 
+     
+        logmat.push(logline.join(""))
+        sui=1;spd--
+        for(var j=0;j<jote.top;j++){ logline[j]=" " } //clear line
+      } 
+      
+      if(spot.depth[sui]===spd){
+        for( var 
+              j=spot.dln_anchor[sui]
+             ,e=j+spot.dln_span[sui]
+          ;j<e ;j++
+        ){
+          if(j>jotp) break
+          logline[j]=fex[sui]
+        }
+      }
+    }
+    console.log("spotstuff:")
+    for(var j=logmat.length-1;j>=0;--j){ console.log(logmat[j]) }
   }
 
   function bimeasure_spots(tms){ //with vel for collision
@@ -627,7 +661,7 @@ function addSpotmap(fig,vplay) {
         cgx=-0, cgy=-0, cgz=-0, cmass_tot=-0
         
         if(spot.fchild[sui]===0) //its a leaf spot
-        { tell('totalleafs');
+        { metinc('totalleafs');
           var ja=spot.dln_anchor[sui], jb=ja+spot.dln_span[sui]
           
           //testing if leaf spots need end marker
@@ -672,7 +706,7 @@ function addSpotmap(fig,vplay) {
         
         //spot.grd[sui]=(hix-lwx)*(hix-lwx)+(hiy-lwy)*(hiy-lwy)+(hiz-lwz)*(hiz-lwz)	
         
-        logtest(sui)
+        dmcheckspot(sui)
       } 
     }
   }
@@ -686,16 +720,11 @@ function addSpotmap(fig,vplay) {
   { var xsec,ysec,zsec
     
     //this works
-    var R=Isec/dvn[0] , U=Math.floor(R)	
-    ysec=U%dvn[1]
-    xsec=Isec-U*dvn[0]
-    zsec=(U-ysec)/dvn[1]
+    var zz,yy=Math.floor(Isec/dvn[0])	
+    zsec=Math.floor(yy/dvn[1])
+    ysec=yy-(zz=zsec*dvn[1])
+    xsec=Isec-(zz+ysec)*dvn[0]
 
-    //this works too
-    //~ zsec=Math.floor(Isec/(dvn[0]*dvn[1]))
-    //~ Isec-=zsec*dvn[0]*dvn[1]
-    //~ ysec=Math.floor(Isec/dvn[0])
-    //~ xsec=Isec-ysec*dvn[0]
     //return [low[0]+xsec*dvm[0],low[1]+ysec*dvm[1],low[2]+zsec*dvm[2]]
     
     _lw3[0]= low[0] + xsec*dvm[0] 
@@ -771,13 +800,14 @@ function addSpotmap(fig,vplay) {
   // determines best cuboid division into submx childer 
   // prefering cubic childer. 
   // Calculates amount and lengths of resulting cuboids.
+  var _bgridr=[0,0,0]
   function note_bestgrid(submx,cm){
     cm=cm||[_hi3[0]-_lw3[0],_hi3[1]-_lw3[1],_hi3[2]-_lw3[2]]
     
     _divm[0]=cm[0],_divm[1]=cm[1],_divm[2]=cm[2] 
     
     cm[0]*=1.2 //increase x division for assist double-cell-termination
-    var r=sorti012(cm)
+    var r=sorti012(cm,_bgridr)
     cm[r[1]]/=cm[r[0]], cm[r[2]]/=cm[r[0]]
     
     var m=Math.pow((submx+0.15)/(cm[r[1]]*cm[r[2]]),0.33333333333333)
@@ -808,14 +838,14 @@ function addSpotmap(fig,vplay) {
     return _divn[0]*_divn[1]*_divn[2]
   }
   
-  function sorti012(m) 
-  { if(m[0]<m[1]) 
-    { if(m[1]<m[2]) return [0,1,2] 
-      if(m[0]<m[2]) return [0,2,1] 
-      return [2,0,1]  } 
-    if(m[0]<m[2]) return [1,0,2] 
-    if(m[1]<m[2]) return [1,2,0]
-    return [2,1,0] 
+  function sorti012(m,r) //ret least<most 
+  { if(m[0]<m[1])        //ugly optimsation
+    { if(m[1]<m[2]){ r[0]=0,r[1]=1,r[2]=2 ;return r } 
+      if(m[0]<m[2]){ r[0]=0,r[1]=2,r[2]=1 ;return r } 
+      r[0]=2,r[1]=0,r[2]=1 ;return r } 
+    if(m[0]<m[2]){ r[0]=1,r[1]=0,r[2]=2 ;return r } 
+    if(m[1]<m[2]){ r[0]=1,r[1]=2,r[2]=0 ;return r } 
+    r[0]=2,r[1]=1,r[2]=0 ;return r
   }
 
 
@@ -857,7 +887,7 @@ function addSpotmap(fig,vplay) {
 
   function endcell(rst,rov,lv) //stub to test bulk_load
   { 
-    //~ tella('leaflevs',lv)
+    //~ metary('leaflevs',lv)
   }
     
 
@@ -878,7 +908,7 @@ function addSpotmap(fig,vplay) {
         spot.calcx[k]+=cx
        ,spot.calcy[k]+=cy
        ,spot.calcz[k]+=cz }
-    //}else{ tell('precipskip'); }
+    //}else{ metinc('precipskip'); }
     
     for(k=kd ; k ; k=nextkid(par,k) )
     { precipkids(k) }	
@@ -916,11 +946,15 @@ function addSpotmap(fig,vplay) {
       startwatch('load') 
       bulk_load()
       apre_load()
-      stopwatch('load') 
+      stopwatch('load')
+      //~ metspots() 
     }
     startwatch('measure')
     measure_spots()
     stopwatch('measure')
+    
+    //~ logmeters()
+
   }
 
   function postfit_spotmap(){ 

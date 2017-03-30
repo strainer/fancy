@@ -20,6 +20,7 @@ if(vplay.world==7){ createC7() }
 if(vplay.world==8){ createC8() }
 if(vplay.world==9){ createC9() }
 if(vplay.world==10){ createC10() }
+if(vplay.world==11){ createC11() }
 
 Talter.settop()
 
@@ -1032,68 +1033,44 @@ function createC10(){ //47 Tuc X9
 function createC11(){ //cloud
   
   vplay.instaprops=
-  {  forces:0
+  {  forces:2
     ,max_force:  2
-    ,pradius:60.0
+    ,pradius:40.0
     ,firstfocus:-1
-    ,runcycle_step : 2.5
+    ,runcycle_step : 1.5
     ,camRad:600
   }
 
-  var nh=15
-  var sp=2
+  var nh=30 ,spc=2
   
-  Talter.setpos(0,0,0)
-  Talter.setvel(0,0,0)
-  Talter.setmass(0)
-  Talter.setseam(1)
-  Talter.setgroup(0)
-  Talter.setbasecol(0)
-  
+  //~ Talter.setpos(0,0,0)
+  //~ Talter.setvel(0,0,0)
+  //~ Talter.setmass(0)
+  //~ Talter.setseam(1)
+  //~ Talter.setgroup(0)
+  //~ Talter.setbasecol(0)
   
   Talter.addspinball({
-    num:nh*25, rad:spc*3, phi:0, pull:0
+    num:25*nh, rad:spc*5, phi:0, pull:0.006
     //~ ,radf:0, crvf:0, velf:0
-    ,radf:function(){ return Drand.range( 0.0,1.0) } 
-    ,velf:function(){ return Drand.gnorm( 0.0,0.0) } 
+    ,radf:function(){ return Drand.gteat( 0.0,1.0) } 
+    ,velf:function(){ return Drand.gnorm( 0.9,1.1) } 
     ,thkf:function(){ return Drand.gnorm( 0.0,0.0) } 
   }) 
  
   //Talter.massuncolored(0.0)
  
-  Talter.massuncolored(
-    function(){ return Drand.gteat( 0.015,0.025 ) }
-  ) 
-  
-  Talter.colorprev({ r:4.5,g:1.1,b:0.1,
-    rfun:function(x){return Drand.gteat(0.3,1.25)*x}
-   ,bfun:function(x){return Drand.gteat(0.3,1.25)*x}
-   ,gfun:function(x){return Drand.gteat(0.3,2.25)*x} 
-   })
-
-  Talter.addspinball({
-    num:nh*4, rad:spc*7, phi:0, pull:pl*10
-    //~ ,radf:0, crvf:0, velf:0
-    ,radf:function(){ return Drand.gnorm( 0.6,1.5)   } 
-    ,velf:function(){ return Drand.gnorm( 0.9,1.1) } 
-    ,thkf:function(){ return Drand.gnorm( 0.9,1.1) } 
-  })
+  Talter.masschargcol_prev({ //{ ar:,ag:,ab:,mb:,cb:,mfun:,cfun:,m:,c: }
     
-  //Talter.massuncolored(0.0)
- 
-  Talter.massuncolored(
-    function(){ return Drand.gteat( 0.025,0.035 ) }
-  ) 
-  Talter.chargeuncolored(
-    function(){ return Drand.gteat( -0.1,-0.2 ) }
-  )
-  
-  Talter.colorprev({ r:0.1,g:2.2,b:4.9
-   ,rfun:function(x){return Drand.gteat(0.3,1.25)*x}
-   ,bfun:function(x){return Drand.gteat(0.3,1.25)*x}
-   ,gfun:function(x){return Drand.gteat(0.3,1.25)*x} 
+    ar:0.2 ,ag:0.2 ,ab:0.2
+   ,mr:2.2 ,mg:2.2 ,mb:2.2
+   ,cr:0.4 ,cg:0.4 ,cb:0.4
+    
+   ,mfun:function(){ return Drand.gteat(0.1,1) } ,m:0.0001
+   ,cfun:function(){ return Drand.gteat(0.1,1) } ,c:0 
   })
-      
+   
+  //~ addconstellations(100,100) 
 }
 
 

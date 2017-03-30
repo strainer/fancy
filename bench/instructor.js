@@ -19,9 +19,10 @@ var vplay = {
    ,8:{name:"Pattern",desc:""}
    ,9:{name:"4MassRing",desc:""}
    ,10:{name:"47 Tuc X9",desc:""}
+   ,11:{name:"Point Cloud",desc:""}
   }
     
-  ,seed:0 ,world:3, seespots:-1
+  ,seed:0 ,world:11, seespots:-1
   ,geometry:{}, camera:{}, scene:{} 
   ,renderer:{}, displaybugi:20 //avoiding scrollbar
   
