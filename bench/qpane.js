@@ -159,7 +159,7 @@ function newDash(){ return (function(gu){
    
     if(pm.flipper){
       var wat={ 
-        'scp':pm.scoper //,scoper:vplay ,varkey:'paused'
+         'scp':pm.scoper //,scoper:vplay ,varkey:'paused'
         ,'key':pm.varkey
         ,'type':pm.type
         ,'val':pm.val
@@ -320,7 +320,7 @@ function newDash(){ return (function(gu){
     for(var k in sty){ el.style[k]=sty[k]	} 
   }
 
-  var actions={a:0,e:0}  //fifo queue for adding onclick actions to dash 
+  var actions= { a:0, e:0 }  //fifo queue for adding onclick actions to dash 
   
   function addAction(f){
     actions[actions.e]=f
@@ -353,7 +353,7 @@ function newDash(){ return (function(gu){
   return{
     redrawDash : redrawDash
    ,addDiv     : addDiv
-   ,reading  : reading
+   ,reading    : reading
    ,mez:mez
    ,seat: seat
    ,setseat: setseat

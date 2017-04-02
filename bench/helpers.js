@@ -109,3 +109,9 @@ function cologwatch(wa,gap){
 }
 
 conlog=console.log.bind( console )
+
+conlogif=function(a,b){ //no good without some parameter trick
+  if(a) conlog(b)
+}
+
+function isNumber(obj) { return !isNaN(parseFloat(obj)) } //stacko, like isfinite
