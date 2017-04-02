@@ -1051,7 +1051,7 @@ function createC11(){ //cloud
   //~ Talter.setbasecol(0)
   
   Talter.addspinball({
-    num:25*nh, rad:spc*5, phi:0, pull:0.006
+    num:25*nh, rad:spc*5, phi:0, pull:0.0085
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){ return Drand.gteat( 0.0,1.0) } 
     ,velf:function(){ return Drand.gnorm( 0.9,1.1) } 
