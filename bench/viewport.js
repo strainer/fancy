@@ -529,7 +529,7 @@ function newViewport(fig,vplay){
       ,vplay.camera.position.z-vport.camlook.z //these will be phi
       ,vplay.camera.position.y-vport.camlook.y 
        )
-      
+            
       //~ function _topolar(x,y,z) {
         //~ _rad = Math.sqrt(x*x+y*y+z*z+1.0e-40)
         //~ _the = Math.acos(z/_rad) 
@@ -554,8 +554,11 @@ function newViewport(fig,vplay){
 
       _tocarte(_rad, Pi/2, vplay.camThet)  // plane away
       
-      vport.camlook.x-=_x*vplay.keyUDd*0.00355
-      vport.camlook.z-=_y*vplay.keyUDd*0.00355
+      //~ console.log(_the)
+      
+      var dxx=_the>Pi/2?1:-1
+      vport.camlook.x-=_x*vplay.keyUDd*0.00355*dxx
+      vport.camlook.z-=_y*vplay.keyUDd*0.00355*dxx
 
       //tracks back to focus if only ctrl held
       if(vplay.keyCtrld>0.000145
