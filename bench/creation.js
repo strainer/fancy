@@ -1033,7 +1033,8 @@ function createC10(){ //47 Tuc X9
 function createC11(){ //cloud
   
   vplay.instaprops=
-  {  forces:2
+  { 
+     forces:2
     ,max_force:  2
     ,pradius:40.0
     ,firstfocus:-1
@@ -1041,7 +1042,7 @@ function createC11(){ //cloud
     ,camRad:600
   }
 
-  var nh=30 ,spc=2
+  var nh=8 ,spc=2
   
   //~ Talter.setpos(0,0,0)
   //~ Talter.setvel(0,0,0)
