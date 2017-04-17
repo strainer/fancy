@@ -49,7 +49,8 @@ function addSpotgrav(fig,vplay) {
     throt=vplay.max_force/abs(pace) 
 
     startwatch('ALLgrav') 
-    fig.prefit_spotmap() 
+
+    fig.tendto_spotmap() 
     
     //~ tell=tella=logtell=nullfunc
     logspot=0 //dont dump the spotmap object
@@ -57,6 +58,42 @@ function addSpotgrav(fig,vplay) {
     _klev=-1;
 
     //~ spot.fchild[1]=0 //testing
+    
+    fig.checks("pre interply")
+    startwatch('ply')
+    interplyspot(1)
+    //~ fig.nbodygrav()
+    stopwatch('ply')
+    fig.checks("aft interply")
+    //logtell()
+     
+    fig.postfit_spotmap() 
+
+    
+    stopwatch('ALLgrav')
+
+    //~ cologwatch( ['ALLgrav','ply','load','measure'],5 )
+
+  }
+  
+  function stub_spots(p){  //begin recursive gravitation 
+    
+    console.log("tis here in stub")
+    
+    squality=1000000*(vplay.gravqual||1)*(vplay.gravqual||1)
+    pace=p||vplay.model_pace
+     
+    throt=vplay.max_force/abs(pace) 
+
+    startwatch('ALLgrav') 
+    fig.tendto_spotmap() 
+    
+    //~ tell=tella=logtell=nullfunc
+    logspot=0 //dont dump the spotmap object
+    mingdis=16.0
+    _klev=-1;
+
+    spot.fchild[1]=0 //testing
     startwatch('ply')
     interplyspot(1)
     stopwatch('ply')
@@ -64,11 +101,13 @@ function addSpotgrav(fig,vplay) {
     //logtell()
      
     fig.postfit_spotmap() 
+    //~ for(var j=0, je=jote.top ; j<je ; j++ ){
+      //~ jote.vx[j]=jote.vy[j]=jote.vz[j]=jote.qx[j]=jote.qy[j]=jote.qz[j]=0
+    //~ }	
 
     stopwatch('ALLgrav')
 
     //~ cologwatch( ['ALLgrav','ply','load','measure'],5 )
-
   }
   
   function interplyspot(par){ //inpit
@@ -182,6 +221,15 @@ function addSpotgrav(fig,vplay) {
      jote.x[jp],jote.y[jp],jote.z[jp],jote.g[jp]
     ,jote.x[jq],jote.y[jq],jote.z[jq],jote.g[jq]
     )
+   
+   //~ if(isNaN(_cpx)||isNaN(_cpy)||isNaN(_cpz)
+    //~ ||isNaN(_cqx)||isNaN(_cqy)||isNaN(_cqz) ){
+    
+    //~ console.log("NaNHere: cp",cp,cq,"jp",jp,jq,"jop"
+    //~ ,jote.x[jp],jote.y[jp],jote.z[jp],jote.g[jp],"joq"
+    //~ ,jote.x[jq],jote.y[jq],jote.z[jq],jote.g[jq])
+      
+   //~ }
       
     jote.qx[jp]+=_cpx, jote.qy[jp]+=_cpy, jote.qz[jp]+=_cpz
    ,jote.qx[jq]+=_cqx, jote.qy[jq]+=_cqy, jote.qz[jq]+=_cqz
@@ -325,6 +373,7 @@ function addSpotgrav(fig,vplay) {
   // - - - end logger mess
     
   fig.grav_spots = grav_spots
+  fig.stub_spots = stub_spots
   
   return fig
 

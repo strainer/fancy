@@ -102,7 +102,7 @@ function createC1(){ //mock near earth orbitals
   {
     pradius : 0.85//315.36000
    ,model_pace : 100.0//315.36000 // (is seconds?)
-   ,runcycle_step:10
+   ,runcycle_step:12
    ,gravity : 6.67408e-8
    ,camRad:575000
    ,camThet:4.92
@@ -356,7 +356,7 @@ function createC3(){ //1 + 4 gbody and disk
   vplay.instaprops=
   { 
    camRad:540,
-   runcycle_step: 1.5 
+   runcycle_step: 2.5 
    ,pradius:40
    //~ ,forces:2
    }
@@ -463,7 +463,7 @@ function createC4(){
   //play with unbalancing 3s orbit
   
   vplay.instaprops = { 
-    runcycle_step: 2.0 
+    runcycle_step: 3.0 
    ,pradius:20
    ,camRad:300
   }
@@ -658,7 +658,7 @@ function createC6(){ //undulating spiral
   
   vplay.instaprops=
   { pradius:6.5
-   ,runcycle_step:1
+   ,runcycle_step:3
    ,model_pace:0.1
   }
   
@@ -823,7 +823,7 @@ function createC8(){ //pattern
 
   vplay.instaprops=
   { pradius:50
-   ,runcycle_step:1
+   ,runcycle_step:1.5
    ,model_pace:0.1
   }
   
@@ -884,9 +884,9 @@ function createC9(){ //4 rough rings of rnd mass particles
   
   vplay.instaprops=
   { pradius:70.8
-   ,runcycle_step:1.5
+   ,runcycle_step:3
    ,forces:2
-   ,gravqual:0.10
+   ,gravqual:0.35
   }
 
   var nn=2
@@ -1033,15 +1033,16 @@ function createC10(){ //47 Tuc X9
 function createC11(){ //cloud
   
   vplay.instaprops=
-  {  forces:2
+  { 
+     forces:2
     ,max_force:  2
     ,pradius:40.0
     ,firstfocus:-1
-    ,runcycle_step : 1.5
+    ,runcycle_step : 2.0
     ,camRad:600
   }
 
-  var nh=30 ,spc=2
+  var nh=12 ,spc=2
   
   //~ Talter.setpos(0,0,0)
   //~ Talter.setvel(0,0,0)
@@ -1051,7 +1052,7 @@ function createC11(){ //cloud
   //~ Talter.setbasecol(0)
   
   Talter.addspinball({
-    num:25*nh, rad:spc*5, phi:0, pull:0.0085
+    num:25*nh, rad:spc*5, phi:0, pull:0.006
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){ return Drand.gteat( 0.0,1.0) } 
     ,velf:function(){ return Drand.gnorm( 0.9,1.1) } 

@@ -111,8 +111,8 @@ function setdash(cdash,vplay){
   var dsreadings= cdash.revealer({
     seat:reading_div
    ,content:"Readings"
-   ,upstyle:{ clear:'both',backgroundColor:"#ffffff88"}
-   ,instyle:{ clear:'both',backgroundColor:"#ffffff88"}
+   ,upstyle:{ clear:'both'}
+   ,instyle:{ clear:'both'}
    ,on:true
   })
   

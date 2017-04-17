@@ -117,6 +117,7 @@ function setupfigview(fig){
    0:Fgm.nbodygrav
   ,1:Fgm.nbodygravelec
   ,2:Fgm.grav_spots
+  ,3:Fgm.stub_spots
   }[vplay.forces]
 
   addTemper(Fgm,vplay)  //adds service function

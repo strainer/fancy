@@ -320,11 +320,11 @@ function newViewport(fig,vplay){
   function vboxspot(turnoff){
     
     var spot =fig.spot
-    if(!vport.hasOwnProperty('vbox')){ setupvbox() }//made a vbox
+    if(!vport.hasOwnProperty('vbox')){ setupvbox() } //made a vbox
 
     if((turnoff||vplay.seespots==-1)){
       
-      if( vport.vbox[0].visible )
+      //~ if( vport.vbox[1].visible )
       for(var si=0; si<vport.vbox.length;si++)
       { vport.vbox[si].visible=false }
       
@@ -342,24 +342,27 @@ function newViewport(fig,vplay){
     //pos and scale for every spot
     for(var si=0;si<spot.top;si++){
       
-      var px=(spot.lbx[si]+spot.hbx[si])*0.5
-         ,sx=(spot.hbx[si]-spot.lbx[si])+0.03
-         ,py=(spot.lby[si]+spot.hby[si])*0.5
-         ,sy=(spot.hby[si]-spot.lby[si])+0.03
-         ,pz=(spot.lbz[si]+spot.hbz[si])*0.5
-         ,sz=(spot.hbz[si]-spot.lbz[si])+0.03
+      if(spot.parent[si]){
+          
+        var px=(spot.lbx[si]+spot.hbx[si])*0.5
+           ,sx=(spot.hbx[si]-spot.lbx[si])+0.03
+           ,py=(spot.lby[si]+spot.hby[si])*0.5
+           ,sy=(spot.hby[si]-spot.lby[si])+0.03
+           ,pz=(spot.lbz[si]+spot.hbz[si])*0.5
+           ,sz=(spot.hbz[si]-spot.lbz[si])+0.03
+        
+        vport.vbox[si].position.set( 
+          (px-focus.x)*focus.sc
+         ,(py-focus.y)*focus.sc
+         ,(pz-focus.z)*focus.sc )
+           
+        vport.vbox[si].scale.set( 
+          sx*focus.sc
+         ,sy*focus.sc
+         ,sz*focus.sc )
       
-      vport.vbox[si].position.set( 
-        (px-focus.x)*focus.sc
-       ,(py-focus.y)*focus.sc
-       ,(pz-focus.z)*focus.sc )
-         
-      vport.vbox[si].scale.set( 
-        sx*focus.sc
-       ,sy*focus.sc
-       ,sz*focus.sc )
-    
-      vport.vbox[si].visible=true
+        vport.vbox[si].visible=true
+      }else{vport.vbox[si].visible=false}
     }
     
     //disable the rest
@@ -529,7 +532,7 @@ function newViewport(fig,vplay){
       ,vplay.camera.position.z-vport.camlook.z //these will be phi
       ,vplay.camera.position.y-vport.camlook.y 
        )
-      
+            
       //~ function _topolar(x,y,z) {
         //~ _rad = Math.sqrt(x*x+y*y+z*z+1.0e-40)
         //~ _the = Math.acos(z/_rad) 
@@ -554,8 +557,11 @@ function newViewport(fig,vplay){
 
       _tocarte(_rad, Pi/2, vplay.camThet)  // plane away
       
-      vport.camlook.x-=_x*vplay.keyUDd*0.00355
-      vport.camlook.z-=_y*vplay.keyUDd*0.00355
+      //~ console.log(_the)
+      
+      var dxx=_the>Pi/2?1:-1
+      vport.camlook.x-=_x*vplay.keyUDd*0.00355*dxx
+      vport.camlook.z-=_y*vplay.keyUDd*0.00355*dxx
 
       //tracks back to focus if only ctrl held
       if(vplay.keyCtrld>0.000145
