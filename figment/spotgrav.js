@@ -93,17 +93,17 @@ function addSpotgrav(fig,vplay) {
     mingdis=16.0
     _klev=-1;
 
-    //~ spot.fchild[1]=0 //testing
+    spot.fchild[1]=0 //testing
     startwatch('ply')
-    //~ interplyspot(1)
+    interplyspot(1)
     stopwatch('ply')
     
     //logtell()
      
-    //~ fig.postfit_spotmap() 
-    for(var j=0, je=jote.top ; j<je ; j++ ){
-      jote.vx[j]=jote.vy[j]=jote.vz[j]=jote.qx[j]=jote.qy[j]=jote.qz[j]=0
-    }	
+    fig.postfit_spotmap() 
+    //~ for(var j=0, je=jote.top ; j<je ; j++ ){
+      //~ jote.vx[j]=jote.vy[j]=jote.vz[j]=jote.qx[j]=jote.qy[j]=jote.qz[j]=0
+    //~ }	
 
     stopwatch('ALLgrav')
 
