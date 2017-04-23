@@ -16,6 +16,7 @@ function addForces(fig,vplay) {
      ,rndu=fig.rndu, rndh=fig.rndh
      ,dlns=fig.dlns 
                
+               
   function nbodygrav(p)
   { 
     pace=p||vplay.model_pace; 

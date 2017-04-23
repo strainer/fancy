@@ -69,9 +69,9 @@ function createC0(){ //solar system jpl data
     }
     
     Talter.addjote(
-     d.z  ,d.x  ,d.y  //yzx?
+     d.y  ,d.z  ,d.x  //yzx?
     ,g
-    ,d.vz ,d.vx ,d.vy
+    ,d.vy ,d.vz ,d.vx
     ,p
     ,d.radius||1
     )
@@ -350,18 +350,17 @@ function createC2(){ //trappist-1 data
 }
 
 
-
 function createC3(){ //1 + 4 gbody and disk
   
   vplay.instaprops=
   { 
-   camRad:540,
-   runcycle_step: 2.5 
-   ,pradius:40
-   //~ ,forces:2
+   camRad:540
+   ,runcycle_step: 1.5 
+   ,pradius:80
+   ,forces:3
    }
 
-  var nn=7
+  var nn=5
   
   Talter.setpos(0,0,0)
   Talter.setvel(0,0,0)
@@ -387,13 +386,13 @@ function createC3(){ //1 + 4 gbody and disk
   Talter.massallzeros(0.02)
   
   Talter.setaslast(1)
-  purpball(100,0.02,0.2) 
+  purpball(nn*12,0.02,0.2) 
   Talter.setaslast(2)
-  purpball(100,0.02,0.2) 
+  purpball(nn*12,0.02,0.2) 
   Talter.setaslast(3)
-  purpball(100,0.02,0.2)
+  purpball(nn*12,0.02,0.2)
   Talter.setaslast(4)
-  purpball(100,0.02,0.2) 
+  purpball(nn*12,0.02,0.2) 
   
   Talter.setaslast(0)
   
@@ -452,7 +451,7 @@ function createC3(){ //1 + 4 gbody and disk
   Talter.colorprev({ r:0.0,g:0.2,b:3.1,rfun:0,bfun:0,gfun:0 })
      
   Talter.setaslast(0)
-  purpball(1000,1,1.0,0.2)
+  purpball(nn*42,1,1.0,0.2)
 
 }
 
@@ -885,7 +884,7 @@ function createC9(){ //4 rough rings of rnd mass particles
   vplay.instaprops=
   { pradius:70.8
    ,runcycle_step:3
-   ,forces:2
+   ,forces:3
    ,gravqual:0.35
   }
 
@@ -1034,7 +1033,7 @@ function createC11(){ //cloud
   
   vplay.instaprops=
   { 
-     forces:2
+     forces:3
     ,max_force:  2
     ,pradius:40.0
     ,firstfocus:-1
@@ -1042,7 +1041,7 @@ function createC11(){ //cloud
     ,camRad:600
   }
 
-  var nh=12 ,spc=2
+  var nh=120 ,spc=2
   
   //~ Talter.setpos(0,0,0)
   //~ Talter.setvel(0,0,0)

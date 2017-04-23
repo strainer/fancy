@@ -88,13 +88,29 @@ function newFigment(size){ return (function(size){
       jote.z[i]=jote.z[i]+jote.vz[i]*t
     }
   }
+  
+  function joteqclear()
+  { for(var i=0; i<jote.top; i++)
+    { jote.qx[i]=jote.qy[i]=jote.qz[i]=-0 }
+  } 
+  
+  function joteqtovel(p)
+  { p=p||1
+    for(var i=0; i<jote.top; i++)
+    { jote.vx[i]+=jote.qx[i]*p
+      jote.vy[i]+=jote.qy[i]*p
+      jote.vz[i]+=jote.qz[i]*p
+    }
+  }
         
   function recycle(){
     //store on a stack of empties to ressurrect later
   }
   
   return {
-     velmove:velmove 
+     velmove:velmove
+    ,joteqclear:joteqclear
+    ,joteqtovel:joteqtovel 
     ,recycle:recycle
     ,jote:jote
     ,jkind:jkind
