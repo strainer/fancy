@@ -43,80 +43,86 @@ function addSpotgrav(fig,vplay) {
   
   function grav_spots(p){  //begin recursive gravitation 
     
-    squality=1000000*(vplay.gravqual||1)*(vplay.gravqual||1)
+    squality=5000000*(vplay.gravqual||1)*(vplay.gravqual||1)
     pace=p||vplay.model_pace
      
     throt=vplay.max_force/abs(pace) 
 
-    startwatch('ALLgrav') 
-
+    startwatch('tendspots') 
     fig.tendto_spotmap() 
+    stopwatch('tendspots') 
     
-    //~ tell=tella=logtell=nullfunc
-    logspot=0 //dont dump the spotmap object
+    //~ mtlogcn=mtlogar=logtell=nullfunc
+    //logspot=0 //dont dump the spotmap object
     mingdis=16.0
     _klev=-1;
-
+    //~ conlog("ply")
     //~ spot.fchild[1]=0 //testing
     
-    fig.checks("pre interply")
-    startwatch('ply')
-    interplyspot(1)
-    //~ fig.nbodygrav()
-    stopwatch('ply')
-    fig.checks("aft interply")
+    //~ checkspots("pre interply")
+    startwatch('gply')
+    fig.nbodygrav(p)
+    //~ interplyspot(1)
+    stopwatch('gply')
+    //~ checkspots("aft interply")
     //logtell()
      
-    fig.postfit_spotmap() 
-
-    
-    stopwatch('ALLgrav')
+    startwatch('fitspots') 
+    //~ fig.postfit_spotmap() 
+    stopwatch('fitspots')
 
     //~ cologwatch( ['ALLgrav','ply','load','measure'],5 )
-
   }
   
   function stub_spots(p){  //begin recursive gravitation 
     
-    console.log("tis here in stub")
-    
-    squality=1000000*(vplay.gravqual||1)*(vplay.gravqual||1)
+    squality=3000000*(vplay.gravqual||1)*(vplay.gravqual||1)
     pace=p||vplay.model_pace
      
     throt=vplay.max_force/abs(pace) 
 
-    startwatch('ALLgrav') 
+    startwatch('tendspots') 
     fig.tendto_spotmap() 
+    stopwatch('tendspots') 
     
-    //~ tell=tella=logtell=nullfunc
-    logspot=0 //dont dump the spotmap object
+    //~ mtlogcn=mtlogar=logtell=nullfunc
+    //~ logspot=0 //dont dump the spotmap object
+    
     mingdis=16.0
     _klev=-1;
 
-    spot.fchild[1]=0 //testing
-    startwatch('ply')
-    interplyspot(1)
-    stopwatch('ply')
+    //~ spot.fchild[1]=0 //testing
+    startwatch('nbody')
+    //~ interplyspot(1)
+    fig.nbodygrav(p)
+    stopwatch('nbody')
+
+    startwatch('fitspots') 
+    fig.postfit_spotmap() 
+    stopwatch('fitspots')
+    
+    startwatch('press')
+    fig.spotclump()
+    //~ interplyspot(1)
+    stopwatch('press')
     
     //logtell()
      
-    fig.postfit_spotmap() 
     //~ for(var j=0, je=jote.top ; j<je ; j++ ){
       //~ jote.vx[j]=jote.vy[j]=jote.vz[j]=jote.qx[j]=jote.qy[j]=jote.qz[j]=0
     //~ }	
-
-    stopwatch('ALLgrav')
-
-    //~ cologwatch( ['ALLgrav','ply','load','measure'],5 )
+     
+    //~ conlog(spot.top)
+    //~ cologwatch( ['tendspots','nbody','fitspots','press'],5 )
   }
   
   function interplyspot(par){ //inpit
-    //tella('assess','inmate spot'+par)
+    //mtlogar('assess','inmate spot'+par)
     var kn=_listkids(par)
-    //for(var g=0;g<kn;g++) tella('assess','inmt kid'+_kcac[_klev][g])
+    //for(var g=0;g<kn;g++) mtlogar('assess','inmt kid'+_kcac[_klev][g])
     if(!kn){ 
-      tell('inleafed')
-      //tella('assess','inmt leaf'+par); 
+      //~ mtlogcn('inleafed')
+      //mtlogar('assess','inmt leaf'+par); 
       intermateleaf(par) 
       return 
     }
@@ -125,7 +131,7 @@ function addSpotgrav(fig,vplay) {
     for(var i=0 ; i<kn; i++ )
     { for(var j=i+1 ;j<kn; j++ )
       { 
-        //tell('assess1'); 
+        //mtlogcn('assess1'); 
         multiply_spots(kids[i],kids[j]) 
       }
       interplyspot(kids[i]) 
@@ -136,7 +142,7 @@ function addSpotgrav(fig,vplay) {
   var squality=-1
   function multiply_spots(sa,sb){
     
-    //tella("assess","assessing spots "+sa+" "+sb)
+    //mtlogar("assess","assessing spots "+sa+" "+sb)
     
     //~ var calibgrav=0.5, calibsplita=4, calibsplitb=2, calibratio=2
         
@@ -144,7 +150,7 @@ function addSpotgrav(fig,vplay) {
     var tm=spot.grm[sa]+spot.grm[sb]
     
     if(tm===0){ 
-      //tell('matelf_spsp',leafsinspot(sa)*leafsinspot(sb))
+      //mtlogcn('matelf_spsp',leafsinspot(sa)*leafsinspot(sb))
       return 
     }
     
@@ -154,10 +160,10 @@ function addSpotgrav(fig,vplay) {
     +(spot.grz[sa]-spot.grz[sb])*(spot.grz[sa]-spot.grz[sb])
      //squality
     if( idist>squality*idiag*tm )
-    { tell('mate_spsp')
-      //tella("assess","a- pairing "+sa+"+"+sb); 
-      matespots(sa,sb)
-      //tell('matelf_spsp',leafsinspot(sa)*leafsinspot(sb))
+    { //mtlogcn('mate_spsp')
+      //mtlogar("assess","a- pairing "+sa+"+"+sb); 
+      //matespots(sa,sb)
+      //mtlogcn('matelf_spsp',leafsinspot(sa)*leafsinspot(sb))
       return } //spot v spot 
     else 
     { //if has leaf node, or small node, or a bit far only split bigger
@@ -166,37 +172,37 @@ function addSpotgrav(fig,vplay) {
       if(!spot.fchild[sb]){ //sb is leaf
         if(leaf){           //sa was leaf
           multimateleafs(sa,sb); 
-          //tella("assess","a- leafing "+sa+" "+sb); 
-          tell('matelf_lflf'); 
+          //mtlogar("assess","a- leafing "+sa+" "+sb); 
+          //mtlogcn('matelf_lflf'); 
           return 
         }else leaf=sb,spt=sa //sb is leaf, sa wasnt
       }
    
       if(leaf) //there is a leaf
       { 
-        tell('split_lfsp');
+        //mtlogcn('split_lfsp');
         //leaf or small spot is sc
-        //tella("assess","a- split leaf "+leaf)
+        //mtlogar("assess","a- split leaf "+leaf)
         for(var kd=spot.fchild[spt]; kd; kd=nextkid(spt,kd) )
-        { //tell('assess2'); 
-          // tella("assess","a- split with "+kd) 
+        { //mtlogcn('assess2'); 
+          // mtlogar("assess","a- split with "+kd) 
           multiply_spots(kd,leaf) }
-        //tella("assess","a- ret aft splt leaf")
+        //mtlogar("assess","a- ret aft splt leaf")
         return
       }
                 
-      tell('split_spsp');
+      //mtlogcn('split_spsp');
       var kn=_listkids(sa),kids=_kcac[_klev]
       
       for(var kb=spot.fchild[sb]; kb; kb=nextkid(sb,kb) )
       { 
         for( var ka=0 ; ka<kn ; ka++  ) 
-        { //tell('assess3'); 
-          //tella("assess","a- split both "+kb+"&"+kids[ka]); 
+        { //mtlogcn('assess3'); 
+          //mtlogar("assess","a- split both "+kb+"&"+kids[ka]); 
           multiply_spots(kb,kids[ka]) }
       }	
       _klev--
-      //tella("assess","a- ret aft splt bth")
+      //mtlogar("assess","a- ret aft splt bth")
       return
     }
   }
@@ -294,69 +300,6 @@ function addSpotgrav(fig,vplay) {
   }
 
   
-  // - - - begin logger mess
-  
-  var nullfunc=function(){}
-  var conlog=console.log.bind( console )
-  var biglog=nullfunc,biglogcnt=0
-  
-  var tll={},told=0,tellend=5
-  
-  var tell = function(p,v){    //tally property count (+v)
-    if(p in tll){tll[p]+=v||1}
-    else{tll[p]=1}
-  }
-
-  var tella = function(p,v){ //log prop: val w/_klev
-    var tellz="^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ "
-    if(p==="assess"){v=tellz.substr(0,_klev*2)+v}
-    if(p in tll){(tll[p]).push(v)}
-    else{tll[p]=[v]}
-  }
-  
-  var logspot = 1 
-
-  var logtell = function(){ ////////////////////////////////////////////////////
-    var lg="",sr=[],_dsui =spot.top
-    
-    var sr=[],mr=[
-      'split_lfsp' ,'split_spsp'
-      ,'matelf_lflf','matelf_spsp'
-      ,'mate_spsp'
-    ]
-    
-    for(var p=0;p<mr.length;p++ ){ 
-      if(!tll[mr[p]]){ tll[mr[p]]=0 }
-    }
-    
-    for(var p in tll){ if(isFinite(tll[p])) sr.push(p) }
-    
-    sr.sort()
-    var lefs=leafsinspot(0)
-    ,lefp=(lefs*(lefs-1))*0.5
-    var ter=(_dsui*(_dsui-1))*0.5
-    console.log()
-    console.log("Number spots:",_dsui," spotmuls:",ter)
-    console.log("Nb leafs:",lefs," leafmuls:",lefp)
-    console.log("check lflf+spsp:",tll['matelf_lflf'],"+",tll['matelf_spsp'],"=",lefp)
-
-    for(var i=0;i<sr.length;i++)
-    { lg=lg+sr[i]+":"+tll[sr[i]]+" ";tll[sr[i]]=0 }
-
-    console.log(lg)
-    for(p in tll){ //printing telled arrays
-      if(((tll[p]).length)) { console.info(p,tll[p]); tll[p]=[] }
-    } 
-    if(told++>tellend){ tell=logtell=nullfunc }
-    
-    //~ console.log("heavy spots",list_kin(spot0))
-    if(logspot)for(var s=0;s<_dsui;s++){
-      console.log(
-       "ui:",s,"lv:",spot.depth[s],"pa:",spot.parent[s]
-       ,"ch:",spot.fchild[s],"gm:",spot.grm[s],spot.calcx[s]
-      ) 
-    }
-  }
      
   var _leafcnt=0 
   function leafsinspot(s){ 

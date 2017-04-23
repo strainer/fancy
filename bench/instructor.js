@@ -102,6 +102,7 @@ function setupfigview(fig){
   addConstruct(Fgm)  //adds service functions, doesnt initiate xx..
   addParanorm(Fgm)  //adds service function
   addSpotmap(Fgm,vplay)  //adds service function
+  addSpotlog(Fgm,vplay)  //adds service function
 
   Tcreate(Fgm,vplay)
 
@@ -112,6 +113,7 @@ function setupfigview(fig){
   
   addForces(Fgm,vplay)  //adds service function
   addSpotgrav(Fgm,vplay)
+  addSpotcollide(Fgm,vplay)
   
   Fgm.applyforces={
    0:Fgm.nbodygrav

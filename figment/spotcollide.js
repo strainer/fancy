@@ -41,67 +41,82 @@ function addSpotcollide(fig,vplay) {
   var epsilb=Math.pow(0.5,43)
     
   /* 
-    main functions: 
-     interquestspot
-     interquestleaf
-     crossquestspotspot
-     crossquestspotleaf ?
-     crossquestleafleaf
-
-    interquest function(spot)
-     interquests each sibling
-     or each jote
-     and 
-     checks each sibling-to-sibling: crossquesting collisions 
-    
-    crossquest function(spot,spot)
-     checks 
-      kidsbykids
-      or
-      leafbykids if 1 spot doesnt have kids
-       crossquests collisions or leafmates if both leafs
+    functions: 
+     interquestspot   - persue every matching spot in spot
+     interleaf        - persue every matching jote in leaf
+     crossquestspots  - persue every matching spot between spots
+     crossleafs       - persue every matching jote between leafs 
      
-     leafmate(spot,spot)
-      checks jotesbyjotes
-       collides collisions
+     spotmatch
+      spothit  - for collision
+      spotnear - for pressure and drag 
+      
+     jotematch
+      jotehit  - for collision
+      jotenear - pressure and drag
+      
+     spotcollide - find and list all collisions in pace 
+     spotclump   - find and calc all near forces in pace
   */
    
-  var _timea=0,_timeb
+  var spotmatch= function(){}
+  var jotematch= function(){}
+  var mtlogcn=nullfunc
+  
+  var _timea=-0,_timeb=-0
 
   function spotcollide(){  //begin recursive gravitation 
     
+    //bimeasure spots
+    
     _timeb=vplay.model_pace
-    
-    //spot prepare bounds
-    
-    tell=tella=logtell=nullfunc //disable logging functions
-    
-    logspot=0
     _klev=-1;
-    //~ spot.fchild[1]=0 //set root as leaf for testing
+        
+    spotmatch = spothit
+    jotematch = jotehit
     
+    //update measure spots for collision
     interquestspot(1) //begin process
-    
-    //~ logtell()
   }
+
+
+  var midst,_prx 
+  function spotclump(){  //begin recursive gravitation 
     
+    //remeasure spots
+    
+    spotmatch = spotnear  //qualifier function
+    jotematch = jotenear  //action function
+
+    fig.joteqclear()  //clear joteq (acceleration buffer)
+
+    _prx=0.9            //set proximity distance 
+    midst=_prx*0.45    //set proximity distance 
+    //~ vplay.dragfac=0.1   //set drag factor
+    //~ vplay.pressfac=0.003  //set pressure factor
+    
+    _klev=-1          //init kidcache level
+    
+    interquestspot(1) //enter recursve process
+
+    fig.joteqtovel(vplay.model_pace)   //apply acceleration buffer
+    fig.joteqclear()                   //clear it
+
+    //~ logmtrs()
+    //~ conlog(spot.top)
+  } 
     
   function interquestspot(par){ 
-    //tella('assess','inmate spot'+par)
     var kn=_listkids(par)
-    //for(var g=0;g<kn;g++) tella('assess','inmt kid'+_kcac[_klev][g])
-    if(!kn){ //is leaf
-      tell('inleafed');
-      //tella('assess','inmt leaf'+par); 
-      interleaf(par); 
+    if(!kn){               //is leaf
+      interleaf(par) 
       return 
     }
     var kids=_kcac[_klev]
     for(var i=0 ; i<kn; i++ )
     { for(var j=i+1 ;j<kn; j++ )
       { 
-        //tell('assess1');
-        if(spothit(kids[i],kids[j])) 
+        if(spotmatch(kids[i],kids[j])) 
         { crossquestspots(kids[i],kids[j]) } 
       }
       interquestspot(kids[i]) 
@@ -115,33 +130,35 @@ function addSpotcollide(fig,vplay) {
     if(!spot.fchild[sa]){
       if(spot.fchild[sb])
       { for(var kd=spot.fchild[sb]; kd; kd=nextkid(sb,kd) )
-        { if(spothit(kd,sa)) { crossquestspots(kd,sa) }   } //keeps split
+        { if(spotmatch(kd,sa)) { crossquestspots(sa,kd) }   } //keeps split
+        return
       }
       else
       { crossleafs(sa,sb); return }
     } 
     
     for(var kd=spot.fchild[sa]; kd; kd=nextkid(sa,kd) )
-    { if(spothit(kd,sb)) { crossquestspots(sb,kd) }   } //swaps spot split
+    { if(spotmatch(kd,sb)) { crossquestspots(sb,kd) }   } //swaps spot split
 
     return
   } 
  
- 
   function crossleafs(p,q){
+    mtlogcn('crossl')
     squareloop(
       spot.dln_anchor[p], spot.dln_anchor[p]+spot.dln_span[p]
      ,spot.dln_anchor[q], spot.dln_anchor[q]+spot.dln_span[q]
-     ,jotehit
+     ,jotematch
+     //~ ,function(){}
     )
   }
     
   function interleaf(p){ 
+    mtlogcn('interl')
     triangleloop(
-      spot.dln_anchor[p], spot.dln_anchor[p]+spot.dln_span[p], jotehit
+      spot.dln_anchor[p], spot.dln_anchor[p]+spot.dln_span[p], jotematch
     ) 
   }
-
 
   function triangleloop(p,e,fn){ //checked by making 1 spot leaf
     for( var q=p+1 ;q<e ;q=(++q<e)?q:(++p+1) )  //p(p-1)/2
@@ -149,19 +166,83 @@ function addSpotcollide(fig,vplay) {
   }
   
   function squareloop(ap,ep,aq,eq,fn){ //(all q by all p)
-    for( 
-      var cp=ap,cq=aq ;cp<ep ;cq=(++cq<eq)?cq :(cp++,aq) 
-    )
+    for( var cp=ap,cq=aq ;cp<ep ;cq=(++cq<eq)?cq :(cp++,aq) )
     { fn(cp,cq) }	
   }
   
   
-/* Mr Joshua de Bellis vectorised some unsolveable equations which 
- * I had been asking mathematicians about, solving them himself and
- * producing this wonderfuly efficient formula:
- * 
+  function jotenear(a,b){
+    
+    a=dlns[a],b=dlns[b]
+    
+    var ag=jote.g[a] , bg=jote.g[b] //maybe swap these
+    
+    var dx = jote.x[a]-jote.x[b]
+      , dy = jote.y[a]-jote.y[b]
+      , dz = jote.z[a]-jote.z[b]
+    
+    var dvx = jote.vx[a]-jote.vx[b]
+      , dvy = jote.vy[a]-jote.vy[b]
+      , dvz = jote.vz[a]-jote.vz[b]
+    
+    var cf = (dx*dx + dy*dy + dz*dz)
+    var hyp=Sqrt(cf)
+    
+    var close=_prx - hyp
+    
+    if(close<-1){ mtlogcn('b_more1'); return  }
+    if(close<0){ mtlogcn('b_more0'); return }   //max close = _nearf
+                       //close is 0 to _nearf
+    mtlogcn('a_less0')
+    
+    //2 effects: 
+    // center highest velocity drag  at close =nearf
+    // edge lowest velocity drag at close=0
+    // 
+    vplay.dragfac=0.0001//0.1   //set drag factor
+    vplay.pressfac=0.002  //set pressure factor
+    
+    var veldragpwr = vplay.dragfac*(midst-Math.abs(midst-hyp))/midst
+    
+    //dp is highest in the middle
+    //
+    
+    /// push/pull toward spacing
+
+    //~ var pressforce= vplay.gravity / cf
+    var pressforce=(midst-hyp)/midst
+    //~ pressforce=pressforce<0?-Math.sqrt(Math.abs(pressforce)):Math.sqrt(pressforce)
+    
+    if(pressforce<0){ //dist is beyond midpt
+      pressforce=pressforce>-0.5?pressforce:-1.0-pressforce
+    }else{  //dist is less than midpoint
+      pressforce=(pressforce*pressforce)
+    }
+    
+    var cf=(vplay.pressfac*pressforce)/hyp
+    //~ var gravforce= vplay.gravity / cf
+    //~ gravforce=gravforce*pace/hyp
+
+    if(!(ag||bg)){ ag=bg=1 }
+    
+    if(ag>bg){ bg/=ag,ag=1 }else{ ag/=bg,bg=1 }
+    
+    var pf= -cf*ag, qf=cf*bg
+                                   //a-b
+    jote.qx[a] += dx*qf - veldragpwr*dvx*bg*1.15
+    jote.qy[a] += dy*qf - veldragpwr*dvy*bg*1.15
+    jote.qz[a] += dz*qf - veldragpwr*dvz*bg*1.15
+    jote.qx[b] += dx*pf + veldragpwr*dvx*ag*1.15
+    jote.qy[b] += dy*pf + veldragpwr*dvy*ag*1.15
+    jote.qz[b] += dz*pf + veldragpwr*dvz*ag*1.15
+    
+  }
+   
+
+/* Contact formula solved with help from Joshua de Bellis: 
  *  times = ( +/-Sqrt( (d*d-P感)*V慎 + V感*V感 ) -V感 ) / V慎
  */
+ 
   function jotehit(a,b){ //tb=0, td= timestep
   
     a=dlns[a],b=dlns[b]
@@ -202,7 +283,7 @@ function addSpotcollide(fig,vplay) {
   } 
   
   
-  function spothit(a,b){
+  function spotmatch(a,b){
     
     if(spot.lbx[a]>=spot.hbx[b]
      ||spot.hbx[a]<=spot.lbx[b]
@@ -213,7 +294,20 @@ function addSpotcollide(fig,vplay) {
     ){ return false }
     return true
   }
-   
+  
+  function spotnear(a,b){
+    
+    //if a highbnd is lower than lwbnd   h<L  L-h >0
+    
+    if( (spot.lbx[a]-spot.hbx[b] > _prx)
+     || (spot.lbx[b]-spot.hbx[a] > _prx)
+     || (spot.lby[a]-spot.hby[b] > _prx)
+     || (spot.lby[b]-spot.hby[a] > _prx)
+     || (spot.lbz[a]-spot.hbz[b] > _prx)
+     || (spot.lbz[b]-spot.hbz[a] > _prx)
+    ){ return false }
+    return true
+  }
 
   //next kid spotindex get and cache functions 
   var _klev=-1,_kcac=[[],[],[],[],[]] //kid lev cache, kid cache
@@ -235,73 +329,9 @@ function addSpotcollide(fig,vplay) {
 
     return ki
   } 
-    
- 
-  // - - - begin logger mess
-  
-  var nullfunc=function(){}
-  var conlog=console.log.bind( console )
-  var biglog=nullfunc,biglogcnt=0
-  
-  var tll={},told=0,tellend=5
-  
-  var tell = function(p,v){    //tally property count (+v)
-    if(p in tll){tll[p]+=v||1}
-    else{tll[p]=1}
-  }
-
-  var tella = function(p,v){ //log prop: val w/_klev
-    var tellz="^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ "
-    if(p==="assess"){v=tellz.substr(0,_klev*2)+v}
-    if(p in tll){(tll[p]).push(v)}
-    else{tll[p]=[v]}
-  }
-  
-  var logspot = 1 
-  var logtell = function(){
-    var lg="",sr=[]
-    for(var p in tll){ 
-      if(isFinite(tll[p])){ sr.push(p) }
-    }
-    sr.sort()
-    var lefs=tll['totalleafs'],lefp=(lefs*(lefs-1))*0.5
-
-    for(var i=0;i<sr.length;i++)
-    { lg=lg+sr[i]+":"+tll[sr[i]]+" ";tll[sr[i]]=0 }
-    
-    var ter=(_dsui*(_dsui-1))*0.5
-    console.log("Telling of spots:",_dsui,"sprs:",ter,"leafs:",lefs,"lprs:",lefp)
-    console.log(lg)
-    for(p in tll){
-      if(((tll[p]).length)) { console.info(p,tll[p]); tll[p]=[] }
-    } 
-    if(told++>tellend){ tell=logtell=nullfunc }
-    
-    //~ console.log("heavy spots",list_kin(spot0))
-    if(logspot)for(var s=0;s<_dsui;s++){
-      console.log(
-       "ui:",s,"lv:",spot.depth[s],"pa:",spot.parent[s]
-       ,"ch:",spot.fchild[s],"gm:",spot.grm[s],spot.calcx[s]
-      ) 
-    }
-  }
-     
-  var _leafcnt=0 
-  function leafsinspot(s){ 
-    function leafmine(s){ //mine all leafs inside a spot and kids
-      var k
-      if(!(k= spot.fchild[s])){ _leafcnt++; return }
-      for(; k; k=nextkid(s,k) )
-      { leafmine(k) }
-    } 
-    _leafcnt=0; leafmine(s)
-    return _leafcnt
-  }
-   
-  // - - - end logger mess
- 
            
   fig.spotcollide = spotcollide
+  fig.spotclump   = spotclump
   
   return fig
 
