@@ -91,7 +91,7 @@ function addConstruct(fig) {
   function addjote(x,y,z,g,vx,vy,vz,knd,rad){
     //~ console.log("addg u g",ins.due,g)
     var j=ins.due
-    jote.y[j]=y, jote.z[j]=z, jote.g[j]=g||ins.mass
+    jote.x[j]=x, jote.y[j]=y, jote.z[j]=z, jote.g[j]=g||ins.mass
     jote.vx[j]=vx||ins.vx, jote.vy[j]=vy||ins.vy, jote.vz[j]=vz||ins.vz
     
     if(knd){ jsetkind(j,knd,rad) }
