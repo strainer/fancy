@@ -105,7 +105,7 @@ function setdash(cdash,vplay){
      width:fez*16+'px'
     ,textAlign:'center'
     ,marginLeft:((winwidth-figwid)/2)+'px'
-    ,backgroundColor:"#ffffff88",border:"9px",clear:'both',padding:"3px"}
+    ,backgroundColor:"#00000088",border:"9px",clear:'both',padding:"3px"}
    ,on:false
   })
   var dsreadings= cdash.revealer({
