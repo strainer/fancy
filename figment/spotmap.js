@@ -426,7 +426,7 @@ function addSpotmap(fig,vplay) {
     _bmpspot+=mv 
     
     if(spot.parent[spot.top-1] === undefined ){
-      conlog("bad shovin fore")
+      conlog("bad shovi`n fore")
     } 
         
     if(clld===spot.top){
@@ -553,7 +553,19 @@ function addSpotmap(fig,vplay) {
     
     //uses:    valq_at_dlsi
     //updates: sect_at_dlsi and sectppl
-    histosort(sectn  ,st,ov) //developed in histosort.js
+    //~ histosort(sectn  ,st,ov, sect_at_dlsi ,valq_at_dlsi, sectppl) 
+    //~ histosort(dv,st,ov,secti,Ar,scppl)
+    barsort({
+      st:st  ,ov:ov 
+     ,barnum: sectn 
+     ,barfreq:sectppl
+     ,keysbar:sect_at_dlsi
+     ,scores: valq_at_dlsi 
+     ,burnscore:1
+    }) //,scores:,st:,ov:,keysbar:,barfreq:,burnscore:
+
+    //developed in histosort.js
+    
     //~ conlog2("histo",sectn,st,ov,sn)
     //~ checkspots("pre_veloshuf")
     /// reshuffles dlns according to sect_at_dlsi 
@@ -605,11 +617,38 @@ function addSpotmap(fig,vplay) {
     }
   }
 
-  function histosort(dv,st,ov){
+
+  //st,ov define a contiguous range within keysbar and scores
+  //which are parallel feilds arrays of the same key records
+  //default is st=0, ov=length
+  //this is so that a subrange of a longer list can be redivided.
+  //keysbar and barfreq can be used to reorder a subrange of
+  //keyrecs or whole set
+  // 
+
+  var cntofsub=[],destroom=[],destofsub=[]
+  var wkcnt=0,wkcyc=100 //these count use of arrays
+
+  function barsort(pr){ //barnum:,scores:,st:,ov:,keysbar:,barfreq:,burnscore:
     
-    var avg=-0 , val=-0 ,nb=ov-st, secti=sect_at_dlsi
+    var barnm  = pr.barnum
+       ,scores = pr.scores
+       ,barndx = pr.keysbar||[]
+       ,sectppl= pr.barfreq||[]
+       ,st=pr.st||0 
+       ,ov=pr.ov||scores.length
+       ,resol=pr.resol||5  //over sample x5
+       
+    if(!pr.burnscore){
+      scores=[]
+      for(var i=st; i<ov; i++){
+        scores[i]=pr.scores[i]
+      }
+    }
     
-    var Ar = valq_at_dlsi ,minv=Ar[st],maxv=Ar[st] 
+    var avg=-0 , val=-0 ,nb=ov-st
+    
+    var minv=scores[st],maxv=scores[st] 
     
     for(var i=st; i<ov; i++) //need to max,min 
     { 
@@ -618,8 +657,8 @@ function addSpotmap(fig,vplay) {
       //~ val=Math.sqrt(
         //~ jote.x[j]*jote.x[j]+jote.y[j]*jote.y[j]+jote.z[j]*jote.z[j]
       //~ )
-      if(isNaN(Ar[i])) Ar[i]=0
-      val=Ar[i]||0
+      if(isNaN(scores[i])) scores[i]=0
+      val=scores[i]||0
       avg+=val
       if (val>maxv){ maxv=val }
       if (val<minv){ minv=val }
@@ -630,83 +669,96 @@ function addSpotmap(fig,vplay) {
     var hiv=0,havg=-0
     
     for(var i=st; i<ov; i++) 
-    { val=Ar[i]-=minv 
-      if (val>avg){ hiv++;havg+=val }
+    { val=scores[i]-=minv 
+      if(val>avg){ hiv++;havg+=val }
     }
    
     var qhi=2*havg/hiv  //prelim estimate of good maxv
-    if(qhi>=maxv){ qhi=maxv*0.99999999 }
+    if(qhi>=maxv){ qhi=maxv*0.99999999 } //(not used)
+                                         //maxv is used... 
+    var subdvn=resol*barnm
     
-    var hfac=5  //over sample x5
+    //~ console.log(subdvn)
+    //recycle these temp arrays
+    //var cntofsub=new Array(subdvn), destofsub=new Array(subdvn)
     
-    var hdiv=hfac*dv, hdi=hdiv-1
+    if (cntofsub.length<subdvn 
+     ||(wkcnt++>wkcyc&&cntofsub.length>subdvn)){
+      cntofsub   = new Array(subdvn) 
+      destofsub = new Array(subdvn)
+      wkcnt=0
+    }
     
-    //todo recycle these temp arrays
-    var uphistn=new Array(hdiv), destofup=new Array(hdiv)
-    for(var ch=0; ch<hdiv; ch++){ uphistn[ch]=0 }
+    for(var ch=0; ch<subdvn; ch++){ cntofsub[ch]=0 }
     
-    var destn=[]//sectppl
-    for(var ch=0; ch<dv; ch++){ destn[ch]=0 }
+    if (destroom.length<barnm){ destroom=new Array(barnm) }
+    
+    for(var ch=0; ch<barnm; ch++){ destroom[ch]=0 }
     
     for(var i=st; i<ov; i++){
-      //~ Ar[i]/maxv is not morethan 1, hdiv is max pot id
-      //gets floored so if v > hpot[dv] and v < hpot[dv+1] its counted
       
-      val=Math.floor(hdiv*Ar[i]/maxv)
-      val=(val>hdi)?hdi:val
-      uphistn[valq_at_dlsi[i]=val]++
+      val=Math.floor(subdvn*scores[i]/maxv)
+      val=(val<subdvn)?val:subdvn-1    //to opt this out increase maxv ?
+                                     //no, maxv is set deliberately low
+      cntofsub[scores[i]=val]++    //! scores is written here
+      
     }
     
-    var dvn=nb/dv ,dvnfl=Math.floor(dvn), dvrem=(dvn-dvnfl)*1.0000000001
-    var drem=-0, xx=(drem+dvrem)%1
-    var fillit=0, dvn=Math.floor(dvn) //err??
+    var rlbar=(nb/barnm)
+       ,fllbar=0,fldbar=0,spills=[]
+       ,nxtcap=rlbar+0.5, fcap=Math.floor(nxtcap)
     
-    for(var h=0; h<hdiv; h++){
+    //largest subdv is sometimes getting a key - fixit....
+    
+    //determining sub anchors to bar anchors  (anchor is first address)
+    //~ console.log("subdvn:",subdvn,'barnm:',barnm)
+    //~ 
+    
+    for(var sub=0; sub<subdvn; sub++){
       
-      destofup[h]=fillit        //uphistn bar h goes to dest[fillit]
-      destn[fillit]+=uphistn[h]  //destn[fillit] gets population of bar h
-      while(destn[fillit]>=(dvnfl+xx)){ //if dest[f] is full, fill then carry 
-        destn[fillit+1]+=(destn[fillit]-dvnfl-xx)  //to next 
-        destn[fillit]=dvnfl+xx                     //that fillit is full
-        fillit++                                   //and will fill no more 
-        drem=drem+dvrem
-        if(drem<1){ xx=0 }else{ drem-=1,xx=1}
-      } 
+      destofsub[sub]=fllbar            //cntofsub bar sub goes to dest[fllbar]
+      destroom[fllbar]+=cntofsub[sub]  //destroom[fllbar] gets population of bar sub
+
+      while(destroom[fllbar]>=fcap){
+        destroom[fllbar+1]+=destroom[fllbar]-fcap
+        destroom[fllbar]=fcap
+        fllbar++
+        nxtcap+=rlbar-fcap
+        fcap=Math.floor(nxtcap)
+        //~ if(fllbar-fldbar>1){ spills.push(fldbar); fldbar++ }
+      }
+      //~ fldbar=fllbar
     }
+      
+    //cntofsub[h] is the freq of sub 
+    //destroom[fillit] is capacity of bars
     
-    for(var i=0;i<dv;i++){ sectppl[i]=destn[i]=Math.ceil(destn[i]) }
+    
+    //destroom is parallel to sectppl
+    //destroom must empty but sectppl wants returned
+    //ceil of destroom is complicated here by dvrems fraction..
+    for(var i=0;i<barnm;i++){ sectppl[i]=destroom[i] }
     
     for(var i=st; i<ov; i++){ 
-      var hpotofi=valq_at_dlsi[i]
+      var hpotofi=scores[i]
       
-      while(destn[destofup[hpotofi]]===0){ destofup[hpotofi]++ }
-      destn[destofup[hpotofi]]--
-      secti[i]=destofup[hpotofi]
+      while(destroom[destofsub[hpotofi]]===0){ destofsub[hpotofi]++ }
+      destroom[destofsub[hpotofi]]--
+      barndx[i]=destofsub[hpotofi]
     }
     
-    ///////////////////
-    /*
-    for(var cn=0,ck=0;ck<dv;ck++){
-      if(sectppl[ck]){cn++}
-    }
-    if(!cn){ 
-      var oo="",jo="", jj=""
-      for(var ck=0;ck<dv;ck++){ oo+=" "+sectppl[ck] }
-      
-      conlog("sectpll",oo); oo=""
-      for(var i=st; i<ov; i++){ 
-        oo+=" "+secti[i]; 
-        jo+=" "+valq_at_dlsi[i] 
-        jj+=" "+dlns[i]
-      } 
-      conlog("josecs",oo); 
-      conlog("jovals",jo); 
-      conlog("jojois",jj); 
-    }
-    */
-    ///////////////////
+    //~ var spa,spb
+    //~ for(var s=0,e=spills.length;s<e;s++){
+      //~ if(spills[s]+1===spills[s+1]){
+        //~ spa=s
+        //~ while(spills[++s]+1===spills[s+1]){
+          //~ spb=s 
+        //~ }
+      //~ }
+    //~ }
+    
   }
-  
+
   function dln_end(sx){
     while( spot.parent[sx]!==spot.parent[sx+1])
     { sx=spot.parent[sx] }
