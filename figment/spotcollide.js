@@ -90,8 +90,8 @@ function addSpotcollide(fig,vplay) {
 
     fig.joteqclear()  //clear joteq (acceleration buffer)
 
-    _prx=0.9            //set proximity distance 
-    midst=_prx*0.45    //set proximity distance 
+    _prx=Drand.range(0,1.2)            //set proximity distance 
+    midst=_prx*0.5    //set proximity distance 
     //~ vplay.dragfac=0.1   //set drag factor
     //~ vplay.pressfac=0.003  //set pressure factor
     
@@ -199,7 +199,7 @@ function addSpotcollide(fig,vplay) {
     // center highest velocity drag  at close =nearf
     // edge lowest velocity drag at close=0
     // 
-    vplay.dragfac=0.0001//0.1   //set drag factor
+    vplay.dragfac=0.0008//0.1   //set drag factor
     vplay.pressfac=0.002  //set pressure factor
     
     var veldragpwr = vplay.dragfac*(midst-Math.abs(midst-hyp))/midst
@@ -210,13 +210,13 @@ function addSpotcollide(fig,vplay) {
     /// push/pull toward spacing
 
     //~ var pressforce= vplay.gravity / cf
-    var pressforce=(midst-hyp)/midst
+    var fast=1+veldragpwr*11,pressforce=(midst-hyp)/midst
     //~ pressforce=pressforce<0?-Math.sqrt(Math.abs(pressforce)):Math.sqrt(pressforce)
     
     if(pressforce<0){ //dist is beyond midpt
       pressforce=pressforce>-0.5?pressforce:-1.0-pressforce
     }else{  //dist is less than midpoint
-      pressforce=(pressforce*pressforce)
+      //~ pressforce=((pressforce))
     }
     
     var cf=(vplay.pressfac*pressforce)/hyp
@@ -229,12 +229,12 @@ function addSpotcollide(fig,vplay) {
     
     var pf= -cf*ag, qf=cf*bg
                                    //a-b
-    jote.qx[a] += dx*qf - veldragpwr*dvx*bg*1.15
-    jote.qy[a] += dy*qf - veldragpwr*dvy*bg*1.15
-    jote.qz[a] += dz*qf - veldragpwr*dvz*bg*1.15
-    jote.qx[b] += dx*pf + veldragpwr*dvx*ag*1.15
-    jote.qy[b] += dy*pf + veldragpwr*dvy*ag*1.15
-    jote.qz[b] += dz*pf + veldragpwr*dvz*ag*1.15
+    jote.qx[a] = jote.qx[a]*fast + dx*qf - veldragpwr*dvx*bg
+    jote.qy[a] = jote.qy[a]*fast + dy*qf - veldragpwr*dvy*bg
+    jote.qz[a] = jote.qz[a]*fast + dz*qf - veldragpwr*dvz*bg
+    jote.qx[b] = jote.qx[b]*fast + dx*pf + veldragpwr*dvx*ag
+    jote.qy[b] = jote.qy[b]*fast + dy*pf + veldragpwr*dvy*ag
+    jote.qz[b] = jote.qz[b]*fast + dz*pf + veldragpwr*dvz*ag
     
   }
    
