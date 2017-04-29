@@ -354,12 +354,12 @@ function createC3(){ //1 + 4 gbody and disk
   
   vplay.instaprops=
   { 
-   camRad:540
-   ,runcycle_step: 1.5 
-   ,pradius:80
-   ,forces:3
-   ,max_force: 5
-   ,max_vel: 1.5
+     camRad:540
+    ,runcycle_step: 1.5 
+    ,pradius:80
+    ,forces:3
+    ,max_force: 5
+    ,max_vel: 1.9
    }
 
   var nn=5

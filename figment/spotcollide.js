@@ -90,8 +90,8 @@ function addSpotcollide(fig,vplay) {
 
     fig.joteqclear()  //clear joteq (acceleration buffer)
 
-    _prx=Drand.range(0,1.2)            //set proximity distance 
-    midst=_prx*0.49    //set proximity distance 
+    _prx=Drand.range(0.2,1.0)            //set proximity distance 
+    midst=_prx*0.51    //set proximity distance 
     //~ vplay.dragfac=0.1   //set drag factor
     //~ vplay.pressfac=0.003  //set pressure factor
     
@@ -191,17 +191,19 @@ function addSpotcollide(fig,vplay) {
     
     var close=_prx - hyp
     
-    if(close<-1){ mtlogcn('b_more1'); return  }
-    if(close<0){ mtlogcn('b_more0'); return }   //max close = _nearf
+    //~ if(close<-1){ mtlogcn('b_more1'); return  }
+    //~ if(close<0){ mtlogcn('b_more0'); return }   //max close = _nearf
+    //~ if(close<-1){ return  }
+    if(close<0){ return }   //max close = _nearf
                        //close is 0 to _nearf
-    mtlogcn('a_less0')
+    //~ mtlogcn('a_less0')
     
     //2 effects: 
     // center highest velocity drag  at close =nearf
     // edge lowest velocity drag at close=0
     // 
     vplay.dragfac=0.0008//0.1   //set drag factor
-    vplay.pressfac=0.002  //set pressure factor
+    vplay.pressfac=0.0015  //set pressure factor
     
     var veldragpwr = vplay.dragfac*(midst-Math.abs(midst-hyp))/midst
     
@@ -218,8 +220,8 @@ function addSpotcollide(fig,vplay) {
       pressforce=pressforce>-0.5?pressforce:-1.0-pressforce
     }else{  //dist is less than midpoint
       
-      if((!(bg||ag))&&pressforce>0.9){
-        var aa=-0.02,bb=0.02
+      if((!(bg||ag))&&pressforce>0.87){
+        var aa=-0.025,bb=0.025
         var rd=Drand.gnorm(aa,bb)
         jote.x[a]+=rd,jote.x[b]-=rd
         Drand.gnorm(aa,bb)
