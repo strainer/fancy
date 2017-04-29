@@ -99,6 +99,17 @@ function addSpotlog(fig,vplay) {
     console.log()
   }
 
+  function spotswithkey(jd){
+    var sp=[]
+    for(var s=0;s<spot.top;s++){
+      if( spot.parent[s]!==0 &&
+          spot.dln_anchor[s]<=jd && 
+          jd<=(spot.dln_anchor[s]+spot.dln_span[s])){ sp.push(s)	} 
+    }
+    return sp
+  }
+  
+  window.spotswithkey = spotswithkey
   window.meterspots = meterspots
   window.dmcheckspot = dmcheckspot
 }
