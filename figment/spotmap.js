@@ -1184,22 +1184,37 @@ function addSpotmap(fig,vplay) {
   
   var ctrunk=0,_bmpspot=0
 
+  function maketrunks(n){
+    
+    if(n==1){ return [-1] }
+    
+    var r=[0,-1]
+    for(var i=n-2;i>0;i--){
+      r.push(0,-1,i,-1)
+      if(n%2) r.push(1,-1)
+    }
+    return r
+  }
+  
   function tendto_spotmap(){
         
-    var trunksi=[ 
-      0,-1,8,-1,0,-1,1,-1,0,-1,3,-1,0,-1,4,-1 ,0,-1,2,-1,0,-1,6,-1,0,-1,1,-1,0,-1,3,-1
-     ,0,-1,8,-1,0,-1,2,-1,0,-1,5,-1,0,-1,1,-1,0,-1,3,-1,0,-1,1,-1,0,-1,7,-1,0,-1,2,-1 
-    ] //0 is the hottest spot, -1 is magic for do spot 0 alone 
+    //~ var trunksi=[ 
+      //~ 0,-1,8,-1,0,-1,1,-1,0,-1,3,-1,0,-1,4,-1 ,0,-1,2,-1,0,-1,6,-1,0,-1,1,-1,0,-1,3,-1
+     //~ ,0,-1,8,-1,0,-1,2,-1,0,-1,5,-1,0,-1,1,-1,0,-1,3,-1,0,-1,1,-1,0,-1,7,-1,0,-1,2,-1 
+    //~ ] //0 is the hottest spot, -1 is magic for do spot 0 alone 
       
-    var pad=0.15, trunkn=10       //pad factor for spot ids
+    var pad=0.15, trunkn=7  //trunkn is limited by max_subsect
+    
+    var trunksi=maketrunks(trunkn)
     
     //~ checkspots("beforebloom")
         
     if(spot.top===0){
       makeroot(jote.top) //makes spot 0 and 1
       
+      //~ setspotmax(trunkn+)
       //init trunk vals
-      ctrunk=5  //makes trunks 0 to 9 = spots 2 to 11
+      ctrunk=0  //makes trunks 0 to 9 = spots 2 to 11
       
       rebudbyvelo(
         //10 buds, from si1 fchild2 par= writepar
@@ -1212,12 +1227,15 @@ function addSpotmap(fig,vplay) {
       )
       
       spot.fchild[1]=2
-      _bmpspot=spot.top=_dsui 
+      _bmpspot=spot.top=_dsui
+      //~ console.log("inibump",_dsui)
+       
       var bui=_dsui
       for(var t=2; t<2+trunkn; t++){
         bloombyspace(t)
         if(t<(1+trunkn)){
           var trnx=Math.floor(1+(_dsui-bui)*0.125)
+          
           shovespots(trnx)
           bui=_dsui+=trnx
         }
@@ -1229,6 +1247,8 @@ function addSpotmap(fig,vplay) {
       spot.top=_dsui
       spot.parent[_dsui]=0 //parent of top zeroed
       
+      //~ conlogspots(0,56)
+      //~ console.log("-------------------------")
     }else{
       
       ctrunk=(++ctrunk)%(trunksi.length)
@@ -1244,15 +1264,18 @@ function addSpotmap(fig,vplay) {
          ,2  //dsui for budvelo 
         )
 
-        _bmpspot = spot.fchild[3]
+        _bmpspot = spot.fchild[3]||spot.top
         _dsui=spot.fchild[2]
         //~ conlogspot(2) 
         
         bloombyspace(2)
         for( ; _dsui<_bmpspot; _dsui++){ spot.parent[_dsui]=0 }
-        
+
       }else{ 
-            
+      
+      //~ console.log("redoing these:")
+      //~ conlogspots([cspot,cspot+1])
+      
       rebudbyvelo( 
         //2 spots onto 2spots
         // wpar is not par
@@ -1262,24 +1285,28 @@ function addSpotmap(fig,vplay) {
        ,2      //kidn
        ,cspot  //this SETs _dsui (for budvelo) 
       )
-
-      var cbran1=spot.fchild[cspot+1]
-      _bmpspot = cbran1
-
-      var cbran2
       
-      //~ conlog("bloom 2spots:",cspot,"due:",_dsui,"bmp:",_bmpspot,"top:",spot.top)
+      var cbran1= _bmpspot =spot.fchild[cspot+1]
+
       _dsui=spot.fchild[cspot]
+      
+      //~ console.log("bloom cspot",cspot,"bmp",_bmpspot,"dsu",_dsui)
       
       bloombyspace(cspot)
       
       for( ; _dsui<cbran1; _dsui++){ spot.parent[_dsui]=0 }
       spot.fchild[cspot+1]=_dsui //this may be automatic
       
-      cbran2=_bmpspot = (cspot<10)? spot.fchild[cspot+2] : spot.top
+      var cbran2=_bmpspot = (cspot+2<(trunkn+2))? spot.fchild[cspot+2] : spot.top
       
       //~ console.log("bloom 2spots:",cspot+1,"due:",_dsui,"bmp",_bmpspot,"top",spot.top)
+      //~ if(spot.parent[6]!==0){ console.log("pazgood") } 
+      
+      //~ console.log("spot:",cspot,"dsui:",_dsui,"bmp:",_bmpspot)
+      
       bloombyspace(cspot+1)
+      
+      //~ if(spot.parent[6]===0){ console.log("pazbad") } 
       
       for( ; _dsui<cbran2; _dsui++){ spot.parent[_dsui]=0 } 
       //invalidate the duff, or perhaps just the next
@@ -1345,7 +1372,11 @@ function addSpotmap(fig,vplay) {
   
 
   function conlogspots(a,e){
-    for(var i=a||0, ee=e||spot.top; i<ee;i++) conlogspot(i)
+    if(a.length){
+      for(var i=0, e=a.length; i<e;i++) conlogspot(a[i])
+    }else{
+      for(var i=a||0, ee=e||spot.top; i<ee;i++) conlogspot(i)
+    }
   }
   
   function conlogspot(s){
