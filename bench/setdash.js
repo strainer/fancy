@@ -129,9 +129,10 @@ function setdash(cdash,vplay){
   // Multiline Function String - Nate Ferrero 
   var keystext=heredoc(function(){/*
   <span class="keyba">View</span>
-  <span class="keybb">&nbsp;&nbsp;&nbsp;&nbsp;<-></span>  track
-  <span class="keybb">&nbsp;&nbsp;&nbsp;&nbsp;a-z</span>  in-out
-  <span class="keybb">&nbsp;cursor</span>  rotate
+  <span class="keybb">click obj</span>  track
+  <span class="keybb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<-></span>  next
+  <span class="keybb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a-z</span>  in-out
+  <span class="keybb">&nbsp;&nbsp;&nbsp;cursor</span>  rotate
   <span class="keybb">crsr+ctrl</span>  slide
   
   <span class="keyba">Time</span>
@@ -141,9 +142,9 @@ function setdash(cdash,vplay){
   <span class="keybb">&nbsp;&nbsp; u</span>  reverse 
   
   <span class="keyba">Misc</span>
-  <span class="keybb">&nbsp;g</span>  toggle grav
-  <span class="keybb">&nbsp;x</span>  expansion
-  <span class="keybb">&nbsp;s</span>  see bounds
+  <span class="keybb">&nbsp;g</span>  nograv-nova
+  <span class="keybb">&nbsp;x</span>  pulse
+  <span class="keybb">&nbsp;s</span>  view bounds
   <span class="keybb">&nbsp;k</span>  keys
 
   <br>
@@ -179,7 +180,7 @@ function setdash(cdash,vplay){
    ,func:function(a){ return vplay.printtime(a) } 
   },{
     seat:dsreadings 
-   ,legend:'iota:'
+   ,legend:'objects:'
    ,varkey:'iota'
    ,func:function(a){ return (a).toFixed(0) } 
   },{
@@ -193,7 +194,7 @@ function setdash(cdash,vplay){
     },{
       seat:dsreadings
      ,type:'runav'
-     ,legend:'movsprfrm:'
+     ,legend:'mvsperfrm:'
      ,varkey:'movperframe'
     },{
       seat:dsreadings
