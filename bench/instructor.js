@@ -42,6 +42,7 @@ var vplay = {
     ,model_clock:0     // units of innate
     ,model_pace: 0.2    //(12hr) 0.15 // units of model_clock
     ,max_force:  5      // units of model_clock
+    ,max_vel: 0
     ,nature: 0          //force and collision scheme
     ,forces: 0          //forces function
     
@@ -240,7 +241,7 @@ function liveframe(){
     { //console.log("do")
       var bitstep = vplay.runcycle_trip-vplay.model_clock 
       //~ console.log("bitstep",bitstep)
-      if(bitstep){ Fgm.velmove(bitstep); }
+      if(bitstep){ Fgm.velmove(bitstep,vplay.max_vel); }
       vplay.model_clock+=bitstep
       if(vplay.gravity){ donature(); vplay.movperframe++ }
       movstep-=bitstep
@@ -252,7 +253,7 @@ function liveframe(){
     { //console.log("do")
       var bitstep = -vplay.runcycle_trip+vplay.model_clock 
       //~ console.log("bitstep",bitstep)
-      if(bitstep){ Fgm.velmove(bitstep) }
+      if(bitstep){ Fgm.velmove(bitstep,vplay.max_vel) }
       vplay.model_clock+=bitstep
       if(vplay.gravity){ donature(); vplay.movperframe++ }
       movstep-=bitstep
@@ -260,9 +261,8 @@ function liveframe(){
     }
   } 
   //~ console.log("movstep",movstep)
-  if(movstep){ 
-    Fgm.velmove(movstep); 
-  }
+  if(movstep){ Fgm.velmove(movstep,vplay.max_vel) }
+  
   vplay.model_clock+=movstep
   //Fgm.frameshift() 
 }

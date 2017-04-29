@@ -74,14 +74,24 @@ function newFigment(size){ return (function(size){
     return _lastknd
   }
   
-  function velmove(t)
+  function velmove(t,maxv)
   {
+    maxv=maxv||10000000
+    var mav=maxv*maxv
     for(var i=0; i<jote.top; i++)
     { 
       //_topolar(jote.vz[i],jote.vz[i+1],jote.vz[i+2])
       //_rad += (1)*0.1
       //_tocarte(_rad,_the,_phi)
       //jote.vz[i]=_x;jote.vz[i+1]=_y;jote.vz[i+2]=_z
+      var z=jote.vx[i]*jote.vx[i]+jote.vy[i]*jote.vy[i]
+           +jote.vz[i]*jote.vz[i]
+      if(z>mav){
+        z=maxv/Math.sqrt(z)
+        jote.vx[i]*=z
+        jote.vy[i]*=z
+        jote.vz[i]*=z
+      }
       
       jote.x[i]=jote.x[i]+jote.vx[i]*t
       jote.y[i]=jote.y[i]+jote.vy[i]*t
