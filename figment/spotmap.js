@@ -15,7 +15,7 @@ function addSpotmap(fig,vplay) {
      ,Drand=fig.Drand ,Hrand=fig.Hrand
      ,rndu=fig.rndu, rndh=fig.rndh
   
-  var epsila=Math.pow(0.5,52)
+  var epsila=Math.pow(0.5,51)
   var epsilb=Math.pow(0.5,43)
 
   var _dsui=1    //due sui, 0 is not valid 
