@@ -16,7 +16,47 @@ function newViewport(fig,vplay){
   //-------------------------------------------------------//
   
   var vport={},thrLc,thrCl  //three arrays
+  
+  function onMouseDown(e) {
+    
+    var dm=vplay.renderer.domElement  ,camera=vplay.camera
+    
+    var rex= (e.clientX-dm.clientLeft)/dm.clientWidth
+      , rey= (e.clientY-dm.clientTop)/dm.clientHeight
+    
+    if(rex>1||rey>1) return
 
+    var mpick = new THREE.Vector3(rex*2 - 1  , 1 - rey*2, 0.5)
+    
+    //fill of 'pickingray' for old three version here: 
+    
+    var tan = Math.tan( 0.5 * THREE.Math.degToRad( camera.fov ) )
+    mpick.x *= tan * camera.aspect
+    mpick.y *= tan 
+    mpick.z = - 1
+    mpick.transformDirection( camera.matrixWorld ) 
+    //~ fudgeline( vplay.camera.position , mpick )
+    
+    fig.measure_spots()
+    
+    var jpick=fig.jotesonray( 
+     { x:vplay.camera.position.x/focus.sc+focus.x 
+      ,y:vplay.camera.position.y/focus.sc+focus.y
+      ,z:vplay.camera.position.z/focus.sc+focus.z
+     },{ 
+       x:mpick.x
+      ,y:mpick.y
+      ,z:mpick.z 
+     })
+      
+      
+    if(jpick.n){ reFocusThree(jpick.ar[0]) }
+    else{ reFocusThree(-1) }
+    
+  } 
+  // 3pos = (jpos-focp)*focs
+  // 3pos/focs+focp=jpos
+  
   function initview(container) {
     if(!vplay.renderer.domElement){
       
@@ -38,7 +78,8 @@ function newViewport(fig,vplay){
       
     }
 
-    vplay.camera = new THREE.PerspectiveCamera( 18
+    vplay.camspan=18
+    vplay.camera = new THREE.PerspectiveCamera( vplay.camspan
       ,( window.innerWidth-vplay.displaybugi) / (window.innerHeight-vplay.displaybugi)
       , 0.0000001, 400000000 )
     vport.camlook=new THREE.Vector3(-0,-0,-0)
@@ -47,6 +88,9 @@ function newViewport(fig,vplay){
     //clear scene 
     for(var kid=vplay.scene.children.length-1;kid>=0;kid--)
     { vplay.scene.remove(vplay.scene.children[kid]) } 
+ 
+    
+    document.addEventListener('mousedown', onMouseDown, false);
     
     if(vplay.rendermode===0){
       vport.syncrender=syncrender
@@ -91,7 +135,7 @@ function newViewport(fig,vplay){
       velcolor(vplay.colorfac)
       velcolor(vplay.colorfac)
       velcolor(vplay.colorfac)
-                  
+                             
     }else if(vplay.rendermode===1){
       
       var ambientLight = new THREE.AmbientLight(0xcccccc);
@@ -287,6 +331,42 @@ function newViewport(fig,vplay){
   }
 
 
+  function fudgeline(a,b){
+    if(!('vbex' in vport)){ vport.vbex=[] }
+    
+    var d=vport.vbex.length, mag=15000
+    //~ var vtex =[ //trace a cuboid, 15 links over 12 edges
+      //~ [0, 0, 0] 
+     //~ ,[(b.x-a.x)*mag, (b.y-a.y)*mag, (b.z-a.z)*mag]
+    //~ ]
+    var vtex =[ //trace a cuboid, 15 links over 12 edges
+      [a.x,a.y,a.z] 
+     ,[a.x+b.x*mag, a.y+b.y*mag, a.z+b.z*mag] 
+    ]
+          
+    vport.vbex[d] = new THREE.Line( 
+      new THREE.Geometry()
+     ,new THREE.LineBasicMaterial({ 
+       color: 0xff5f5f, opacity: 1 ,transparent:false
+     }) 
+    )
+
+    for(var c=0;c<vtex.length;c++){
+      vport.vbex[d].geometry.vertices.push(
+        new THREE.Vector3( vtex[c][0], vtex[c][1], vtex[c][2] )
+      )
+    }
+    
+    //whay nay?
+    vport.vbex[d].geometry.computeBoundingSphere()
+    vplay.scene.add( vport.vbex[d] )
+    //vport.vbex[d].position.set( a.x,a.y,a.z )
+    vport.vbex[d].scale.set(1,1,1)
+    vport.vbex[d].visible=true
+
+    console.log("tis",vtex[0],vtex[1])
+  }
+
   function setupvbox(){
     vport.vbox=[]
 
@@ -317,11 +397,20 @@ function newViewport(fig,vplay){
     vplay.scene.add( vport.vbox[0] )
   }
   
+  
+  var ccc=0
   function vboxspot(turnoff){
     
     var spot =fig.spot
     if(!vport.hasOwnProperty('vbox')){ setupvbox() } //made a vbox
 
+    //~ if('vbex' in vport && vport.vbex.length){
+      //~ console.log("exists")
+      //~ vplay.scene.add( vport.vbex[0] )
+      //~ vport.vbex[0].visible=true
+      //~ if(ccc++<10){ console.log(vport.vbex[0])} 
+    //~ }
+    
     if((turnoff||vplay.seespots==-1)){
       
       //~ if( vport.vbox[1].visible )
@@ -369,6 +458,7 @@ function newViewport(fig,vplay){
     for(var si=spot.top; si<vport.vbox.length;si++)
     { vport.vbox[si].visible=false }
   }
+
 
   var focus={ 
     chng:0, wc:-1, distb:0, jc:0,jd:-1,je:0, sc:1,sd:1 ,cam:0, timer:0, x:0,y:0,z:0 
@@ -744,6 +834,8 @@ function newViewport(fig,vplay){
     vplay.renderer.setSize( 
       window.innerWidth-vplay.displaybugi, window.innerHeight-vplay.displaybugi )
   }
+  
+  vplay.focus        = focus 
   
   vport.spincam      = spincam 
   vport.ctrlcam      = ctrlcam 
