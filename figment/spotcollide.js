@@ -90,8 +90,8 @@ function addSpotcollide(fig,vplay) {
 
     fig.joteqclear()  //clear joteq (acceleration buffer)
 
-    _prx=Drand.range(0,1.2)            //set proximity distance 
-    midst=_prx*0.5    //set proximity distance 
+    _prx=Drand.range(0.2,1.0)            //set proximity distance 
+    midst=_prx*0.51    //set proximity distance 
     //~ vplay.dragfac=0.1   //set drag factor
     //~ vplay.pressfac=0.003  //set pressure factor
     
@@ -143,6 +143,7 @@ function addSpotcollide(fig,vplay) {
     return
   } 
  
+
   function crossleafs(p,q){
     mtlogcn('crossl')
     squareloop(
@@ -190,17 +191,19 @@ function addSpotcollide(fig,vplay) {
     
     var close=_prx - hyp
     
-    if(close<-1){ mtlogcn('b_more1'); return  }
-    if(close<0){ mtlogcn('b_more0'); return }   //max close = _nearf
+    //~ if(close<-1){ mtlogcn('b_more1'); return  }
+    //~ if(close<0){ mtlogcn('b_more0'); return }   //max close = _nearf
+    //~ if(close<-1){ return  }
+    if(close<0){ return }   //max close = _nearf
                        //close is 0 to _nearf
-    mtlogcn('a_less0')
+    //~ mtlogcn('a_less0')
     
     //2 effects: 
     // center highest velocity drag  at close =nearf
     // edge lowest velocity drag at close=0
     // 
     vplay.dragfac=0.0008//0.1   //set drag factor
-    vplay.pressfac=0.002  //set pressure factor
+    vplay.pressfac=0.0015  //set pressure factor
     
     var veldragpwr = vplay.dragfac*(midst-Math.abs(midst-hyp))/midst
     
@@ -210,13 +213,22 @@ function addSpotcollide(fig,vplay) {
     /// push/pull toward spacing
 
     //~ var pressforce= vplay.gravity / cf
-    var fast=1+veldragpwr*11,pressforce=(midst-hyp)/midst
+    var fast=1+veldragpwr*11 ,pressforce=(midst-hyp)/midst
     //~ pressforce=pressforce<0?-Math.sqrt(Math.abs(pressforce)):Math.sqrt(pressforce)
-    
+    //more distant. more negative pressforce
     if(pressforce<0){ //dist is beyond midpt
       pressforce=pressforce>-0.5?pressforce:-1.0-pressforce
     }else{  //dist is less than midpoint
-      //~ pressforce=((pressforce))
+      
+      if((!(bg||ag))&&pressforce>0.87){
+        var aa=-0.025,bb=0.025
+        var rd=Drand.gnorm(aa,bb)
+        jote.x[a]+=rd,jote.x[b]-=rd
+        Drand.gnorm(aa,bb)
+        jote.y[a]+=rd,jote.y[b]-=rd
+        Drand.gnorm(aa,bb)
+        jote.z[a]+=rd,jote.z[b]-=rd
+      }
     }
     
     var cf=(vplay.pressfac*pressforce)/hyp
@@ -232,6 +244,7 @@ function addSpotcollide(fig,vplay) {
     jote.qx[a] = jote.qx[a]*fast + dx*qf - veldragpwr*dvx*bg
     jote.qy[a] = jote.qy[a]*fast + dy*qf - veldragpwr*dvy*bg
     jote.qz[a] = jote.qz[a]*fast + dz*qf - veldragpwr*dvz*bg
+    
     jote.qx[b] = jote.qx[b]*fast + dx*pf + veldragpwr*dvx*ag
     jote.qy[b] = jote.qy[b]*fast + dy*pf + veldragpwr*dvy*ag
     jote.qz[b] = jote.qz[b]*fast + dz*pf + veldragpwr*dvz*ag
@@ -295,6 +308,212 @@ function addSpotcollide(fig,vplay) {
     return true
   }
   
+  //spotexam(par,ray)
+  //
+  //for finding jotes in ray
+  //spotmatch=rayinspot(sp,ra)
+  //leafexam =raytojotes(sp,ra) //jotes v*0
+  //
+  //for finding jotes hit jotes?
+  //spots bnds must be set up for time intvl 
+  //spotmatch=rayinspot(sp,ra,tmax)
+  //leafexam =raytojotes(sp,ra)
+  
+  //same alg used for ray to jote and jote to jote:
+  var leafexam,spotexam
+  function spotexam(par,ra){ //par is spot, ra is ray or jote
+    
+    var kn=_listkids(par)
+    if(!kn){               //is leaf, _klev is unchanged
+      leafexam(par,ra) 
+      return 
+    }
+    
+    var kids=_kcac[_klev] //_** set with _listkids
+    
+    for(var i=0 ; i<kn; i++ )
+    { if(spotmatch(kids[i],ra)){
+        spotexam(kids[i],ra) //praps just use _kkids
+      } 
+    }
+    _klev-- //_** finished with this level of kid list cache
+  }
+  
+  
+  //~ function jotesonray(cp,cv){
+    //~ function rayinleaf(s,ra)
+    
+  function jotesonray(cp,cv){
+    
+    var ra={ 
+      sx:cp.x ,sy:cp.y ,sz:cp.z 
+     ,tx:cv.x ,ty:cv.y ,tz:cv.z 
+    }
+    
+    _fndn=0, _skimdistsqrd=0.02/vplay.focus.sc
+    
+    if(spot.top<5){
+      //~ console.log("hhh",vplay.focus.sc)
+      //~ _skimdistsqrd=10*vplay.focus.sc
+      for(var c=0,e=jote.top;c<e;c++){
+        
+        joteinray(c,ra) 
+      }
+      
+      //~ console.log("fhh",_fndn)
+      return {n:_fndn,ar:_fnds}
+    }
+    
+    spotmatch = rayinspot
+    leafexam  = rayinleaf
+    
+    spotexam(1,ra)
+    
+    //~ console.log("found",_fndn,"hits")
+    
+    //~ while(_fndn>0){
+      //~ var j=_fnds[--_fndn]
+      //~ jote.ccolor[j*3  ]=13
+      //~ jote.ccolor[j*3+1]=13
+      //~ jote.ccolor[j*3+2]=13
+      //~ jote.bcolor[j*3  ]=13
+      //~ jote.bcolor[j*3+1]=13
+      //~ jote.bcolor[j*3+2]=13
+    //~ }
+    
+    return {n:_fndn,ar:_fnds}
+  }
+  
+  
+  function rayinleaf(s,ra){
+    for(var c=spot.dln_anchor[s],e=c+spot.dln_span[s];c<e;c++){
+      joteinray(dlns[c],ra) 
+    }
+  }
+  
+  function joteinray(j,ra){
+    var px=(ra.sx-jote.x[j]) ,py=(ra.sy-jote.y[j]) ,pz=(ra.sz-jote.z[j])
+    
+    var VV = (ra.tx)*(ra.tx) + (ra.ty)*(ra.ty) + (ra.tz)*(ra.tz)
+      , VP = (ra.tx)*px + (ra.ty)*py +(ra.tz)*pz 
+    
+    if(VP<0)       //looking forward?
+    { 
+      var tm=0-VP/VV //time till min sep
+      //~ console.log("tm",tm)
+      px+=ra.tx*tm , py+=ra.ty*tm , pz+=ra.tz*tm 
+      var dsq=(px*px+py*py+pz*pz)/tm
+      if(dsq<_skimdistsqrd){ _fnds[_fndn++]=j } 
+    } 
+  }
+  
+  
+  
+  var _rayx,_rayy,_rayz,_rayt ,_fnds=[] ,_fndn=0, _skimdistsqrd
+  
+  function rayinspot(s,ra){
+    
+    //~ console.log("spot try",s,ra)
+    //~ conlogspot(s)
+    
+    var lbx=spot.lbx[s]-0.1 ,lby=spot.lby[s]-0.1 ,lbz=spot.lbz[s]-0.1
+       ,hbx=spot.hbx[s]+0.1 ,hby=spot.hby[s]+0.1 ,hbz=spot.hbz[s]+0.1
+    
+    var sx=ra.sx ,sy=ra.sy ,sz=ra.sz //start dimensions
+    var tx=ra.tx ,ty=ra.ty ,tz=ra.tz
+    
+    var tc=0,td=0,te=0
+
+    if (sx<lbx){
+      //~ console.log("sx up");
+      if(tx<=0) { 
+        //~ console.log("sx away"); 
+        return 0 }
+      tc=(lbx-sx)/tx  //here sx==lbx
+      //~ console.log("tc",tc);
+      sx=lbx
+    }else if(sx>hbx){
+      //~ console.log("sx dn");
+      if(tx>=0) { 
+        //~ console.log("sx away"); 
+        return 0 }
+      tc=(hbx-sx)/tx //here sx==hbx
+      //~ console.log("tc",tc);
+      sx=hbx
+    }
+    
+    sy+=tc*ty ,sz+=tc*tz
+    //~ console.log("sx",sx,"sy",sy,"sz",sz);
+    //in the game, and sx is in bounds
+    if (sy<lby){
+      //~ console.log("sy up");
+      if(ty<=0) { 
+        //~ console.log("sy away"); 
+        return 0 }
+      td=(lby-sy)/ty  //here after tc sy==lbx
+      //~ console.log("td",td);
+      sy=lby
+    }else if(sy>hby){
+      //~ console.log("sy dn");
+      if(ty>=0) { 
+        //~ console.log("sy away"); 
+        return 0 }
+      td=(hby-sy)/ty //here after tc sy==lbx
+      //~ console.log("td",td);
+      sy=hby
+    }
+   
+    if(td){
+      sx+=td*tx
+      if(sx<lbx||sx>hbx) { 
+        //~ console.log("sx aft away"); 
+        return 0 } 
+      //sx may have left bounds
+      sz+=td*tz
+    }
+    //~ console.log("sx",sx,"sy",sy,"sz",sz);
+    
+    //still in the game, and sx and sy are in bounds
+    if (sz<lbz){
+      //~ console.log("sz up");
+      if(tz<=0) { 
+        //~ console.log("sz away"); 
+        return 0 }
+      te=(lbz-sz)/tz 
+      //~ console.log("te",te);
+      sz=lbz
+      
+    }else if(sz>hbz){
+      //~ console.log("sz dn");
+      if(tz>=0) { 
+        //~ console.log("sz away"); 
+        return 0 }
+      te=(hbz-sz)/tz 
+      //~ console.log("te",te);
+      sz=hbz
+    }
+
+    if(te){	
+      sx+=te*tx
+      if(sx<lbx||sx>hbx) { 
+        //~ console.log("sx aft away"); 
+        return 0 }
+      sy+=te*ty
+      if(sy<lby||sy>hby) { 
+        //~ console.log("sy aft away"); 
+        return 0 }
+    }
+    //~ console.log("sx",sx,"sy",sy,"sz",sz);
+    //by this point line is inside spot
+    _rayx=sx,_rayy=sy,_rayz=sz,_rayt=tc+td+te
+    
+    //~ console.log("spot ok",s)
+    return 1
+    
+  }
+
+
+
   function spotnear(a,b){
     
     //if a highbnd is lower than lwbnd   h<L  L-h >0
@@ -332,6 +551,7 @@ function addSpotcollide(fig,vplay) {
            
   fig.spotcollide = spotcollide
   fig.spotclump   = spotclump
+  fig.jotesonray  = jotesonray
   
   return fig
 
