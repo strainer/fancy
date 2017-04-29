@@ -6,7 +6,7 @@
 /// instructor.js - hanging together 
 
 var vplay = {
-
+ 
   worlds:{
     0:{name:"Solar System",desc:""}
    ,1:{name:"Near Earths",desc:""}
@@ -267,7 +267,13 @@ function liveframe(){
   //Fgm.frameshift() 
 }
 
+var soltest=1
 function donature(){
+  
+  //~ if(vplay.model_clock>=31536000){ console.log("nbow now") }
+  if((vplay.world==0)&&soltest&&(vplay.model_clock>=31536000)){
+    soltest=0; console.log("solar test!"); solarlog()
+  }
   
   if (vplay.explode){ Fgm.pulsevel(0.0004) }
   
@@ -366,42 +372,47 @@ function reverseTime2()
 }
 
 
-function footest(){
-  if(vplay.model_clock>=31536000){ //380days  a year 31536000,31536000
-    if(!done){
-      console.log("sun x,y,z")
-      console.log( 
-      Fgm.jote.x[0]
-     ,Fgm.jote.y[0]
-     ,Fgm.jote.z[0]
-     )
-      
-      console.log("earth x,y,z")
-      console.log(
-       Fgm.jote.x[3] - Fgm.jote.x[0]
-      ,Fgm.jote.y[3] - Fgm.jote.y[0]
-      ,Fgm.jote.z[3] - Fgm.jote.z[0])
-     
-      console.log( 
-      Fgm.jote.x[3]-(-2.621254793799914e+07 ) -Fgm.jote.x[0]
-     ,Fgm.jote.y[3]-( 1.447454142463674e+08)  -Fgm.jote.y[0]
-     ,Fgm.jote.z[3]-(-5.684340452872217e+03)  -Fgm.jote.z[0]
-     )
-     
-     console.log( 
-      Fgm.jote.vx[3]-(-2.978321979483584e+01) -Fgm.jote.vx[0]
-     ,Fgm.jote.vy[3]-(-5.419948414057951e+00) -Fgm.jote.vy[0]
-     ,Fgm.jote.vz[3]-(-4.395459903603349e-04) -Fgm.jote.vz[0]
-      )
-    done=1
-    }	
-  }
+function solarlog(){
+  console.log("Comparing positions at time:",vplay.model_clock)
+  //~ console.log("SunPos: x,y,z")
+  //~ console.log( Fgm.jote.x[0],Fgm.jote.y[0],Fgm.jote.z[0])
   
-    /*
-    2458119.500000000 = A.D. 2018-Jan-01 00:00:00.0000 TDB
-    -2.621254793799914E+07  1.447454142463674E+08 -5.684340452872217E+03
-    -2.978321979483584E+01 -5.419948414057951E+00 -4.395459903603349E-04
-    4.906719070077783E+02  1.470997370734093E+08 -2.595925284507031E-02
-    
-    */
+  var ex=Fgm.jote.x[3] - Fgm.jote.x[0] //earth pos - sun pos
+     ,ey=Fgm.jote.y[3] - Fgm.jote.y[0]
+     ,ez=Fgm.jote.z[3] - Fgm.jote.z[0]
+      
+  var mx=Fgm.jote.x[3]-Fgm.jote.x[4] //moon dists
+     ,my=Fgm.jote.y[3]-Fgm.jote.y[4]
+     ,mz=Fgm.jote.z[3]-Fgm.jote.z[4]
+     
+  var moondist=Math.sqrt(mx*mx+my*my+mz*mz)
+  
+  //~ console.log("EarthFromSunPos: x,y,z")
+  //~ console.log( ex,ey,ez )
+ 
+  var jez=-2.621254793799914e+07
+     ,jex=1.447454142463674e+08
+     ,jey=-5.684340452872217e+03
+     
+  console.log("Earth Offset From JPL Earth: dx,dy,dz, hyp")
+  var eoff=Math.sqrt((jex-ex)*(jex-ex)+(jey-ey)*(jey-ey)+(jez-ez)*(jez-ez))
+
+  console.log( jex-ex,jey-ey,jez-ez,eoff )
+  console.log("Earth Offset in moondists")
+  console.log( (jex-ex)/moondist,(jey-ey)/moondist,(jez-ez)/moondist,eoff/moondist )
+  
+  console.log("Earth Vel m/s Offset From JPL Earth: dx,dy,dz")
+  console.log( 
+   Fgm.jote.vx[3]- (-2.978321979483584e+01) -Fgm.jote.vx[0]
+  ,Fgm.jote.vy[3]- (-5.419948414057951e+00) -Fgm.jote.vy[0]
+  ,Fgm.jote.vz[3]- (-4.395459903603349e-04) -Fgm.jote.vz[0]
+  )
+
+/*
+2458119.500000000 = A.D. 2018-Jan-01 00:00:00.0000 TDB
+-2.621254793799914E+07  1.447454142463674E+08 -5.684340452872217E+03
+-2.978321979483584E+01 -5.419948414057951E+00 -4.395459903603349E-04
+4.906719070077783E+02  1.470997370734093E+08 -2.595925284507031E-02
+
+*/
 }
