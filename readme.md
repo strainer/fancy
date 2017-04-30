@@ -5,7 +5,7 @@ Fancy is a physics computation project developed with fanciful ideas of creating
 
 To this end a general physics simulator is under developement and is tested on some basic examples in a [web demo](http://strainer.github.io/fancy/). 
 
-See the [Fancy wiki](https://github.com/strainer/fancy/wiki) for design docs.
+[Fancy wiki](https://github.com/strainer/fancy/wiki) has some design docs.
 
 ### Web Demo
 The [demo](http://strainer.github.io/fancy/) selects and initialises virtual worlds called 'figments' and renders them for display and testing. Everything is currently orbital in kind, as this is most straightforward to begin with. The demo has keyboard controls for zooming and time controls and some readings about the focused object.
