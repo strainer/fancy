@@ -542,7 +542,9 @@ function newViewport(fig,vplay){
     if(jd===-1)
     { vplay.nowfocus="free tracking" }
     else if(isFinite(Fgm.jote.knd[jd])&&Fgm.jkind.nom[Fgm.jote.knd[jd]])
-    { vplay.nowfocus=jd+" "+Fgm.jkind.nom[Fgm.jote.knd[jd]] } 
+    { vplay.nowfocus=jd+" "+Fgm.jkind.nom[Fgm.jote.knd[jd]] }
+    
+    if('dash' in vplay){ vplay.dash.redrawDash()} 
   }
 
   function changingfocus(pace){
