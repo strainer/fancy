@@ -1037,13 +1037,14 @@ function createC11(){ //cloud
   { 
      forces:3
     ,max_force:  2
+    ,max_vel: 1.2
     ,pradius:40.0
     ,firstfocus:-1
     ,runcycle_step : 2.0
     ,camRad:600
   }
 
-  var nh=120 ,spc=2
+  var nh=50 ,spc=2
   
   //~ Talter.setpos(0,0,0)
   //~ Talter.setvel(0,0,0)

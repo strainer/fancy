@@ -155,6 +155,7 @@ function setupfigview(fig){
 var adash= newDash("foo")
 setdash(adash,vplay)
 
+vplay.dash=adash
 adash.redrawDash()
 
 setkeys()
