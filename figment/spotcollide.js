@@ -161,7 +161,7 @@ function addSpotcollide(fig,vplay) {
     ) 
   }
 
-  function triangleloop(p,e,fn){ //checked by making 1 spot leaf
+  function triangleloop(p,e,fn){ 
     for( var q=p+1 ;q<e ;q=(++q<e)?q:(++p+1) )  //p(p-1)/2
     { fn(p,q) }	
   }
@@ -182,10 +182,6 @@ function addSpotcollide(fig,vplay) {
       , dy = jote.y[a]-jote.y[b]
       , dz = jote.z[a]-jote.z[b]
     
-    var dvx = jote.vx[a]-jote.vx[b]
-      , dvy = jote.vy[a]-jote.vy[b]
-      , dvz = jote.vz[a]-jote.vz[b]
-    
     var cf = (dx*dx + dy*dy + dz*dz)
     var hyp=Sqrt(cf)
     
@@ -198,10 +194,15 @@ function addSpotcollide(fig,vplay) {
                        //close is 0 to _nearf
     //~ mtlogcn('a_less0')
     
+    var dvx = jote.vx[a]-jote.vx[b]
+      , dvy = jote.vy[a]-jote.vy[b]
+      , dvz = jote.vz[a]-jote.vz[b]
+    
     //2 effects: 
     // center highest velocity drag  at close =nearf
     // edge lowest velocity drag at close=0
     // 
+    
     vplay.dragfac=0.0008//0.1   //set drag factor
     vplay.pressfac=0.0015  //set pressure factor
     

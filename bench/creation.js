@@ -362,7 +362,7 @@ function createC3(){ //1 + 4 gbody and disk
     ,max_vel: 1.9
    }
 
-  var nn=5
+  var nn=6
   
   Talter.setpos(0,0,0)
   Talter.setvel(0,0,0)
@@ -399,7 +399,7 @@ function createC3(){ //1 + 4 gbody and disk
   Talter.setaslast(0)
   
   Talter.addspinring({
-    num:(80*nn), rad:2.4, phi:0, pull:1
+    num:(60*nn), rad:2.4, phi:0, pull:1
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gnorm( 0.76,1.64)} 
     ,velf:function(){return Drand.gnorm(-0.09,0.09)} 
@@ -408,7 +408,7 @@ function createC3(){ //1 + 4 gbody and disk
   Talter.colorprev({ r:6,g:0.7,b:0.6,rfun:0,bfun:0,gfun:0 })
 
   Talter.addspinring({
-    num:(130*nn), rad:2.9, phi:0, pull:1
+    num:(100*nn), rad:2.9, phi:0, pull:1
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gnorm( 0.76,1.64)} 
     ,velf:function(){return Drand.gnorm(-0.09,0.09)} 
@@ -417,7 +417,7 @@ function createC3(){ //1 + 4 gbody and disk
   Talter.colorprev({ r:4,g:1.1,b:0.9,rfun:0,bfun:0,gfun:0 })
   
   Talter.addspinring({
-    num:(180*nn), rad:3.6, phi:0, pull:1
+    num:(140*nn), rad:3.6, phi:0, pull:1
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gspire( 0.30,1.80)} 
     ,velf:function(){return Drand.gnorm(-0.01,0.01)} 
@@ -426,7 +426,7 @@ function createC3(){ //1 + 4 gbody and disk
   Talter.colorprev({ r:1.9,g:3.9,b:1.5,rfun:0,bfun:0,gfun:0 })
      
   Talter.addspinring({
-    num:(300*nn), rad:4.4, phi:0, pull:1
+    num:(230*nn), rad:4.4, phi:0, pull:1
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gnorm( 0.76,3.04)} 
     ,velf:function(){return Drand.gnorm(-0.05,0.05)} 
@@ -435,7 +435,7 @@ function createC3(){ //1 + 4 gbody and disk
   Talter.colorprev({ r:1.1,g:1.8,b:4.5,rfun:0,bfun:0,gfun:0 })
      
   Talter.addspinring({
-    num:(270*nn), rad:5.2, phi:0, pull:1
+    num:(220*nn), rad:5.2, phi:0, pull:1
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gnorm( 0.76,3.04)} 
     ,velf:function(){return Drand.gnorm(-0.05,0.05)} 
@@ -444,7 +444,7 @@ function createC3(){ //1 + 4 gbody and disk
   Talter.colorprev({ r:0.1,g:0.8,b:3.5,rfun:0,bfun:0,gfun:0 })
           
   Talter.addspinring({
-    num:(270*nn), rad:6.2, phi:0, pull:1
+    num:(220*nn), rad:6.2, phi:0, pull:1
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gnorm( 0.76,3.04)} 
     ,velf:function(){return Drand.gnorm(-0.05,0.05)} 
@@ -453,7 +453,7 @@ function createC3(){ //1 + 4 gbody and disk
   Talter.colorprev({ r:0.0,g:0.2,b:3.1,rfun:0,bfun:0,gfun:0 })
      
   Talter.setaslast(0)
-  purpball(nn*42,1,1.0,0.2)
+  purpball(nn*40,1,1.0,0.2)
 
 }
 
