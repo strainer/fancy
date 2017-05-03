@@ -770,7 +770,8 @@ function addSpotmap(fig,vplay) {
     
     var lwx,hix, lwy,hiy, lwz,hiz
     var cgx,cgy,cgz,cmass_tot
-   
+
+    var cnq=0 
     //could make a multidimension array for this of
     //spotat[lv][sui] and spotnat[lv] to stop redundant sweeps
     //(sparse js created arrays) 
@@ -853,8 +854,10 @@ function addSpotmap(fig,vplay) {
         
         spot.grd[sui]=(hix-lwx)*(hix-lwx)+(hiy-lwy)*(hiy-lwy)+(hiz-lwz)*(hiz-lwz)	
         
+        //~ cnq+=spot.grd[sui]
       } 
     }
+    //~ console.log("measure_spots",cnq)
   }
 
   function bimeasure_spots(tms){ //space with vel for tight collision

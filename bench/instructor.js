@@ -214,7 +214,7 @@ function framemaster() { // master frame dispatch
   ){
     var btick=vplay.rendermark; vplay.rendermark=perfnow() 
     btick=vplay.rendermark-btick
-    //rest for ui if browser is crawling under 20pfs
+    //rest for ui if browser is crawling under 20fps
     if( (btick<10) && !(vplay.paused))
     { liveframe(); vplay.pausetime=0  } 
       
