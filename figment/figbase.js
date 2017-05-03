@@ -24,7 +24,7 @@ function newFigment(size){ return (function(size){
      'len' : size                    //max size
     ,'top' : 0                       //next empty 
     ,'topg': 0                       //top gravitator
-    ,'topdxx': 0                     //removed
+    //~ ,'topdxx': 0                     //removed
     ,'x'   : new Float64Array(size)  //pos
     ,'y'   : new Float64Array(size)
     ,'z'   : new Float64Array(size)
@@ -86,7 +86,8 @@ function newFigment(size){ return (function(size){
       //jote.vz[i]=_x;jote.vz[i+1]=_y;jote.vz[i+2]=_z
       var z=jote.vx[i]*jote.vx[i]+jote.vy[i]*jote.vy[i]
            +jote.vz[i]*jote.vz[i]
-      if(z>mav){
+      
+      if(z>mav){ //limit speed
         z=maxv/Math.sqrt(z)
         jote.vx[i]*=z
         jote.vy[i]*=z
@@ -105,14 +106,37 @@ function newFigment(size){ return (function(size){
   } 
   
   function joteqtovel(p)
-  { p=p||1
+  { 
+    //~ var cllv=0,cllq=0  //dis stuff for debug determinizies
+    p=p||1
     for(var i=0; i<jote.top; i++)
-    { jote.vx[i]+=jote.qx[i]*p
+    { 
+      //~ cllv+=jote.vx[i]+jote.vy[i]+jote.vz[i]
+      //~ cllq+=jote.qx[i]+jote.qy[i]+jote.qz[i]
+      
+      jote.vx[i]+=jote.qx[i]*p
       jote.vy[i]+=jote.qy[i]*p
       jote.vz[i]+=jote.qz[i]*p
     }
+    //~ console.log("clvq",cllv,cllq)
   }
         
+  function spongeAll(u){
+    u=u||1024
+    for(var i=0; i<jote.top; i++){
+      jote.x[i]=Math.culp(jote.x[i],u)
+      jote.y[i]=Math.culp(jote.y[i],u)
+      jote.z[i]=Math.culp(jote.z[i],u)
+      jote.vx[i]=Math.culp(jote.vx[i],u)
+      jote.vy[i]=Math.culp(jote.vy[i],u)
+      jote.vz[i]=Math.culp(jote.vz[i],u)
+      jote.qx[i]=Math.culp(jote.qx[i],u)
+      jote.qy[i]=Math.culp(jote.qy[i],u)
+      jote.qz[i]=Math.culp(jote.qz[i],u)
+      
+    }
+  }
+  
   function recycle(){
     //store on a stack of empties to ressurrect later
   }
@@ -121,6 +145,7 @@ function newFigment(size){ return (function(size){
      velmove:velmove
     ,joteqclear:joteqclear
     ,joteqtovel:joteqtovel 
+    //~ ,spongeAll:spongeAll
     ,recycle:recycle
     ,jote:jote
     ,jkind:jkind
