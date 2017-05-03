@@ -268,7 +268,7 @@ function liveframe(){
   } 
   //~ console.log("movstep",movstep)
   if(movstep){ Fgm.velmove(movstep,vplay.max_vel) }
-  
+  if(vplay.seespots==1){ Fgm.measure_spots() }
   vplay.model_clock+=movstep
   //Fgm.frameshift() 
 }

@@ -54,6 +54,7 @@ function createC0(){ //solar system jpl data
    ,camRad:2057500000
    ,forces:2
    ,gravqual:0.10
+   ,seespots:1
   }
 
   var pld=planetdatas //file planetdat.js
@@ -1095,11 +1096,11 @@ function createC12(){ //bloop
   { 
      forces:3
     ,max_force:  2
-    ,max_vel: 1.25
+    ,max_vel: 0.45
     ,pradius:40.0
-    ,firstfocus:611
+    ,firstfocus:194
     ,runcycle_step : 2.0
-    ,camRad:400
+    ,camRad:70
   }
 
   var nh=750 ,spc=2
@@ -1120,11 +1121,11 @@ function createC12(){ //bloop
  
   Talter.masschargcol_prev({ //{ ar:,ag:,ab:,mb:,cb:,mfun:,cfun:,m:,c: }
     
-    ar:0.2 ,ag:0.2 ,ab:0.2
-   ,mr:1.2 ,mg:1.2 ,mb:1.2
-   ,cr:0.4 ,cg:0.4 ,cb:0.4
+    ar:0.2 ,ag:0.2 ,ab:0.8
+   ,mr:1.0 ,mg:1.0 ,mb:1.2
+   ,cr:0.4 ,cg:0.4 ,cb:0.8
     
-   ,mfun:function(){ return Drand.gteat(0.125,2) } ,m:0.0000125
+   ,mfun:function(){ return Drand.gteat(0.025,2) } ,m:0.0000325
    ,cfun:function(){ return Drand.gteat(0.125,2) } ,c:0 
   })
    
