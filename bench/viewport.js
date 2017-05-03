@@ -543,7 +543,7 @@ function newViewport(fig,vplay){
     { vplay.nowfocus="free tracking" }
     else if(isFinite(Fgm.jote.knd[jd])&&Fgm.jkind.nom[Fgm.jote.knd[jd]])
     { vplay.nowfocus=jd+" "+Fgm.jkind.nom[Fgm.jote.knd[jd]] }
-    
+     
     if('dash' in vplay){ vplay.dash.redrawDash()} 
   }
 
@@ -605,9 +605,9 @@ function newViewport(fig,vplay){
   //but must be applied here
   function ctrlcam() 
   { 
-    vplay.keyLRd = (vplay.keyLR===0)?0:(vplay.keyLRd+(vplay.keyLR*0.0028))*0.985
-    vplay.keyUDd = (vplay.keyUD===0)?0:(vplay.keyUDd+(vplay.keyUD*0.0028))*0.985
-    vplay.keyRd  = (vplay.keyR===0)?0:(vplay.keyRd+(vplay.keyR*0.0025))*0.91
+    vplay.keyLRd = (vplay.keyLR===0)?0:(vplay.keyLRd+(vplay.keyLR*0.0024))*0.98
+    vplay.keyUDd = (vplay.keyUD===0)?0:(vplay.keyUDd+(vplay.keyUD*0.0024))*0.98
+    vplay.keyRd  = (vplay.keyR===0)?0:(vplay.keyRd+(vplay.keyR*0.0024))*0.9
     vplay.keyCtrld = (vplay.keyCtrl==0||vplay.keyUD||vplay.keyLR)?0
      :(0.000045+vplay.keyCtrld)*0.995
     

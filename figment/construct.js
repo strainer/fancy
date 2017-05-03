@@ -23,7 +23,7 @@ function addConstruct(fig) {
      ,cr:-0,cg:-0,cb:-0
      ,mass:1,grp:1,knd:1,charge:0
      ,qw:0,qx:0,qy:0,qz:0
-     ,seam:0.9
+     ,seam:9/10
      ,due:0, cur:0, bfr:0, bfrclr:0
      ,adsta:function(){return 0}
      ,mdsta:function(){return 1}
@@ -164,6 +164,37 @@ function addConstruct(fig) {
       j++
     }
   
+    return (ins.due=j)-ins.bfr
+  }
+  
+  function addRndBlob(p){
+    
+    var rad=p.rad
+    var vvf=getprop(p,'velf',ins.mdsta,absnull)
+    
+    var inx=ins.x, iny=ins.y, inz=ins.z
+    
+    if(p.off){ inx+=(p.off.x)||0, iny+=(p.off.y)||0, inz+=(p.off.z)||0 }
+    //console.log("G",G)
+    
+    var j = ins.due
+    
+    for(var e=j+p.num; j<e; j++) {
+      jote.x[j]=inx+Drand.gnorm()*rad
+      jote.y[j]=iny+Drand.gnorm()*rad
+      jote.z[j]=inz+Drand.gnorm()*rad
+      
+      jote.vx[j]=Drand.gnorm()*vvf()
+      jote.vy[j]=Drand.gnorm()*vvf()
+      jote.vz[j]=Drand.gnorm()*vvf()
+    }
+    
+    for(var c=ins.due;c<j;c++)
+    {
+      //~ jote.grp[c]=ins.grp
+      //~ jote.knd[c]=ins.knd
+    }
+    
     return (ins.due=j)-ins.bfr
   }
   
@@ -501,6 +532,7 @@ function addConstruct(fig) {
   fig.rndchargeall      = rndchargeall 
   fig.jsetlast          = jsetlast 
   
+  fig.addRndBlob           = addRndBlob
   fig.addspoke             = addspoke
   fig.addspherea           = addspherea
   fig.addspinring          = addspinring

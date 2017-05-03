@@ -204,7 +204,7 @@ function addSpotcollide(fig,vplay) {
     // 
     
     vplay.dragfac=0.0008//0.1   //set drag factor
-    vplay.pressfac=0.0015  //set pressure factor
+    vplay.pressfac=0.0014  //set pressure factor
     
     var veldragpwr = vplay.dragfac*(midst-Math.abs(midst-hyp))/midst
     
@@ -214,7 +214,7 @@ function addSpotcollide(fig,vplay) {
     /// push/pull toward spacing
 
     //~ var pressforce= vplay.gravity / cf
-    var fast=1+veldragpwr*11 ,pressforce=(midst-hyp)/midst
+    var fast=1+veldragpwr*9.5 ,pressforce=(midst-hyp)/midst
     //~ pressforce=pressforce<0?-Math.sqrt(Math.abs(pressforce)):Math.sqrt(pressforce)
     //more distant. more negative pressforce
     if(pressforce<0){ //dist is beyond midpt

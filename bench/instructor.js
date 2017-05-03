@@ -14,12 +14,13 @@ var vplay = {
    ,3:{name:"Blue Disk",desc:""}
    ,4:{name:"3Planets",desc:""}
    ,5:{name:"MassRing",desc:""}
-   ,6:{name:"Cymball",desc:""}
-   ,7:{name:"QuasiMags",desc:""}
+   //~ ,6:{name:"Cymball",desc:""}
+   //~ ,7:{name:"QuasiMags",desc:""}
    ,8:{name:"Pattern",desc:""}
    ,9:{name:"4MassRing",desc:""}
-   ,10:{name:"47 Tuc X9",desc:""}
-   ,11:{name:"Point Cloud",desc:""}
+   //~ ,10:{name:"47 Tuc X9",desc:""}
+   //~ ,11:{name:"Point Cloud",desc:""}
+   ,12:{name:"Bloop",desc:""}
   }
     
   ,seed:0 ,world:3, seespots:-1
@@ -65,7 +66,6 @@ var vplay = {
     ,gravity:1
     ,Gtweak:1 
     ,gravqual:0.005
-    ,velfz:0.15
     ,colorfac:0.5
     ,pradius:2
     ,printtime:function(a){ return (a).toFixed(2) }
@@ -82,6 +82,8 @@ if(window.location.hash) {
 }
 
 var Fgm,Vpr
+
+console.log(Math.hasTrigfills())
 
 setupfigview(vplay.world)
 
@@ -106,7 +108,8 @@ function setupfigview(fig){
   addSpotlog(Fgm,vplay)  //adds service function
 
   Tcreate(Fgm,vplay)
-
+  //~ Fgm.spongeAll()
+  
   for( var p in vplay.instaprops)
   { vplay[p]=vplay.instaprops[p] }
 
@@ -132,6 +135,7 @@ function setupfigview(fig){
 
   //~ Fgm.gtemperall(0, vplay.model_pace)
   Fgm.finetemperall(vplay.model_pace,5)
+  //~ Fgm.spongeAll()
   //~ console.log("modpace",vplay.model_pace)
   Vpr.reFocusThree(vplay.firstfocus)
   
@@ -179,7 +183,7 @@ function refreshrender(){
   vplay.iota = Fgm.jote.top
 }
 
-var stilltime=300
+var stilltime=300,waspau=0
 
 function framemaster() { // master frame dispatch
   
@@ -188,6 +192,8 @@ function framemaster() { // master frame dispatch
   requestAnimationFrame(framemaster)
   
   vplay.allframe_clock++
+  //~ if(vplay.model_clock>20){vplay.paused=1}
+
   if(vplay.paused) vplay.pausetime++
   //dash redraw and actions such as a click on dash controls
   var dashact; 
@@ -208,9 +214,9 @@ function framemaster() { // master frame dispatch
   ){
     var btick=vplay.rendermark; vplay.rendermark=perfnow() 
     btick=vplay.rendermark-btick
-    //rest for ui if browser is crawling under 20pfs
-    if( (btick<100) && !(vplay.paused))
-    { liveframe(); vplay.pausetime=0  } 
+    //rest for ui if browser is crawling under 20fps
+    if( (waspau || btick<10) && !(vplay.paused))
+    { liveframe(); vplay.pausetime=0; waspau=0 }else{ waspau=1 } 
       
     refreshrender()
     //~ vplay.fps=readwatch('fps')[0]
@@ -230,7 +236,6 @@ function liveframe(){
   ///--------
   vplay.playedframe_clock++
   vplay.movperframe=0
-
   vplay.skipframe_trip += vplay.skipframe_step
 
   var movstep=vplay.model_pace/vplay.runcycle_step
@@ -263,7 +268,7 @@ function liveframe(){
   } 
   //~ console.log("movstep",movstep)
   if(movstep){ Fgm.velmove(movstep,vplay.max_vel) }
-  
+  if(vplay.seespots==1){ Fgm.measure_spots() }
   vplay.model_clock+=movstep
   //Fgm.frameshift() 
 }
@@ -347,13 +352,18 @@ function setkeys(){
   keysys.whenst ("d"    , adash.togPane  )
   keysys.whenst ("."    , focustod  )
   keysys.whenst (","    , focustob  )
+  keysys.whenst ("m"    , focustoa  )
 }
 
+function focustoa(){ focustod("origin") }
 function focustob(){ focustod(-1) }
 function focustod(c){
+  var jf
+  if(c==="origin"){jf=0}else{
   c=c||1
-  var jf=Vpr.focus.je+c
-  Vpr.reFocusThree(Vpr.focus.je+c)
+  jf=Vpr.focus.je+c }
+    
+  Vpr.reFocusThree(jf)
   if(adash)adash.redrawDash() 
 }
 

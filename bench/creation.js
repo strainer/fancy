@@ -21,6 +21,7 @@ if(vplay.world==8){ createC8() }
 if(vplay.world==9){ createC9() }
 if(vplay.world==10){ createC10() }
 if(vplay.world==11){ createC11() }
+if(vplay.world==12){ createC12() }
 
 Talter.settop()
 
@@ -53,6 +54,7 @@ function createC0(){ //solar system jpl data
    ,camRad:2057500000
    ,forces:2
    ,gravqual:0.10
+   ,seespots:1
   }
 
   var pld=planetdatas //file planetdat.js
@@ -350,12 +352,13 @@ function createC2(){ //trappist-1 data
 }
 
 
-function createC3(){ //1 + 4 gbody and disk
+function createC3(){ //blue disk
   
   vplay.instaprops=
   { 
-     camRad:540
-    ,runcycle_step: 1.5 
+     camRad:685
+    ,camPhi:Math.PI/1.35
+    ,runcycle_step: 1.0 
     ,pradius:80
     ,forces:3
     ,max_force: 5
@@ -379,27 +382,27 @@ function createC3(){ //1 + 4 gbody and disk
   Talter.addspinring({ 
     num:5, rad:2.2, phi:"rnd", pull:1.001
     //~ ,radf:0, crvf:0, velf:0
-    ,radf:function(){return Drand.gnorm( 0.6,4.04)} 
-    ,velf:function(){return Drand.gteat(-0.15,0.15)} 
-    ,thkf:function(){return Drand.gteat(-0.25,0.25)}
+    ,radf:function(){return Drand.gteat( 0.6,3.84)} 
+    ,velf:function(){return Drand.gteat(-0.25,0.25)} 
+    ,thkf:function(){return Drand.gteat(-0.29,0.29)}
     ,crdf:1.1 
   }) 
   Talter.colorprev({ r:2,g:2.9,b:4.5 })
   Talter.massallzeros(0.02)
   
   Talter.setaslast(1)
-  purpball(nn*12,0.02,0.2) 
+  purpball(nn*11,0.02,0.2) 
   Talter.setaslast(2)
-  purpball(nn*12,0.02,0.2) 
+  purpball(nn*11,0.02,0.2) 
   Talter.setaslast(3)
-  purpball(nn*12,0.02,0.2)
+  purpball(nn*11,0.02,0.2)
   Talter.setaslast(4)
-  purpball(nn*12,0.02,0.2) 
+  purpball(nn*11,0.02,0.2) 
   
   Talter.setaslast(0)
   
   Talter.addspinring({
-    num:(60*nn), rad:2.4, phi:0, pull:1
+    num:(60*nn), rad:2.5, phi:0, pull:1
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gnorm( 0.76,1.64)} 
     ,velf:function(){return Drand.gnorm(-0.09,0.09)} 
@@ -408,7 +411,7 @@ function createC3(){ //1 + 4 gbody and disk
   Talter.colorprev({ r:6,g:0.7,b:0.6,rfun:0,bfun:0,gfun:0 })
 
   Talter.addspinring({
-    num:(100*nn), rad:2.9, phi:0, pull:1
+    num:(100*nn), rad:3.1, phi:0, pull:1
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gnorm( 0.76,1.64)} 
     ,velf:function(){return Drand.gnorm(-0.09,0.09)} 
@@ -417,7 +420,7 @@ function createC3(){ //1 + 4 gbody and disk
   Talter.colorprev({ r:4,g:1.1,b:0.9,rfun:0,bfun:0,gfun:0 })
   
   Talter.addspinring({
-    num:(140*nn), rad:3.6, phi:0, pull:1
+    num:(120*nn), rad:3.8, phi:0, pull:1
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gspire( 0.30,1.80)} 
     ,velf:function(){return Drand.gnorm(-0.01,0.01)} 
@@ -426,7 +429,7 @@ function createC3(){ //1 + 4 gbody and disk
   Talter.colorprev({ r:1.9,g:3.9,b:1.5,rfun:0,bfun:0,gfun:0 })
      
   Talter.addspinring({
-    num:(230*nn), rad:4.4, phi:0, pull:1
+    num:(200*nn), rad:4.4, phi:0, pull:1
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gnorm( 0.76,3.04)} 
     ,velf:function(){return Drand.gnorm(-0.05,0.05)} 
@@ -435,7 +438,7 @@ function createC3(){ //1 + 4 gbody and disk
   Talter.colorprev({ r:1.1,g:1.8,b:4.5,rfun:0,bfun:0,gfun:0 })
      
   Talter.addspinring({
-    num:(220*nn), rad:5.2, phi:0, pull:1
+    num:(210*nn), rad:5.2, phi:0, pull:1
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gnorm( 0.76,3.04)} 
     ,velf:function(){return Drand.gnorm(-0.05,0.05)} 
@@ -444,16 +447,25 @@ function createC3(){ //1 + 4 gbody and disk
   Talter.colorprev({ r:0.1,g:0.8,b:3.5,rfun:0,bfun:0,gfun:0 })
           
   Talter.addspinring({
-    num:(220*nn), rad:6.2, phi:0, pull:1
+    num:(170*nn), rad:6.2, phi:0, pull:1
     //~ ,radf:0, crvf:0, velf:0
     ,radf:function(){return Drand.gnorm( 0.76,3.04)} 
     ,velf:function(){return Drand.gnorm(-0.05,0.05)} 
     ,thkf:function(){return Drand.gnorm(-0.02,0.05)} 
   }) 
-  Talter.colorprev({ r:0.0,g:0.2,b:3.1,rfun:0,bfun:0,gfun:0 })
+  Talter.colorprev({ r:0.1,g:0.2,b:2.4,rfun:0,bfun:0,gfun:0 })
+     
+  Talter.addspinring({
+    num:(110*nn), rad:7.2, phi:0, pull:1
+    //~ ,radf:0, crvf:0, velf:0
+    ,radf:function(){return Drand.gnorm( 0.76,3.04)} 
+    ,velf:function(){return Drand.gnorm(-0.05,0.05)} 
+    ,thkf:function(){return Drand.gnorm(-0.02,0.05)} 
+  }) 
+  Talter.colorprev({ r:0.6,g:0.6,b:1.0,rfun:0,bfun:0,gfun:0 })
      
   Talter.setaslast(0)
-  purpball(nn*40,1,1.0,0.2)
+  purpball(nn*35,0.8,1.0,0.2)
 
 }
 
@@ -1071,6 +1083,50 @@ function createC11(){ //cloud
     
    ,mfun:function(){ return Drand.gteat(0.1,1) } ,m:0.0001
    ,cfun:function(){ return Drand.gteat(0.1,1) } ,c:0 
+  })
+   
+  //~ addconstellations(100,100) 
+}
+
+
+
+function createC12(){ //bloop
+  
+  vplay.instaprops=
+  { 
+     forces:3
+    ,max_force:  2
+    ,max_vel: 0.45
+    ,pradius:40.0
+    ,firstfocus:194
+    ,runcycle_step : 2.0
+    ,camRad:70
+  }
+
+  var nh=750 ,spc=2
+  
+  //~ Talter.setpos(0,0,0)
+  //~ Talter.setvel(0,0,0)
+  //~ Talter.setmass(0)
+  //~ Talter.setseam(1)
+  //~ Talter.setgroup(0)
+  //~ Talter.setbasecol(0)
+  
+  Talter.addRndBlob({
+    num:nh, rad:spc 
+   ,velf:function(){ return 0.125 } 
+  }) 
+ 
+  //Talter.massuncolored(0.0)
+ 
+  Talter.masschargcol_prev({ //{ ar:,ag:,ab:,mb:,cb:,mfun:,cfun:,m:,c: }
+    
+    ar:0.2 ,ag:0.2 ,ab:0.8
+   ,mr:1.0 ,mg:1.0 ,mb:1.2
+   ,cr:0.4 ,cg:0.4 ,cb:0.8
+    
+   ,mfun:function(){ return Drand.gteat(0.025,2) } ,m:0.0000325
+   ,cfun:function(){ return Drand.gteat(0.125,2) } ,c:0 
   })
    
   //~ addconstellations(100,100) 

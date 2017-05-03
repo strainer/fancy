@@ -94,15 +94,20 @@ function addSpotgrav(fig,vplay) {
     //~ spot.fchild[1]=0 //testing
     startwatch('nbody')
     //~ interplyspot(1)
+    //~ if(vplay.model_clock>5.7)console.log("pregrav",Fgm.Drand.f48().toFixed(5))
     fig.nbodygrav(p)
+    //~ if(vplay.model_clock>5.7)console.log("posgrav",Fgm.Drand.f48().toFixed(5))
     stopwatch('nbody')
 
-    startwatch('fitspots') 
-    fig.postfit_spotmap() 
-    stopwatch('fitspots')
+    //~ startwatch('fitspots')
+    //~ fig.postfit_spotmap() 
+    //~ if(vplay.model_clock>5.7)console.log("preclum",Fgm.Drand.f48().toFixed(5))
+    //~ stopwatch('fitspots')
     
     startwatch('press')
+    //~ if(vplay.model_clock>5.7)console.log("preclum",Fgm.Drand.f48().toFixed(5))
     fig.spotclump()
+    //~ if(vplay.model_clock>5.7)console.log("posclum",Fgm.Drand.f48().toFixed(5))
     //~ interplyspot(1)
     stopwatch('press')
     
