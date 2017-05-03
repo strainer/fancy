@@ -605,9 +605,10 @@ function newViewport(fig,vplay){
   //but must be applied here
   function ctrlcam() 
   { 
-    vplay.keyLRd = (vplay.keyLR===0)?0:(vplay.keyLRd+(vplay.keyLR*0.0028))*0.985
-    vplay.keyUDd = (vplay.keyUD===0)?0:(vplay.keyUDd+(vplay.keyUD*0.0028))*0.985
-    vplay.keyRd  = (vplay.keyR===0)?0:(vplay.keyRd+(vplay.keyR*0.0025))*0.91
+    //~ if(vplay.keyLR)console.log(vplay.keyLR)
+    vplay.keyLRd = (vplay.keyLR===0)?0:(vplay.keyLRd+(vplay.keyLR*0.0190))*0.755
+    vplay.keyUDd = (vplay.keyUD===0)?0:(vplay.keyUDd+(vplay.keyUD*0.0190))*0.755
+    vplay.keyRd  = (vplay.keyR===0)?0:(vplay.keyRd+(vplay.keyR*0.0075))*0.61
     vplay.keyCtrld = (vplay.keyCtrl==0||vplay.keyUD||vplay.keyLR)?0
      :(0.000045+vplay.keyCtrld)*0.995
     

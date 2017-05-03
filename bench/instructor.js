@@ -183,7 +183,7 @@ function refreshrender(){
   vplay.iota = Fgm.jote.top
 }
 
-var stilltime=300
+var stilltime=300,waspau=0
 
 function framemaster() { // master frame dispatch
   
@@ -215,8 +215,8 @@ function framemaster() { // master frame dispatch
     var btick=vplay.rendermark; vplay.rendermark=perfnow() 
     btick=vplay.rendermark-btick
     //rest for ui if browser is crawling under 20fps
-    if( (btick<10) && !(vplay.paused))
-    { liveframe(); vplay.pausetime=0  } 
+    if( (waspau || btick<10) && !(vplay.paused))
+    { liveframe(); vplay.pausetime=0; waspau=0 }else{ waspau=1 } 
       
     refreshrender()
     //~ vplay.fps=readwatch('fps')[0]
