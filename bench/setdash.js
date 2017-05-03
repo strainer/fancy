@@ -130,7 +130,8 @@ function setdash(cdash,vplay){
   var keystext=heredoc(function(){/*
   <span class="keyba">View</span>
   <span class="keybb">click obj</span>  track
-  <span class="keybb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<-></span>  next
+  <span class="keybb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;< ></span>  next
+  <span class="keybb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m</span>  reset
   <span class="keybb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a-z</span>  in-out
   <span class="keybb">&nbsp;&nbsp;&nbsp;cursor</span>  rotate
   <span class="keybb">crsr+ctrl</span>  slide

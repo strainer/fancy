@@ -14,16 +14,16 @@ var vplay = {
    ,3:{name:"Blue Disk",desc:""}
    ,4:{name:"3Planets",desc:""}
    ,5:{name:"MassRing",desc:""}
-   ,6:{name:"Cymball",desc:""}
-   ,7:{name:"QuasiMags",desc:""}
+   //~ ,6:{name:"Cymball",desc:""}
+   //~ ,7:{name:"QuasiMags",desc:""}
    ,8:{name:"Pattern",desc:""}
    ,9:{name:"4MassRing",desc:""}
-   ,10:{name:"47 Tuc X9",desc:""}
-   ,11:{name:"Point Cloud",desc:""}
+   //~ ,10:{name:"47 Tuc X9",desc:""}
+   //~ ,11:{name:"Point Cloud",desc:""}
    ,12:{name:"Bloop",desc:""}
   }
     
-  ,seed:0 ,world:12, seespots:-1
+  ,seed:0 ,world:3, seespots:-1
   ,geometry:{}, camera:{}, scene:{} 
   ,renderer:{}, displaybugi:20 //avoiding scrollbar
   
@@ -352,13 +352,18 @@ function setkeys(){
   keysys.whenst ("d"    , adash.togPane  )
   keysys.whenst ("."    , focustod  )
   keysys.whenst (","    , focustob  )
+  keysys.whenst ("m"    , focustoa  )
 }
 
+function focustoa(){ focustod("origin") }
 function focustob(){ focustod(-1) }
 function focustod(c){
+  var jf
+  if(c==="origin"){jf=0}else{
   c=c||1
-  var jf=Vpr.focus.je+c
-  Vpr.reFocusThree(Vpr.focus.je+c)
+  jf=Vpr.focus.je+c }
+    
+  Vpr.reFocusThree(jf)
   if(adash)adash.redrawDash() 
 }
 
