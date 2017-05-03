@@ -20,9 +20,10 @@ var vplay = {
    ,9:{name:"4MassRing",desc:""}
    ,10:{name:"47 Tuc X9",desc:""}
    ,11:{name:"Point Cloud",desc:""}
+   ,12:{name:"Bloop",desc:""}
   }
     
-  ,seed:0 ,world:3, seespots:-1
+  ,seed:0 ,world:12, seespots:-1
   ,geometry:{}, camera:{}, scene:{} 
   ,renderer:{}, displaybugi:20 //avoiding scrollbar
   
@@ -65,7 +66,6 @@ var vplay = {
     ,gravity:1
     ,Gtweak:1 
     ,gravqual:0.005
-    ,velfz:0.15
     ,colorfac:0.5
     ,pradius:2
     ,printtime:function(a){ return (a).toFixed(2) }
@@ -82,6 +82,8 @@ if(window.location.hash) {
 }
 
 var Fgm,Vpr
+
+console.log(Math.hasTrigfills())
 
 setupfigview(vplay.world)
 
@@ -106,7 +108,8 @@ function setupfigview(fig){
   addSpotlog(Fgm,vplay)  //adds service function
 
   Tcreate(Fgm,vplay)
-
+  //~ Fgm.spongeAll()
+  
   for( var p in vplay.instaprops)
   { vplay[p]=vplay.instaprops[p] }
 
@@ -132,6 +135,7 @@ function setupfigview(fig){
 
   //~ Fgm.gtemperall(0, vplay.model_pace)
   Fgm.finetemperall(vplay.model_pace,5)
+  //~ Fgm.spongeAll()
   //~ console.log("modpace",vplay.model_pace)
   Vpr.reFocusThree(vplay.firstfocus)
   
@@ -188,6 +192,8 @@ function framemaster() { // master frame dispatch
   requestAnimationFrame(framemaster)
   
   vplay.allframe_clock++
+  //~ if(vplay.model_clock>20){vplay.paused=1}
+
   if(vplay.paused) vplay.pausetime++
   //dash redraw and actions such as a click on dash controls
   var dashact; 
@@ -209,7 +215,7 @@ function framemaster() { // master frame dispatch
     var btick=vplay.rendermark; vplay.rendermark=perfnow() 
     btick=vplay.rendermark-btick
     //rest for ui if browser is crawling under 20pfs
-    if( (btick<100) && !(vplay.paused))
+    if( (btick<10) && !(vplay.paused))
     { liveframe(); vplay.pausetime=0  } 
       
     refreshrender()
@@ -230,7 +236,6 @@ function liveframe(){
   ///--------
   vplay.playedframe_clock++
   vplay.movperframe=0
-
   vplay.skipframe_trip += vplay.skipframe_step
 
   var movstep=vplay.model_pace/vplay.runcycle_step

@@ -21,6 +21,7 @@ if(vplay.world==8){ createC8() }
 if(vplay.world==9){ createC9() }
 if(vplay.world==10){ createC10() }
 if(vplay.world==11){ createC11() }
+if(vplay.world==12){ createC12() }
 
 Talter.settop()
 
@@ -354,8 +355,9 @@ function createC3(){ //1 + 4 gbody and disk
   
   vplay.instaprops=
   { 
-     camRad:540
-    ,runcycle_step: 1.5 
+     camRad:685
+    ,camPhi:Math.PI/1.35
+    ,runcycle_step: 1.0 
     ,pradius:80
     ,forces:3
     ,max_force: 5
@@ -450,7 +452,16 @@ function createC3(){ //1 + 4 gbody and disk
     ,velf:function(){return Drand.gnorm(-0.05,0.05)} 
     ,thkf:function(){return Drand.gnorm(-0.02,0.05)} 
   }) 
-  Talter.colorprev({ r:0.0,g:0.2,b:3.1,rfun:0,bfun:0,gfun:0 })
+  Talter.colorprev({ r:0.1,g:0.2,b:2.4,rfun:0,bfun:0,gfun:0 })
+     
+  Talter.addspinring({
+    num:(100*nn), rad:7.2, phi:0, pull:1
+    //~ ,radf:0, crvf:0, velf:0
+    ,radf:function(){return Drand.gnorm( 0.76,3.04)} 
+    ,velf:function(){return Drand.gnorm(-0.05,0.05)} 
+    ,thkf:function(){return Drand.gnorm(-0.02,0.05)} 
+  }) 
+  Talter.colorprev({ r:0.6,g:0.6,b:1.0,rfun:0,bfun:0,gfun:0 })
      
   Talter.setaslast(0)
   purpball(nn*40,1,1.0,0.2)
@@ -1071,6 +1082,50 @@ function createC11(){ //cloud
     
    ,mfun:function(){ return Drand.gteat(0.1,1) } ,m:0.0001
    ,cfun:function(){ return Drand.gteat(0.1,1) } ,c:0 
+  })
+   
+  //~ addconstellations(100,100) 
+}
+
+
+
+function createC12(){ //bloop
+  
+  vplay.instaprops=
+  { 
+     forces:3
+    ,max_force:  2
+    ,max_vel: 1.25
+    ,pradius:40.0
+    ,firstfocus:611
+    ,runcycle_step : 2.0
+    ,camRad:400
+  }
+
+  var nh=750 ,spc=2
+  
+  //~ Talter.setpos(0,0,0)
+  //~ Talter.setvel(0,0,0)
+  //~ Talter.setmass(0)
+  //~ Talter.setseam(1)
+  //~ Talter.setgroup(0)
+  //~ Talter.setbasecol(0)
+  
+  Talter.addRndBlob({
+    num:nh, rad:spc 
+   ,velf:function(){ return 0.125 } 
+  }) 
+ 
+  //Talter.massuncolored(0.0)
+ 
+  Talter.masschargcol_prev({ //{ ar:,ag:,ab:,mb:,cb:,mfun:,cfun:,m:,c: }
+    
+    ar:0.2 ,ag:0.2 ,ab:0.2
+   ,mr:1.2 ,mg:1.2 ,mb:1.2
+   ,cr:0.4 ,cg:0.4 ,cb:0.4
+    
+   ,mfun:function(){ return Drand.gteat(0.125,2) } ,m:0.0000125
+   ,cfun:function(){ return Drand.gteat(0.125,2) } ,c:0 
   })
    
   //~ addconstellations(100,100) 
