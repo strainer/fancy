@@ -227,14 +227,18 @@ function newViewport(fig,vplay){
       nx=modp(nx+1,ng)
     }
     
-    function firpre(){ return buf[modp(nx-1,ng)] }
+    function firpre(){ 
+      var d=buf[0]||0, i=1
+      while(i<nx){ d=(d+(buf[i++]||0))*0.5 }
+      return d 
+    }
     
     function fir(){ //0.29 +0.27 +0.21 +0.15 +0.08
-      return buf[modp(nx-1,ng)]*0.29 
-      + buf[modp(nx-2,ng)]*0.27 
-      + buf[modp(nx-3,ng)]*0.21 
-      + buf[modp(nx-4,ng)]*0.15 
-      + buf[modp(nx-5,ng)]*0.08 
+      return buf[modp(nx-1,ng)]*0.63//*0.29 
+           + buf[modp(nx-2,ng)]*0.18//*0.27 
+           + buf[modp(nx-3,ng)]*0.10//*0.21 
+           + buf[modp(nx-4,ng)]*0.06//*0.15 
+           + buf[modp(nx-5,ng)]*0.03//*0.08 
     }
     
     function modp(a,b){
@@ -265,9 +269,6 @@ function newViewport(fig,vplay){
     if(focus.jd!=-1){
       if(focus.timer){ 
         changingfocus(pace) 
-        focus.ring.x.reset()
-        focus.ring.y.reset()
-        focus.ring.z.reset()
       }
     }
     
@@ -293,9 +294,6 @@ function newViewport(fig,vplay){
     if(focus.jd!=-1){
       if(focus.timer){ 
         changingfocus(pace) 
-        focus.ring.x.reset()
-        focus.ring.y.reset()
-        focus.ring.z.reset()
       }
     }
     
@@ -637,9 +635,14 @@ function newViewport(fig,vplay){
     } 
     
     if(focus.timer===0){ 
+      focus.ring.x.reset()
+      focus.ring.y.reset()
+      focus.ring.z.reset()
+      
       focus.je=focus.jc=focus.jd
       focus.chng=0, focus.cam=0
-      fillfocusxyz(focus.jc) 
+      updatefocusxyz()
+       
     }
     
     //~ vplay.nowfocus=focus.jd

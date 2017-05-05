@@ -1098,7 +1098,7 @@ function createC12(){ //bloop
     ,max_force:  2
     ,max_vel: 0.45
     ,pradius:40.0
-    ,firstfocus:194
+    ,firstfocus:271
     ,runcycle_step : 2.0
     ,camRad:70
   }
