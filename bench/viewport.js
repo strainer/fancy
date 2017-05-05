@@ -441,7 +441,7 @@ function newViewport(fig,vplay){
     vport.vbox[0] = new THREE.Line( 
       new THREE.Geometry()
      ,new THREE.LineBasicMaterial({ 
-       color: 0xffffff, opacity: 0.5 ,transparent:true
+       color: 0xe3e3e3, opacity: 0.43 ,transparent:true
      }) 
     )
 

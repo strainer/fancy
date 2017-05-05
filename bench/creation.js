@@ -359,7 +359,7 @@ function createC3(){ //blue disk
      camRad:685
     ,camPhi:Math.PI/1.35
     ,runcycle_step: 1.0 
-    ,pradius:80
+    ,pradius:100
     ,forces:3
     ,max_force: 5
     ,max_vel: 1.9
@@ -833,11 +833,11 @@ function createC7(){ //electrostatic cloud
 
 function createC8(){ //pattern
 
-
   vplay.instaprops=
   { pradius:50
    ,runcycle_step:1.5
    ,model_pace:0.1
+   ,vplay.explode:1
   }
   
   var nn=6000
@@ -900,6 +900,7 @@ function createC9(){ //4 rough rings of rnd mass particles
    ,runcycle_step:3
    ,forces:3
    ,gravqual:0.35
+   ,max_vel: 2.5
   }
 
   var nn=2
