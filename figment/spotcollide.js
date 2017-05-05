@@ -414,9 +414,6 @@ function addSpotcollide(fig,vplay) {
   
   function rayinspot(s,ra){
     
-    //~ console.log("spot try",s,ra)
-    //~ conlogspot(s)
-    
     var lbx=spot.lbx[s]-0.1 ,lby=spot.lby[s]-0.1 ,lbz=spot.lbz[s]-0.1
        ,hbx=spot.hbx[s]+0.1 ,hby=spot.hby[s]+0.1 ,hbz=spot.hbz[s]+0.1
     
@@ -425,99 +422,61 @@ function addSpotcollide(fig,vplay) {
     
     var tc=0,td=0,te=0
 
-    if (sx<lbx){
-      //~ console.log("sx up");
-      if(tx<=0) { 
-        //~ console.log("sx away"); 
-        return 0 }
+    if (sx<lbx){ 
+      if(tx<=0) { return 0 }
       tc=(lbx-sx)/tx  //here sx==lbx
-      //~ console.log("tc",tc);
       sx=lbx
     }else if(sx>hbx){
-      //~ console.log("sx dn");
-      if(tx>=0) { 
-        //~ console.log("sx away"); 
-        return 0 }
+      if(tx>=0) { return 0 }
       tc=(hbx-sx)/tx //here sx==hbx
-      //~ console.log("tc",tc);
       sx=hbx
     }
     
     sy+=tc*ty ,sz+=tc*tz
-    //~ console.log("sx",sx,"sy",sy,"sz",sz);
     //in the game, and sx is in bounds
     if (sy<lby){
-      //~ console.log("sy up");
-      if(ty<=0) { 
-        //~ console.log("sy away"); 
-        return 0 }
+      if(ty<=0) { return 0 }
       td=(lby-sy)/ty  //here after tc sy==lbx
-      //~ console.log("td",td);
       sy=lby
     }else if(sy>hby){
-      //~ console.log("sy dn");
-      if(ty>=0) { 
-        //~ console.log("sy away"); 
-        return 0 }
+      if(ty>=0) { return 0 }
       td=(hby-sy)/ty //here after tc sy==lbx
-      //~ console.log("td",td);
       sy=hby
     }
    
     if(td){
       sx+=td*tx
-      if(sx<lbx||sx>hbx) { 
-        //~ console.log("sx aft away"); 
-        return 0 } 
-      //sx may have left bounds
+      if(sx<lbx||sx>hbx) { return 0 } 
       sz+=td*tz
     }
-    //~ console.log("sx",sx,"sy",sy,"sz",sz);
     
     //still in the game, and sx and sy are in bounds
     if (sz<lbz){
-      //~ console.log("sz up");
-      if(tz<=0) { 
-        //~ console.log("sz away"); 
-        return 0 }
+      if(tz<=0) { return 0 }
       te=(lbz-sz)/tz 
-      //~ console.log("te",te);
       sz=lbz
       
     }else if(sz>hbz){
-      //~ console.log("sz dn");
-      if(tz>=0) { 
-        //~ console.log("sz away"); 
-        return 0 }
+      if(tz>=0) { return 0 }
       te=(hbz-sz)/tz 
-      //~ console.log("te",te);
       sz=hbz
     }
 
     if(te){	
       sx+=te*tx
-      if(sx<lbx||sx>hbx) { 
-        //~ console.log("sx aft away"); 
-        return 0 }
+      if(sx<lbx||sx>hbx) { return 0 }
       sy+=te*ty
-      if(sy<lby||sy>hby) { 
-        //~ console.log("sy aft away"); 
-        return 0 }
+      if(sy<lby||sy>hby) { return 0 }
     }
-    //~ console.log("sx",sx,"sy",sy,"sz",sz);
     //by this point line is inside spot
-    _rayx=sx,_rayy=sy,_rayz=sz,_rayt=tc+td+te
     
-    //~ console.log("spot ok",s)
-    return 1
+    //_rayx=sx,_rayy=sy,_rayz=sz,_rayt=tc+td+te
     
+    return 1 
   }
 
 
-
   function spotnear(a,b){
-    
-    //if a highbnd is lower than lwbnd   h<L  L-h >0
     
     if( (spot.lbx[a]-spot.hbx[b] > _prx)
      || (spot.lbx[b]-spot.hbx[a] > _prx)
@@ -528,6 +487,7 @@ function addSpotcollide(fig,vplay) {
     ){ return false }
     return true
   }
+
 
   //next kid spotindex get and cache functions 
   var _klev=-1,_kcac=[[],[],[],[],[]] //kid lev cache, kid cache
@@ -549,6 +509,7 @@ function addSpotcollide(fig,vplay) {
 
     return ki
   } 
+    
            
   fig.spotcollide = spotcollide
   fig.spotclump   = spotclump

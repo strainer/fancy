@@ -89,9 +89,14 @@ function newViewport(fig,vplay){
     for(var kid=vplay.scene.children.length-1;kid>=0;kid--)
     { vplay.scene.remove(vplay.scene.children[kid]) } 
  
-    
     document.addEventListener('mousedown', onMouseDown, false);
-    
+ 
+    focus.ring={ 
+      x:ringbuff(5)
+     ,y:ringbuff(5)
+     ,z:ringbuff(5)
+    }
+          
     if(vplay.rendermode===0){
       vport.syncrender=syncrender
       
@@ -200,16 +205,70 @@ function newViewport(fig,vplay){
       */
     }
   }
-
+  
+  function ringbuff(sz){ return (function(sz){
+    
+    var buf=new Array(sz), ng=sz, nx=0 
+    
+    var reto={ add:addpre ,fir:firpre, reset:reset } 
+    
+    function reset(){
+      reto.add=addpre, reto.fir=firpre, nx=0 
+    }
+    
+    function addpre(x){
+      buf[nx]=x
+      nx=modp(nx+1,ng)
+      if(nx===0){ reto.add=add,reto.fir=fir }
+    }
+      
+    function add(x){
+      buf[nx]=x
+      nx=modp(nx+1,ng)
+    }
+    
+    function firpre(){ return buf[modp(nx-1,ng)] }
+    
+    function fir(){ //0.29 +0.27 +0.21 +0.15 +0.08
+      return buf[modp(nx-1,ng)]*0.29 
+      + buf[modp(nx-2,ng)]*0.27 
+      + buf[modp(nx-3,ng)]*0.21 
+      + buf[modp(nx-4,ng)]*0.15 
+      + buf[modp(nx-5,ng)]*0.08 
+    }
+    
+    function modp(a,b){
+      return a-Math.floor(a/b)*b //removes neg
+    }
+    
+    return reto
+  }(sz)) }
+  
+  
+  function updatefocusxyz(){
+  
+    focus.ring.x.add(jote.x[focus.jc])
+    focus.ring.y.add(jote.y[focus.jc])
+    focus.ring.z.add(jote.z[focus.jc])
+    
+    if(!(focus.jd==-1 || focus.timer)){
+      focus.x=focus.ring.x.fir()
+      focus.y=focus.ring.y.fir()
+      focus.z=focus.ring.z.fir()
+    }
+  }
+  
   function syncrender(pace)
   { 
     velcolor(vplay.colorfac)
     
-    if(focus.timer){ changingfocus(pace) }
-    else if(focus.jd!=-1){
-      focus.x=jote.x[focus.jc]
-     ,focus.y=jote.y[focus.jc]
-     ,focus.z=jote.z[focus.jc]
+    if(focus.jd!=-1){
+      if(focus.timer){ 
+        changingfocus(pace) 
+        focus.ring.x.reset()
+        focus.ring.y.reset()
+        focus.ring.z.reset()
+      }
     }
     
     var sc=focus.sc
@@ -231,12 +290,13 @@ function newViewport(fig,vplay){
   function syncrender2(pace)
   { 
     //~ velcolor(vplay.colorfac)
-    
-    if(focus.timer){ changingfocus(pace) }
-    else if(focus.jd!=-1){
-      focus.x=jote.x[focus.jc]
-     ,focus.y=jote.y[focus.jc]
-     ,focus.z=jote.z[focus.jc]
+    if(focus.jd!=-1){
+      if(focus.timer){ 
+        changingfocus(pace) 
+        focus.ring.x.reset()
+        focus.ring.y.reset()
+        focus.ring.z.reset()
+      }
     }
     
     var drawscale=focus.sc, resc=0
@@ -279,7 +339,8 @@ function newViewport(fig,vplay){
        //~ ,jote.ccolor[i++]
        //~ ,jote.ccolor[i++]
       //~ )
-      //~ 
+      
+      
       if(vplay.seespots) { vboxspot() }
     }
   }
@@ -577,7 +638,8 @@ function newViewport(fig,vplay){
     
     if(focus.timer===0){ 
       focus.je=focus.jc=focus.jd
-      focus.chng=0, focus.cam=0 
+      focus.chng=0, focus.cam=0
+      fillfocusxyz(focus.jc) 
     }
     
     //~ vplay.nowfocus=focus.jd
@@ -845,6 +907,7 @@ function newViewport(fig,vplay){
   vport.initview     = initview
   vport.velcolor     = velcolor 
   vport.syncrender   = syncrender
+  vport.updatefocusxyz = updatefocusxyz
   vport.reFocusThree = reFocusThree
   
   return vport

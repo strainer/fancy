@@ -271,7 +271,9 @@ function liveframe(){
   if(vplay.seespots==1){ Fgm.measure_spots() }
   vplay.model_clock+=movstep
   //Fgm.frameshift() 
+  Vpr.updatefocusxyz()
 }
+
 
 var soltest=1
 function donature(){
