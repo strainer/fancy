@@ -27,12 +27,12 @@ function newViewport(fig,vplay){
     if(rex>1||rey>1) return
 
     var mpick = new THREE.Vector3(rex*2 - 1  , 1 - rey*2, 0.5)
-    
+    var cmx,cmy
     //fill of 'pickingray' for old three version here: 
     
     var tan = Math.tan( 0.5 * THREE.Math.degToRad( camera.fov ) )
-    mpick.x *= tan * camera.aspect
-    mpick.y *= tan 
+    cmx =( mpick.x *= tan * camera.aspect )
+    cmy =( mpick.y *= tan ) 
     mpick.z = - 1
     mpick.transformDirection( camera.matrixWorld ) 
     //~ fudgeline( vplay.camera.position , mpick )
@@ -40,19 +40,22 @@ function newViewport(fig,vplay){
     fig.measure_spots()
     
     var jpick=fig.jotesonray( 
-     { x:vplay.camera.position.x/focus.sc+focus.x 
+     { x:vplay.camera.position.x/focus.sc+focus.x //fig cam position 
       ,y:vplay.camera.position.y/focus.sc+focus.y
       ,z:vplay.camera.position.z/focus.sc+focus.z
      },{ 
        x:mpick.x
       ,y:mpick.y
       ,z:mpick.z 
-     })
-      
+     },{ //existing fig focus position
+       x:focus.x
+      ,y:focus.y
+      ,z:focus.z
+     }
+    )
       
     if(jpick.n){ reFocusThree(jpick.ar[0]) }
     else{ reFocusThree(-1) }
-    
   } 
   // 3pos = (jpos-focp)*focs
   // 3pos/focs+focp=jpos
@@ -250,7 +253,7 @@ function newViewport(fig,vplay){
   
   
   function updatefocusxyz(){
-  
+    
     focus.ring.x.add(jote.x[focus.jc])
     focus.ring.y.add(jote.y[focus.jc])
     focus.ring.z.add(jote.z[focus.jc])
@@ -266,7 +269,7 @@ function newViewport(fig,vplay){
   { 
     velcolor(vplay.colorfac)
     
-    if(focus.jd!=-1){
+    if(vplay.tempfoc||focus.jd!=-1){
       if(focus.timer){ 
         changingfocus(pace) 
       }
@@ -291,7 +294,7 @@ function newViewport(fig,vplay){
   function syncrender2(pace)
   { 
     //~ velcolor(vplay.colorfac)
-    if(focus.jd!=-1){
+    if(vplay.tempfoc||focus.jd!=-1){
       if(focus.timer){ 
         changingfocus(pace) 
       }
@@ -523,20 +526,17 @@ function newViewport(fig,vplay){
     chng:0, wc:-1, distb:0, jc:0,jd:-1,je:0, sc:1,sd:1 ,cam:0, timer:0, x:0,y:0,z:0 
   }
   
+  //vplay.tempfoc
+  
   function reFocusThree(jd){
     
-    //threefocuschange
-    //transitioningfocus
-    //
-    //~ console.log("changin jd, fo..",jote.top,jd,focus.jc,focus.jd,focus.je)
-     
     // whole scene rescaling is performed to...
     // translate features to a good float32 range
     // oversize is approx 1,000,000
     
     var notrack=false
     
-    if((jd==-1)||(jd==jote.top)) //-1 means keep last origin/focus
+    if( ((jd==-1)||(jd==jote.top)) && !(vplay.tempfoc)) //-1 means keep last origin/focus
     { jd=focus.je= focus.jd= focus.jc= -1 
       //~ console.log("booked",focus.je, focus.jd, focus.jc) 
       vplay.camdist=0
@@ -546,22 +546,15 @@ function newViewport(fig,vplay){
       focus.jd = jd
       jd=0
     }else{ 
+      
       if(jd==-2){ jd=jote.top-1 } 
       else { jd=(jote.top+jd)%jote.top }
       focus.jd = jd , focus.je = jd
-      fdisplaynom(jd) 
+      focus.timer= 10, focus.chng=1
+      if(vplay.tempfoc){ fdisplaynom(focus.jd = -1);return } else { fdisplaynom(jd) } 
     }
-
-    focus.timer= 10, focus.chng=1
-        
-    var js = [ ] //js would be array of jotes to fit in view
-    //~ if(jd!=0){ js.push(0) }
     
-    //making array of neighbours
-    //~ if(jd+1<jote.top){ js.push(jd+1)}else{ js.push(jd-2) }
-    //~ if(jd+2<jote.top){ js.push(jd+2)}else{ js.push(jd-3) }
-    //~ if(jd-1>-1){ js.push(jd-1)}else{ js.push(jd+2) }
-    
+    var js = [ ] 
     js.push(jote.top-1); js.push(0); js.push(Math.floor(jote.top/2))
     
     var neadist=0
@@ -577,7 +570,7 @@ function newViewport(fig,vplay){
     
     neadist/=js.length
 
-    if(focus.wc!==vplay.world){ //first go for figment
+    if(focus.wc!==vplay.world){ //wc = world current, (on world change)
       focus.wc=vplay.world
       focus.sd=500/neadist
       vplay.pradius*=focus.sd
@@ -614,11 +607,20 @@ function newViewport(fig,vplay){
     focus.timer=focus.timer*0.9-0.1
     if(focus.timer<0){ focus.timer=0 }	
     pace*=focus.timer*0.15
-    if(jd>-1){
-      focus.x-= (focus.x-jote.x[jd]-jote.vx[jd]*pace)/(focus.timer+1)
-      focus.y-= (focus.y-jote.y[jd]-jote.vy[jd]*pace)/(focus.timer+1)
-      focus.z-= (focus.z-jote.z[jd]-jote.vz[jd]*pace)/(focus.timer+1)
+    
+    var jdx,jdy,jdz,jdvx=0,jdvy=0,jdvz=0
+    
+    if(vplay.tempfoc){
+      jdx=vplay.tempfoc.x,jdy=vplay.tempfoc.y,jdz=vplay.tempfoc.z
+    }else{
+      jdx=jote.x[jd],jdy=jote.y[jd],jdz=jote.z[jd]
+      jdvx=jote.vx[jd],jdvy=jote.vy[jd],jdvz=jote.vz[jd]
     }
+    
+    focus.x-= (focus.x-jdx-jdvx*pace)/(focus.timer+1)
+    focus.y-= (focus.y-jdy-jdvy*pace)/(focus.timer+1)
+    focus.z-= (focus.z-jdz-jdvz*pace)/(focus.timer+1)
+    
     vplay.camRad/=focus.sc
     focus.cam/=focus.sc
     focus.sc-= (focus.sc-focus.sd)/(Math.sqrt(64+focus.timer)-7)
@@ -641,8 +643,9 @@ function newViewport(fig,vplay){
       
       focus.je=focus.jc=focus.jd
       focus.chng=0, focus.cam=0
-      updatefocusxyz()
-       
+      
+      if(vplay.tempfoc){ vplay.tempfoc=0 }
+      else{ updatefocusxyz() }
     }
     
     //~ vplay.nowfocus=focus.jd
