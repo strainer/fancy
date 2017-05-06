@@ -46,12 +46,7 @@ function castUlp(c,u){ //powers 2 are most stable for ratios
   return c*(u+1)-c*u
 }
 
-function hypo3(x,y,z){
-  return Math.sqrt(x*x+y*y+z*z)
-}
-function hypo2(x,y){
-  return Math.sqrt(x*x+y*y)
-}
+
 
 //meters loggers watches
 (function(w){
