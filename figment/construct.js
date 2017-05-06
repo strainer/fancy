@@ -378,7 +378,7 @@ function addConstruct(fig) {
     for(var j=ins.bfrclr,i=j*3;j<ins.due;j++)
     {
       var chf=cfun(),msf=mfun()
-      var cmr=mr*msf,cmg=mg*msf,cmb=mb*msf
+      var cmr=mr*msf*msf*1.6,cmg=mg*msf*msf*1.6,cmb=mb*msf*msf*1.6
       var ccr=cr*chf,ccg=cg*chf,ccb=cb*chf
       
       jote.g[j]=msf*mss ,jote.c[j]=chf*chs
