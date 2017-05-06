@@ -837,7 +837,7 @@ function createC8(){ //pattern
   { pradius:50
    ,runcycle_step:1.5
    ,model_pace:0.1
-   ,vplay.explode:1
+   ,explode:1
   }
   
   var nn=6000
