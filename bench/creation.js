@@ -52,9 +52,9 @@ function Tcreate(Talter,vplay) //Creation Function woooo!
       ,printtime:hourtime
       ,rendermode:1
       ,camRad:2057500000
-      ,forces:2
+      ,forces:0
       ,gravqual:0.10
-      ,seespots:1
+      ,seespots:0
     }
     
     var pld=planetdatas //file planetdat.js
