@@ -20,7 +20,7 @@ function addForces(fig,vplay) {
   
   function nbodygrav_wspots(p){
     nbodygrav(p)
-    fig.tendto_spotmap()
+    if(vplay.seespots>0){ fig.tendto_spotmap() }
   }
                
   function nbodygrav(p)
