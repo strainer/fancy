@@ -128,25 +128,25 @@ function setdash(cdash,vplay){
   
   // Multiline Function String - Nate Ferrero 
   var keystext=heredoc(function(){/*
-  <span class="keyba">View</span>
+  <span class="keyba">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View</span>
   <span class="keybb">click obj</span>  track
-  <span class="keybb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;< ></span>  next
-  <span class="keybb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m</span>  reset
+  <span class="keybb">&nbsp;&nbsp;&nbsp;&nbsp;<, .></span>  next
   <span class="keybb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a-z</span>  in-out
   <span class="keybb">&nbsp;&nbsp;&nbsp;cursor</span>  rotate
   <span class="keybb">crsr+ctrl</span>  slide
+  <span class="keybb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m</span>  reset
   
-  <span class="keyba">Time</span>
+  <span class="keyba">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Time</span>
   <span class="keybb">&nbsp;&nbsp; c</span>  pause
   <span class="keybb">&nbsp;q-w</span>  slow-faster
   <span class="keybb">&nbsp;i-o</span>  throttle
   <span class="keybb">&nbsp;&nbsp; u</span>  reverse 
   
-  <span class="keyba">Misc</span>
-  <span class="keybb">&nbsp;g</span>  nograv-nova
-  <span class="keybb">&nbsp;x</span>  pulse
-  <span class="keybb">&nbsp;s</span>  view bounds
+  <span class="keyba">&nbsp;&nbsp;&nbsp;Misc</span>
   <span class="keybb">&nbsp;k</span>  keys
+  <span class="keybb">&nbsp;g</span>  nova(nograv
+  <span class="keybb">&nbsp;x</span>  pulsate
+  <span class="keybb">&nbsp;s</span>  view bounds
 
   <br>
   */})
