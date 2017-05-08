@@ -351,9 +351,10 @@ function addSpotcollide(fig,vplay) {
      ,tx:cv.x ,ty:cv.y ,tz:cv.z 
     }
     
-    _fndn=0, _skimdistsqrd=0.02/vplay.focus.sc
-    
+    _fndn=0, _skimdistsqrd=0.03/vplay.focus.sc
+        
     if(spot.top<5){
+      //~ console.log("rt spot.top:",spot.top)
       //~ console.log("hhh",vplay.focus.sc)
       //~ _skimdistsqrd=10*vplay.focus.sc
       for(var c=0,e=jote.top;c<e;c++){ 
@@ -388,7 +389,6 @@ function addSpotcollide(fig,vplay) {
       }
       //~ console.log(vplay.tempfoc)	
     }
-    //~ console.log(n)
     return {n:_fndn,ar:_fnds}
   }
   
@@ -414,8 +414,7 @@ function addSpotcollide(fig,vplay) {
       if(dsq<_skimdistsqrd){ _fnds[_fndn++]=j } 
     } 
   }
-  
-  
+    
   
   var _rayx,_rayy,_rayz,_rayt ,_fnds=[] ,_fndn=0, _skimdistsqrd
   

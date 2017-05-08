@@ -18,14 +18,16 @@ function newViewport(fig,vplay){
   var vport={},thrLc,thrCl  //three arrays
   
   function onMouseDown(e) {
-    
+        
     var dm=vplay.renderer.domElement  ,camera=vplay.camera
     
     var rex= (e.clientX-dm.clientLeft)/dm.clientWidth
       , rey= (e.clientY-dm.clientTop)/dm.clientHeight
     
     if(rex>1||rey>1) return
-
+    
+    vplay.maskedAction(1,function(){
+           
     var mpick = new THREE.Vector3(rex*2 - 1  , 1 - rey*2, 0.5)
     var cmx,cmy
     //fill of 'pickingray' for old three version here: 
@@ -53,9 +55,11 @@ function newViewport(fig,vplay){
       ,z:focus.z
      }
     )
-      
-    if(jpick.n){ reFocusThree(jpick.ar[0]) }
-    else{ reFocusThree(-1) }
+      if(jpick.n){ reFocusThree(jpick.ar[0]) }
+      else{ reFocusThree(-1) }
+
+    })
+    
   } 
   // 3pos = (jpos-focp)*focs
   // 3pos/focs+focp=jpos
@@ -79,6 +83,7 @@ function newViewport(fig,vplay){
 
       vplay.scene = new THREE.Scene()
       
+      document.addEventListener('mousedown', onMouseDown, false);	
     }
 
     vplay.camspan=18
@@ -91,8 +96,6 @@ function newViewport(fig,vplay){
     //clear scene 
     for(var kid=vplay.scene.children.length-1;kid>=0;kid--)
     { vplay.scene.remove(vplay.scene.children[kid]) } 
- 
-    document.addEventListener('mousedown', onMouseDown, false);
  
     focus.ring={ 
       x:ringbuff(5)
@@ -269,7 +272,7 @@ function newViewport(fig,vplay){
   { 
     velcolor(vplay.colorfac)
     
-    if(vplay.tempfoc||focus.jd!=-1){
+    if(vplay.tempfoc||(focus.jd!=-1)){
       if(focus.timer){ 
         changingfocus(pace) 
       }
@@ -294,7 +297,7 @@ function newViewport(fig,vplay){
   function syncrender2(pace)
   { 
     //~ velcolor(vplay.colorfac)
-    if(vplay.tempfoc||focus.jd!=-1){
+    if(vplay.tempfoc||(focus.jd!=-1)){
       if(focus.timer){ 
         changingfocus(pace) 
       }
@@ -521,15 +524,16 @@ function newViewport(fig,vplay){
     { vport.vbox[si].visible=false }
   }
 
-
-  var focus={ 
-    chng:0, wc:-1, distb:0, jc:0,jd:-1,je:0, sc:1,sd:1 ,cam:0, timer:0, x:0,y:0,z:0 
-  }
+  vplay.focus.chng=0,vplay.focus.wc=-1,vplay.focus.distb=0
+  vplay.focus.jc=0,vplay.focus.jd=-1,vplay.focus.je=0
+  vplay.focus.sc=1,vplay.focus.sd=1,vplay.focus.cam=0
+  vplay.focus.timer=0,vplay.focus.x=0,vplay.focus.y=0
+  vplay.focus.z=0 
   
+  var focus=vplay.focus
   //vplay.tempfoc
   
   function reFocusThree(jd){
-    
     // whole scene rescaling is performed to...
     // translate features to a good float32 range
     // oversize is approx 1,000,000
@@ -538,13 +542,13 @@ function newViewport(fig,vplay){
     
     if( ((jd==-1)||(jd==jote.top)) && !(vplay.tempfoc)) //-1 means keep last origin/focus
     { jd=focus.je= focus.jd= focus.jc= -1 
-      //~ console.log("booked",focus.je, focus.jd, focus.jc) 
       vplay.camdist=0
       vplay.camvel=0
       fdisplaynom(jd)
       notrack=true
       focus.jd = jd
       jd=0
+    
     }else{ 
       
       if(jd==-2){ jd=jote.top-1 } 
@@ -552,8 +556,8 @@ function newViewport(fig,vplay){
       focus.jd = jd , focus.je = jd
       focus.timer= 10, focus.chng=1
       if(vplay.tempfoc){ fdisplaynom(focus.jd = -1);return } else { fdisplaynom(jd) } 
+             
     }
-    
     var js = [ ] 
     js.push(jote.top-1); js.push(0); js.push(Math.floor(jote.top/2))
     
@@ -575,7 +579,6 @@ function newViewport(fig,vplay){
       focus.sd=500/neadist
       vplay.pradius*=focus.sd
       focus.cam= vplay.camRad*0.1
-      
     }else {
       focus.cam=0
       var radd=jkind.rad[ jote.knd[jd] ] * focus.sc
@@ -590,24 +593,25 @@ function newViewport(fig,vplay){
   }
 
   function fdisplaynom(jd){
+    vplay.deboo=true
     vplay.nowfocus="obj "+jd
     if(jd===-1)
     { vplay.nowfocus="free tracking" }
     else if(isFinite(Fgm.jote.knd[jd])&&Fgm.jkind.nom[Fgm.jote.knd[jd]])
     { vplay.nowfocus=jd+" "+Fgm.jkind.nom[Fgm.jote.knd[jd]] }
-     
+        
     if('dash' in vplay){ vplay.dash.redrawDash()} 
   }
 
   function changingfocus(pace){
-    
+      
     var jd=focus.jd, upddist=(focus.cam)||(focus.sc!=focus.sd) 
     pace=(pace||1)*vplay.paused
     //f = f -(f-j)/timer
     focus.timer=focus.timer*0.9-0.1
     if(focus.timer<0){ focus.timer=0 }	
     pace*=focus.timer*0.15
-    
+        
     var jdx,jdy,jdz,jdvx=0,jdvy=0,jdvz=0
     
     if(vplay.tempfoc){
@@ -778,9 +782,9 @@ function newViewport(fig,vplay){
       } 
  
     }else{ //not pressed ctrl
-      vplay.camRad  /= 1-vplay.keyRd*0.1
+      vplay.camRad /= 1-vplay.keyRd*0.1
       
-      vplay.camPhi  -= vplay.keyUDd*0.0325
+      vplay.camPhi -= vplay.keyUDd*0.0325
       
       if(vplay.camPhi>Pi){ //flip hoz spin if past gimbal points
         vplay.camThet -= vplay.keyLRd*0.0325
@@ -793,7 +797,6 @@ function newViewport(fig,vplay){
       }
       
       if(vplay.rendermode==1&&vplay.camRad!==vplay.camRadold){
-        
         
         vplay.camRadold=vplay.camRad
         
@@ -860,9 +863,7 @@ function newViewport(fig,vplay){
       vis[n].rotation._z= vplay.camera.rotation._z
       
       //~ if((dumdum++%100)===0) console.log(vis[n])
-
     }
-     
   }
   
   
@@ -905,8 +906,6 @@ function newViewport(fig,vplay){
       window.innerWidth-vplay.displaybugi, window.innerHeight-vplay.displaybugi )
   }
   
-  vplay.focus        = focus 
-  
   vport.spincam      = spincam 
   vport.ctrlcam      = ctrlcam 
   vport.focus        = focus 
@@ -918,10 +917,6 @@ function newViewport(fig,vplay){
   
   return vport
 }
-
-
-
-
 
 
 /*
