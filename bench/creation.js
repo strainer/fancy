@@ -38,8 +38,6 @@ function Tcreate(Talter,vplay) //Creation Function woooo!
   }
   
   
-  
-  
   function createC0(){ //solar system jpl data
     //
     
@@ -54,7 +52,7 @@ function Tcreate(Talter,vplay) //Creation Function woooo!
       ,camRad:2057500000
       ,forces:0
       ,gravqual:0.10
-      ,seespots:0
+      ,seespots:1
     }
     
     var pld=planetdatas //file planetdat.js

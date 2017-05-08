@@ -8,8 +8,8 @@
 
 function newDash(){ return (function(gu){
   
+  var vplay=gu[0]
   var hazcss=0
-
   var winwidth, winheight
   
   var www  = window, ddd  = www.document, dde = ddd.documentElement,
@@ -151,10 +151,10 @@ function newDash(){ return (function(gu){
     ;((pm.seat).seat).appendChild(dset)
     
     var clicker
-    if(pm.closes){
-      clicker=function(){ (pm.seat).click(); pm.callb(pm.param) } 
+    if(pm.closes){  //add these clicks to the action queue instead of doing them immedd
+      clicker=function(){ (pm.seat).click(); pm.callb(pm.param); maskedAction(2,0) } 
     }else{
-      clicker=function(){ pm.callb(pm.param) } 
+      clicker=function(){ pm.callb(pm.param); maskedAction(2,0) } 
     }
    
     if(pm.flipper){
@@ -300,6 +300,7 @@ function newDash(){ return (function(gu){
   }
       
   function clickedd(c){
+    maskedAction(2,0) //kills clicktracker
     if(c.style.display==="none"){
       c.style.display="block"
     }else{
@@ -321,13 +322,26 @@ function newDash(){ return (function(gu){
   }
 
   var actions= { a:0, e:0 }  //fifo queue for adding onclick actions to dash 
+  var maskedaction ={ma:0,f:undefined,tm:0} 
   
   function addAction(f){
     actions[actions.e]=f
     actions.e++
+  } 
+  
+  function maskedAction(a,f){
+    if(a>maskedaction.ma)
+    { maskedaction.ma=a , maskedaction.f=f
+      maskedaction.tm=perfnow() }
   }
   
   function pullAction(){
+    
+    if(perfnow()>maskedaction.tm+250){
+    if(maskedaction.ma){ maskedaction.ma=0; 
+      if(maskedaction.f){ return maskedaction.f }
+    }
+    }
     if(actions.a===actions.e){ actions.a = actions.e = 0; return 0 }
     var f=actions[actions.a]; actions[actions.a++]=0 //clears reference
     return f
@@ -363,6 +377,7 @@ function newDash(){ return (function(gu){
    ,revealer:revealer
    ,addHTML:addHTML
    ,addAction:addAction
+   ,maskedAction:maskedAction
    ,pullAction:pullAction
    ,delGroup:delGroup
    ,button:button

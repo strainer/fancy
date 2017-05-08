@@ -344,44 +344,51 @@ function addSpotcollide(fig,vplay) {
   //~ function jotesonray(cp,cv){
     //~ function rayinleaf(s,ra)
     
-  function jotesonray(cp,cv){
+  function jotesonray(cp,cv,ff){
     
     var ra={ 
       sx:cp.x ,sy:cp.y ,sz:cp.z 
      ,tx:cv.x ,ty:cv.y ,tz:cv.z 
     }
     
-    _fndn=0, _skimdistsqrd=0.02/vplay.focus.sc
-    
+    _fndn=0, _skimdistsqrd=0.03/vplay.focus.sc
+        
     if(spot.top<5){
+      //~ console.log("rt spot.top:",spot.top)
       //~ console.log("hhh",vplay.focus.sc)
       //~ _skimdistsqrd=10*vplay.focus.sc
-      for(var c=0,e=jote.top;c<e;c++){
-        
+      for(var c=0,e=jote.top;c<e;c++){ 
         joteinray(c,ra) 
       }
+    }else{
+    
+      spotmatch = rayinspot
+      leafexam  = rayinleaf
+      spotexam(1,ra)
       
-      //~ console.log("fhh",_fndn)
-      return {n:_fndn,ar:_fnds}
+      //~ console.log("found",_fndn,"hits") 
+      //~ while(_fndn>0){
+        //~ var j=_fnds[--_fndn]
+        //~ jote.ccolor[j*3  ]=13
+        //~ jote.ccolor[j*3+1]=13
+        //~ jote.ccolor[j*3+2]=13
+        //~ jote.bcolor[j*3  ]=13
+        //~ jote.bcolor[j*3+1]=13
+        //~ jote.bcolor[j*3+2]=13
+      //~ }
     }
     
-    spotmatch = rayinspot
-    leafexam  = rayinleaf
-    
-    spotexam(1,ra)
-    
-    //~ console.log("found",_fndn,"hits")
-    
-    //~ while(_fndn>0){
-      //~ var j=_fnds[--_fndn]
-      //~ jote.ccolor[j*3  ]=13
-      //~ jote.ccolor[j*3+1]=13
-      //~ jote.ccolor[j*3+2]=13
-      //~ jote.bcolor[j*3  ]=13
-      //~ jote.bcolor[j*3+1]=13
-      //~ jote.bcolor[j*3+2]=13
-    //~ }
-    
+    if(!_fndn){  //make a temp focus
+      var ds=hypo3(ff.x-ra.sx ,ff.y-ra.sy ,ff.z-ra.sz)
+         ,t=ds/hypo3(ra.tx,ra.ty,ra.tz)
+      
+      vplay.tempfoc={
+        x:ra.sx+ra.tx*t
+       ,y:ra.sy+ra.ty*t
+       ,z:ra.sz+ra.tz*t
+      }
+      //~ console.log(vplay.tempfoc)	
+    }
     return {n:_fndn,ar:_fnds}
   }
   
@@ -407,8 +414,7 @@ function addSpotcollide(fig,vplay) {
       if(dsq<_skimdistsqrd){ _fnds[_fndn++]=j } 
     } 
   }
-  
-  
+    
   
   var _rayx,_rayy,_rayz,_rayt ,_fnds=[] ,_fndn=0, _skimdistsqrd
   

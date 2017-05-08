@@ -24,7 +24,7 @@ var vplay = {
   }
     
   ,seed:0 ,world:3, seespots:-1
-  ,geometry:{}, camera:{}, scene:{} 
+  ,geometry:{}, camera:{}, scene:{} ,focus:{}
   ,renderer:{}, displaybugi:20 //avoiding scrollbar
   
   ,instaprops:{}
@@ -120,7 +120,7 @@ function setupfigview(fig){
   addSpotcollide(Fgm,vplay)
   
   Fgm.applyforces={
-   0:Fgm.nbodygrav
+   0:Fgm.nbodygrav_wspots
   ,1:Fgm.nbodygravelec
   ,2:Fgm.grav_spots
   ,3:Fgm.stub_spots
@@ -156,10 +156,11 @@ function setupfigview(fig){
 
 /* - - - - - - - - - - - - - - - */
 
-var adash= newDash("foo")
+var adash= newDash(vplay)
 setdash(adash,vplay)
 
 vplay.dash=adash
+vplay.maskedAction=adash.maskedAction
 adash.redrawDash()
 
 setkeys()
@@ -168,7 +169,7 @@ refreshrender()
 framemaster()
 
 function refreshrender(){
-   
+  
   Vpr.ctrlcam()
     
   var mtimeperframe= vplay.paused * vplay.model_pace * vplay.runcycle_step
@@ -198,7 +199,7 @@ function framemaster() { // master frame dispatch
   //dash redraw and actions such as a click on dash controls
   var dashact; 
   while( dashact=adash.pullAction() ){ dashact() } 
-    
+      
   if( vplay.pausetime<40 && (vplay.allframe_clock)%3===0)
   {
     adash.redrawDash() 
@@ -221,7 +222,7 @@ function framemaster() { // master frame dispatch
     refreshrender()
     //~ vplay.fps=readwatch('fps')[0]
   }
-
+  
 }
 
 var done=0

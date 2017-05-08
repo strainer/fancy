@@ -16,6 +16,12 @@ function addForces(fig,vplay) {
      ,rndu=fig.rndu, rndh=fig.rndh
      ,dlns=fig.dlns 
                
+  
+  
+  function nbodygrav_wspots(p){
+    nbodygrav(p)
+    fig.tendto_spotmap()
+  }
                
   function nbodygrav(p)
   { 
@@ -149,6 +155,7 @@ function addForces(fig,vplay) {
 
 
   fig.nbodygrav = nbodygrav
+  fig.nbodygrav_wspots = nbodygrav_wspots
   fig.nbodygravelec = nbodygravelec
   
   return fig
