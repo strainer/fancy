@@ -38,8 +38,6 @@ function Tcreate(Talter,vplay) //Creation Function woooo!
   }
   
   
-  
-  
   function createC0(){ //solar system jpl data
     //
     
@@ -52,7 +50,7 @@ function Tcreate(Talter,vplay) //Creation Function woooo!
       ,printtime:hourtime
       ,rendermode:1
       ,camRad:2057500000
-      ,forces:2
+      ,forces:0
       ,gravqual:0.10
       ,seespots:1
     }

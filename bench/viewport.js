@@ -344,7 +344,6 @@ function newViewport(fig,vplay){
        //~ ,jote.ccolor[i++]
       //~ )
       
-      
       if(vplay.seespots) { vboxspot() }
     }
   }
@@ -433,6 +432,7 @@ function newViewport(fig,vplay){
   }
 
   function setupvbox(){
+    
     vport.vbox=[]
 
     var n=-0.5 ,p=0.5	
@@ -467,6 +467,7 @@ function newViewport(fig,vplay){
   function vboxspot(turnoff){
     
     var spot =fig.spot
+    //~ console.log(spot.top)
     if(!vport.hasOwnProperty('vbox')){ setupvbox() } //made a vbox
 
     //~ if('vbex' in vport && vport.vbex.length){

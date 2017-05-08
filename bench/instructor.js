@@ -120,7 +120,7 @@ function setupfigview(fig){
   addSpotcollide(Fgm,vplay)
   
   Fgm.applyforces={
-   0:Fgm.nbodygrav
+   0:Fgm.nbodygrav_wspots
   ,1:Fgm.nbodygravelec
   ,2:Fgm.grav_spots
   ,3:Fgm.stub_spots
