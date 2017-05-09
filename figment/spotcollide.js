@@ -30,7 +30,7 @@
 function addSpotcollide(fig,vplay) { 
   'use strict'
    
-  var jote=fig.jote, spot=fig.spot 
+  var jote=fig.jote, jkind=fig.jkind ,spot=fig.spot 
      ,Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
      ,Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
      ,Drand=fig.Drand ,Hrand=fig.Hrand
@@ -389,9 +389,18 @@ function addSpotcollide(fig,vplay) {
       }
       //~ console.log(vplay.tempfoc)	
     }
-    return {n:_fndn,ar:_fnds}
+    
+    var rett={n:_fndn ,ar:_fnds ,ad:_fndr ,closest:alowest(_fndr,_fndn)}
+    //~ console.log(rett)
+    return rett
   }
   
+  function alowest(a,n){
+    for(var r=0,i=1,e=n||a.length;i<e;i++){
+      if(a[i]<a[r]) r=i
+    }
+    return r
+  }
   
   function rayinleaf(s,ra){
     for(var c=spot.dln_anchor[s],e=c+spot.dln_span[s];c<e;c++){
@@ -408,15 +417,22 @@ function addSpotcollide(fig,vplay) {
     if(VP<0)       //looking forward?
     { 
       var tm=0-VP/VV //time till min sep
-      //~ console.log("tm",tm)
+      var jkk=jote.knd[j]
+      var fat=jkind.rad[ jkk ]||0
+      //fat=0
       px+=ra.tx*tm , py+=ra.ty*tm , pz+=ra.tz*tm 
-      var dsq=(px*px+py*py+pz*pz)/tm
-      if(dsq<_skimdistsqrd){ _fnds[_fndn++]=j } 
+      //console.log("nom",jkind.nom[ jkk ],"tm",tm,"px",px,"py",py,"pz",pz,"fat",fat)
+      var dsq=(px*px+py*py+pz*pz-fat*fat)/tm
+      if(dsq<_skimdistsqrd){ 
+        //console.log("nom",jkind.nom[ jkk ],"close by",_skimdistsqrd)
+        _fnds[ _fndn   ]=j 
+        _fndr[ _fndn++ ]=dsq
+      } 
     } 
   }
-    
+      
   
-  var _rayx,_rayy,_rayz,_rayt ,_fnds=[] ,_fndn=0, _skimdistsqrd
+  var _rayx,_rayy,_rayz,_rayt ,_fnds=[],_fndr=[] ,_fndn=0, _skimdistsqrd
   
   function rayinspot(s,ra){
     
