@@ -23,7 +23,7 @@ var vplay = {
    ,12:{name:"Bloop",desc:""}
   }
     
-  ,seed:0 ,world:3, seespots:-1
+  ,seed:0 ,world:0, seespots:-1
   ,geometry:{}, camera:{}, scene:{} ,focus:{}
   ,renderer:{}, displaybugi:20 //avoiding scrollbar
   
@@ -128,7 +128,11 @@ function setupfigview(fig){
 
   addTemper(Fgm,vplay)  //adds service function
       
-  //~ if(!Vpr)    //i shouldnt have to recreate this ..
+  if(Vpr)    //i shouldnt have to recreate this ..
+  { //console.log("aheyho")
+    Vpr.removemouse()
+  }
+  
   Vpr=newViewport(Fgm,vplay)
     
   Vpr.initview( document.getElementById( 'threediv' ), vplay)

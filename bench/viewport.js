@@ -17,7 +17,7 @@ function newViewport(fig,vplay){
   
   var vport={},thrLc,thrCl  //three arrays
   
-  function onMouseDown(e) {
+  function onMouseDown(e){ 
         
     var dm=vplay.renderer.domElement  ,camera=vplay.camera
     
@@ -55,15 +55,17 @@ function newViewport(fig,vplay){
       ,z:focus.z
      }
     )
-      if(jpick.n){ reFocusThree(jpick.ar[0]) }
+      if(jpick.n){ reFocusThree(jpick.ar[jpick.closest]) }
       else{ reFocusThree(-1) }
-
     })
-    
-  } 
+  }
+     
   // 3pos = (jpos-focp)*focs
   // 3pos/focs+focp=jpos
-  
+  function removemouse(){
+    document.removeEventListener('mousedown', onMouseDown)
+  }
+   
   function initview(container) {
     if(!vplay.renderer.domElement){
       
@@ -83,9 +85,10 @@ function newViewport(fig,vplay){
 
       vplay.scene = new THREE.Scene()
       
-      document.addEventListener('mousedown', onMouseDown, false);	
     }
-
+    
+    document.addEventListener('mousedown', onMouseDown, false)
+   
     vplay.camspan=18
     vplay.camera = new THREE.PerspectiveCamera( vplay.camspan
       ,( window.innerWidth-vplay.displaybugi) / (window.innerHeight-vplay.displaybugi)
@@ -327,7 +330,8 @@ function newViewport(fig,vplay){
     for(var i=0,j=0;j<jote.top;j++)
     { 
       var vj=vport.visjote[j]
-      if(resc){  //this is done in ctrlcam 
+      //~ if(resc){  //this is done in ctrlcam 
+      if(true){  //this is done in ctrlcam 
         var isc=drawscale*(jkind.rad[ jote.knd[j] ])
         if(isc<mindot){ isc=mindot }
         vj.scale.set( isc, isc, isc ) 
@@ -915,6 +919,7 @@ function newViewport(fig,vplay){
   vport.syncrender   = syncrender
   vport.updatefocusxyz = updatefocusxyz
   vport.reFocusThree = reFocusThree
+  vport.removemouse = removemouse
   
   return vport
 }
