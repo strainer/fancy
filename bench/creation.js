@@ -44,15 +44,16 @@ function Tcreate(Talter,vplay) //Creation Function woooo!
     vplay.instaprops=
     {
       model_pace : 1080.0//315.36000 // (is seconds?)
-      ,gravity : 6.67408e-8
-      ,max_force :  10000000000000
+      //~ ,gravity : 6.67408e-8
+      ,gravity : 6.67384789e-8  //tweaked to make earth right
+      ,max_force :  1000000000000000000
       ,viewer2:true
       ,printtime:hourtime
       ,rendermode:1
       ,camRad:2057500000
       ,forces:0
       ,gravqual:0.10
-      ,seespots:1
+      ,seespots:-1
     }
     
     var pld=planetdatas //file planetdat.js
