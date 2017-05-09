@@ -23,7 +23,7 @@ var vplay = {
    ,12:{name:"Bloop",desc:""}
   }
     
-  ,seed:0 ,world:0, seespots:-1
+  ,seed:0 ,world:3, seespots:-1
   ,geometry:{}, camera:{}, scene:{} ,focus:{}
   ,renderer:{}, displaybugi:20 //avoiding scrollbar
   
