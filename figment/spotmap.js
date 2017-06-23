@@ -936,6 +936,8 @@ function addSpotmap(fig,vplay) {
     //this works
     var zz,yy=Math.floor(Isec/dvn[0])	
     zsec=Math.floor(yy/dvn[1])
+    //~ var zz,yy=(Isec/dvn[0])>>0	
+    //~ zsec=(yy/dvn[1])>>0
     ysec=yy-(zz=zsec*dvn[1])
     xsec=Isec-(zz+ysec)*dvn[0]
 
@@ -990,11 +992,12 @@ function addSpotmap(fig,vplay) {
     _dvsx=_divn[0],_dvsxy=_divn[0]*_divn[1]
   }
   
+
   function loctosubcell(x,y,z)
   { return (
-      floor((x- _lw3[0])*_idvmx)         //*1
-    + floor((y- _lw3[1])*_idvmy)*_dvsx   //*1*x 
-    + floor((z- _lw3[2])*_idvmz)*_dvsxy  //*1*x*y 
+      (((x- _lw3[0])*_idvmx)>>0)      //*1
+    + (((y- _lw3[1])*_idvmy)>>0)*_dvsx   //*1*x 
+    + (((z- _lw3[2])*_idvmz)>>0)*_dvsxy  //*1*x*y 
     ) 
   } 
   
