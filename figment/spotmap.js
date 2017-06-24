@@ -279,7 +279,7 @@ function addSpotmap(fig,vplay) {
     }
           
     //configure loc_to_subcell function with curdets
-    note_loctosubs()
+    prep_loctosub()
      
     //~ if(celln>max_subsect) { mtlogcn('celln_err') }
        
@@ -347,7 +347,7 @@ function addSpotmap(fig,vplay) {
       }else{
         //~ mtlogcn('cellshrink')
         celln=note_bestgrid(cellnb) //sets _divn and _divm
-        note_loctosubs()
+        prep_loctosub()
         //celln=_divn[0]*_divn[1]*_divn[2]
         for(var dli=st; dli<ov; dli++) 
         { cel=Math.abs(loctosubcell(   //redoing subloc with new bounds
@@ -985,7 +985,7 @@ function addSpotmap(fig,vplay) {
   
   var _lwx,_lwy,_lwz,_idvmx,_idvmy,_idvmz,_dvsx,_dvsxy
   ///
-  function note_loctosubs(){ //0.999999999999999
+  function prep_loctosub(){ //0.999999999999999
     _idvmx=1/_divm[0] //no splodge with this value 
    ,_idvmy=1/_divm[1] //%celln location still advisable 
    ,_idvmz=1/_divm[2]
