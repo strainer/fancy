@@ -172,6 +172,10 @@ function addSpotcollide(fig,vplay) {
   }
   
   
+  
+  //ungroked behavior,
+  //mystery that globules split into group 
+  
   function jotenear(a,b){
     
     a=dlns[a],b=dlns[b]
@@ -221,13 +225,18 @@ function addSpotcollide(fig,vplay) {
       pressforce=pressforce>-0.5?pressforce:-1.0-pressforce
     }else{  //dist is less than midpoint
       
-      if((!(bg||ag))&&pressforce>0.87){
-        var aa=-0.025,bb=0.025
-        var rd=Drand.gnorm(aa,bb)
+      if(false&&(!(bg||ag))&&pressforce>0.87){
+        //~ var aa=-0.025,bb=0.025
+        //~ var rd=Drand.range(aa,bb)
+        var aa=1500000
+        var rd=(Drand.f48()+Drand.f48()+Drand.f48()-1.5)*aa
+        rd=aa
         jote.x[a]+=rd,jote.x[b]-=rd
-        Drand.gnorm(aa,bb)
+        //~ rd=Drand.gnorm(aa,bb)
+        //~ rd=(Drand.f48()+Drand.f48()+Drand.f48()-1.5)*aa
         jote.y[a]+=rd,jote.y[b]-=rd
-        Drand.gnorm(aa,bb)
+        //~ rd=Drand.gnorm(aa,bb)
+        //~ rd=(Drand.f48()+Drand.f48()+Drand.f48()-1.5)*aa
         jote.z[a]+=rd,jote.z[b]-=rd
       }
     }
