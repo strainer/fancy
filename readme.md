@@ -1,15 +1,15 @@
 Fancy - Physics
 ===============
 
-Fancy is a physics computing project developed with fanciful ideas of creating a programmatic sense of *fantasy* for the virtual minds of the coming AI revolution...
+Fancy is a physics computing project developed with fanciful ideas of creating a programmatic sense of *fantasy* for the virtual minds of the coming AI revolution.  :performing_arts:
 
 To this end a general purpose physics engine is under developement and is tested on some basic examples in a [Web Demo](http://strainer.github.io/fancy/). 
 
 The physics engine currently involves:
 * Up to 64 thousand objects
 * Interactions include: 
-* * Point & cloud gravitational and quasi-electrostatic accelerations
-* * Drag & pressure effects between close neighbour objects (involving precise collision
+  * Point & cloud gravitational and quasi-electrostatic accelerations
+  * Drag & pressure effects between close neighbour objects (involving precise collision
 detection).
 * Model accuracy and stability is maximised with a refined adjustment of velocity data to fit integration timestamp related to the basic 'verlet integration' velocity adjusment.
 * An efficient R-tree class spatial index is created and maintained for optimising most object interactions.
@@ -21,12 +21,11 @@ The workbench involves:
 * raytrace selection of objects by mouseclick
 * Adjustable rendering frame interlace rate
   
-The **[Fancy Wiki](https://github.com/strainer/fancy/wiki)** has some design docs.
-
-### Web Demo
+  
+## Web Demo
 The [demo](http://strainer.github.io/fancy/) selects and initialises virtual worlds called 'figments' and renders them for display and testing. Everything is currently orbital in kind, as this is a most straightforward model to begin with. The demo has keyboard controls for zooming and time controls and some readings about the focused object. Objects can be mouseclicked accurately to zoom on them.
 
-## Test worlds (figments)
+### Test worlds (figments)
 
 #### Solar System
 
@@ -48,9 +47,20 @@ These figments currently test the '[Spotmap](https://github.com/strainer/fancy/w
 #### Blue disk
 The 'spotmap' is used in this figment to apply a basic pressure and drag function between close neighbouring objects. The functions are calibrated along with gravity, producing some curious looking quasi-astronomical phenomena.
 
-To continue...
+### View Controls
 
-* Possibly improve leaf clustering in spotmap
-* Introduce a scheme to enable multi-body objects / bonds / 'rigid body', surfaces..
-* Different kinds of close object interactions - 'nearest neighbour only' forces,  
-* A better workbench 
+* The Cursor keys spin the viewpoint around the focal point
+* A,Z moves toward,away from the focal point 
+* Crtl + Cursors moves the focal point
+* Keys: `<, >.` change object in focus  
+* Click on object sets it as focal point
+* Click empty space sets focal point on current z-axis level  
+* C start/stops simulation
+* S shows bounds of space index (spotmap)
+* g turns off gravity
+* x pulsates world
+
+
+## Developement Wiki
+
+The **[Fancy Wiki](https://github.com/strainer/fancy/wiki)** has some design docs.
