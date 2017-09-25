@@ -61,6 +61,6 @@ The 'spotmap' is used in this figment to apply a basic pressure and drag functio
 * x pulsates world
 
 
-## Developement Wiki
+## Development Wiki
 
 The **[Fancy Wiki](https://github.com/strainer/fancy/wiki)** has some design docs.
