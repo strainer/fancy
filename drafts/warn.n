@@ -33,3 +33,17 @@ action_state_path building
     table>surface,leg1,leg2 etc   permissions: hard_avoid..employable
     creature>
     hazard
+    
+    
+object type
+ simplest
+  particles
+  anatural boundaries
+ 
+ medium
+  fixed - arranged - settled - low vibration
+  
+ high
+  fixed - arranged - turmoil - high vibration and rearrangement
+  
+ fixed by? fixed how? 

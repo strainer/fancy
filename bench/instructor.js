@@ -24,7 +24,7 @@ var vplay = {
    ,13:{name:"XXX",desc:""}
   }
     
-  ,seed:0 ,world:1, seespots:-1
+  ,seed:0 ,world:3, seespots:-1
   ,geometry:{}, camera:{}, scene:{} ,focus:{}
   ,renderer:{}, displaybugi:20 //avoiding scrollbar
   
