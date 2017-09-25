@@ -21,9 +21,10 @@ var vplay = {
    //~ ,10:{name:"47 Tuc X9",desc:""}
    //~ ,11:{name:"Point Cloud",desc:""}
    ,12:{name:"Bloop",desc:""}
+   ,13:{name:"XXX",desc:""}
   }
     
-  ,seed:0 ,world:0, seespots:-1
+  ,seed:0 ,world:1, seespots:-1
   ,geometry:{}, camera:{}, scene:{} ,focus:{}
   ,renderer:{}, displaybugi:20 //avoiding scrollbar
   

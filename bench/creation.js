@@ -22,6 +22,7 @@ function Tcreate(Talter,vplay) //Creation Function woooo!
   if(vplay.world==10){ createC10() }
   if(vplay.world==11){ createC11() }
   if(vplay.world==12){ createC12() }
+  if(vplay.world==13){ createCX() }
   
   Talter.settop()
   
@@ -106,7 +107,7 @@ function Tcreate(Talter,vplay) //Creation Function woooo!
       ,runcycle_step:12
       ,gravity : 6.67408e-8
       ,camRad:575000
-      ,camThet:4.92
+      ,camThet:5.38
       ,camPhi:1.62
       ,firstfocus:1
       ,printtime:hourtime
@@ -186,9 +187,9 @@ function Tcreate(Talter,vplay) //Creation Function woooo!
     
     
     Talter.colorprev({ r:0,g:0,b:0,
-        rfun:function(){ return Drand.gteat( 0.7,2.2 ) }
-        ,gfun:function(){ return Drand.gteat( 1.2,2.0 ) } 
-        ,bfun:function(){ return Drand.gteat( 1.4,2.9 ) }
+        rfun:function(){ return Drand.gteat( 0.9,2.0 ) }
+        ,gfun:function(){ return Drand.gteat( 1.5,2.1 ) } 
+        ,bfun:function(){ return Drand.gteat( 1.7,3.3 ) }
       })	
     
     /*
@@ -351,6 +352,83 @@ function Tcreate(Talter,vplay) //Creation Function woooo!
   }
   
   
+  function createCX(){
+ 
+    vplay.instaprops=
+    {
+      model_pace : 900.0//315.36000 // (is seconds?)
+      ,gravity : 6.67408e-8
+      ,max_force :  10000000000000
+      ,viewer2:true
+      ,printtime:hourtime
+      ,rendermode:1
+      ,camRad:370500000
+    }
+    
+    var solmas=Math.pow( 10 , 30-12 )*( 1.988544 ), sunrad=696300
+    ,emass=Math.pow( 10 , 24-12 )*( 5.97219 ), erad=6371.01
+    
+    var trapmas=0.08*solmas, au=149597806.29777 //kilometer
+
+    //setbase star
+    //	
+    Talter.setpos(0,0,0)
+    Talter.setvel(0,0,0)
+    Talter.setmass(0)
+    Talter.setseam(1)
+    Talter.setgroup(0)
+    Talter.setbasecol(0)
+    
+    Talter.addjote(0,0,0,1)
+    
+    var sunmass=solmas
+    Talter.jsetlast({ 
+      knd:"sun" ,rad:sunrad ,mass:sunmass
+      ,r:Drand.gskip()*1+2.4 
+      ,g:Drand.gskip()*1+2.4
+      ,b:Drand.gskip()*1+2.4
+    }) 
+    
+    var orbs_per_orbit=12 , orbits=3
+    var c_orb=1, orbmass=sunmass*0.0001, orbrad=sunrad/10
+     
+    var orbgap=696300*5
+    for( var orbs_per_orbit=52 ,orbit=0 ; orbit<orbits ; orbit++ )
+    { 
+     
+      Talter.addspinring({ 
+        num:orbs_per_orbit
+       ,rad:(1+orbit)*orbgap
+       ,pull:sunmass+orbmass 
+       ,phi:(45-90)*Math.PI/180
+        //,phi:2
+        //~ ,radf:0, crvf:0, velf:0
+        ,radf:function(){return Drand.gteat( 0.6,3.84)} 
+        ,velf:function(){return Drand.gteat(-0.25,0.25)} 
+        ,thkf:function(){return Drand.gteat(-0.29,0.29)}
+        ,crdf:1.1 
+      })
+       
+      Talter.colorprev({ r:2,g:2.9,b:4.5 })
+       
+      for(var ie=c_orb + orbs_per_orbit ; c_orb<ie ; c_orb++){
+       //jote: knd: rad: mass: charge:
+        
+        Talter.setaslast(c_orb)
+
+        Talter.jsetlast({ 
+          knd:"orb"+c_orb ,rad:orbrad ,mass:orbmass
+          ,r:Drand.gskip()*3+0.4 
+          ,g:Drand.gskip()*3+0.4
+          ,b:Drand.gskip()*3+0.4
+        }) 
+      } 
+        
+    }
+    
+  }
+
+
   function createC3(){ //blue disk
     
     vplay.instaprops=
