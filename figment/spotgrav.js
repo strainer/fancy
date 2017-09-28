@@ -39,9 +39,10 @@ function addSpotgrav(fig,vplay) {
     return ki
   } 
 
+  
   var mingdis
   
-  function grav_spots(p){  //begin recursive gravitation 
+  function spots_grav(p){  //begin recursive gravitation 
     
     squality=5000000*(vplay.gravqual||1)*(vplay.gravqual||1)
     pace=p||vplay.model_pace
@@ -74,7 +75,8 @@ function addSpotgrav(fig,vplay) {
     //~ cologwatch( ['ALLgrav','ply','load','measure'],5 )
   }
   
-  function stub_spots(p){  //begin recursive gravitation 
+  
+  function clump_grav(p){  //begin recursive gravitation 
     
     squality=3000000*(vplay.gravqual||1)*(vplay.gravqual||1)
     pace=p||vplay.model_pace
@@ -120,6 +122,7 @@ function addSpotgrav(fig,vplay) {
     //~ conlog(spot.top)
     //~ cologwatch( ['tendspots','nbody','fitspots','press'],5 )
   }
+  
   
   function interplyspot(par){ //inpit
     //mtlogar('assess','inmate spot'+par)
@@ -202,9 +205,11 @@ function addSpotgrav(fig,vplay) {
       for(var kb=spot.fchild[sb]; kb; kb=nextkid(sb,kb) )
       { 
         for( var ka=0 ; ka<kn ; ka++  ) 
-        { //mtlogcn('assess3'); 
+        { 
+          //mtlogcn('assess3'); 
           //mtlogar("assess","a- split both "+kb+"&"+kids[ka]); 
-          multiply_spots(kb,kids[ka]) }
+          multiply_spots(kb,kids[ka]) 
+        }
       }	
       _klev--
       //mtlogar("assess","a- ret aft splt bth")
@@ -320,8 +325,8 @@ function addSpotgrav(fig,vplay) {
    
   // - - - end logger mess
     
-  fig.grav_spots = grav_spots
-  fig.stub_spots = stub_spots
+  fig.spots_grav = spots_grav
+  fig.clump_grav = clump_grav
   
   return fig
 

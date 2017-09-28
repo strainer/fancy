@@ -14,7 +14,7 @@ function addTemper(fig){
   
   var jote=fig.jote 
      ,Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
-     ,aforce=fig.applyforces
+     ,aforce=fig.doforce
   //-------------------------------------------------------// 
 
   function gtemperall(cvfac,dvfac)  //current temp, due temp
@@ -105,7 +105,7 @@ function addTemper(fig){
       rig.push(jote.z[i]) }
     
     for(var i=0;i<n;i++)
-    { fig.velmove(-ts)
+    { fig.jmovebyvt(-ts)
       aforce(-ts)
     }
     

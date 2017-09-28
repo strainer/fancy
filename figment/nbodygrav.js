@@ -6,7 +6,7 @@
 
 /// forces.js - processes: gravity, friction, etc
 
-function addForces(fig,vplay) { 
+function addNbodygrav(fig,vplay) { 
   'use strict'
   
   var jote=fig.jote, spot=fig.spot 
@@ -16,13 +16,7 @@ function addForces(fig,vplay) {
      ,rndu=fig.rndu, rndh=fig.rndh
      ,dlns=fig.dlns 
                
-  
-  
-  function nbodygrav_wspots(p){
-    nbodygrav(p)
-    if(vplay.seespots>0){ fig.tendto_spotmap() }
-  }
-               
+                 
   function nbodygrav(p)
   { 
     pace=p||vplay.model_pace; 
@@ -50,7 +44,10 @@ function addForces(fig,vplay) {
           }
         }
       }
-    }
+    } 
+  
+    if(vplay.seespots>0){ fig.tendto_spotmap() }
+
   }
  
           
@@ -88,6 +85,9 @@ function addForces(fig,vplay) {
         }
       }
     }
+    
+    if(vplay.seespots>0){ fig.tendto_spotmap() }
+
   }
           
           
@@ -155,7 +155,6 @@ function addForces(fig,vplay) {
 
 
   fig.nbodygrav = nbodygrav
-  fig.nbodygrav_wspots = nbodygrav_wspots
   fig.nbodygravelec = nbodygravelec
   
   return fig
