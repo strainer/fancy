@@ -99,7 +99,7 @@ function setdash(cdash,vplay){
  
   var dsselect= cdash.revealer({
     seat:fig_sel_div
-   ,content:"Select Figment"
+   ,content:"Figments"
    ,upstyle:{ }
    ,instyle:{
      width:fez*16+'px'
@@ -161,7 +161,7 @@ function setdash(cdash,vplay){
      ,func:function(a){ return vplay.worlds[a].name } 
     },{
       seat:fig_display_div
-     ,legend:'<>'
+     ,legend:'< >'
      ,varkey:'nowfocus'
      ,func:function(a){ return a } 
     },{

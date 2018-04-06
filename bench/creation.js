@@ -102,11 +102,11 @@ function Tcreate(Talter,vplay) //Creation Function woooo!
     vplay.instaprops=
     {
       pradius : 0.85//315.36000
-      ,model_pace : 100.0//315.36000 // (is seconds?)
+      ,model_pace : 100.0//315.36000 0// (is seconds?)
       ,runcycle_step:12
       ,gravity : 6.67408e-8
       ,camRad:575000
-      ,camThet:4.92
+      ,camThet:5.5
       ,camPhi:1.62
       ,firstfocus:1
       ,printtime:hourtime

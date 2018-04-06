@@ -793,8 +793,10 @@ function newViewport(fig,vplay){
       
       if(vplay.camPhi>Pi){ //flip hoz spin if past gimbal points
         vplay.camThet -= vplay.keyLRd*0.0325
+        //console.log(vplay.camThet)
       }else{
         vplay.camThet += vplay.keyLRd*0.0325
+        //console.log(vplay.camThet)
       }
       
       if(0&&vplay.rendermode==1&&vplay.camRad<vport.visjote[focus.jd].scale.x*1.1){
