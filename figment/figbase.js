@@ -74,85 +74,20 @@ function newFigment(size){ return (function(size){
     return _lastknd
   }
   
-  function velmove(t,maxv)
-  {
-    maxv=maxv||10000000
-    var mav=maxv*maxv
-    for(var i=0; i<jote.top; i++)
-    { 
-      //_topolar(jote.vz[i],jote.vz[i+1],jote.vz[i+2])
-      //_rad += (1)*0.1
-      //_tocarte(_rad,_the,_phi)
-      //jote.vz[i]=_x;jote.vz[i+1]=_y;jote.vz[i+2]=_z
-      var z=jote.vx[i]*jote.vx[i]+jote.vy[i]*jote.vy[i]
-           +jote.vz[i]*jote.vz[i]
-      
-      if(z>mav){ //limit speed
-        z=maxv/Math.sqrt(z)
-        jote.vx[i]*=z
-        jote.vy[i]*=z
-        jote.vz[i]*=z
-      }
-      
-      jote.x[i]=jote.x[i]+jote.vx[i]*t
-      jote.y[i]=jote.y[i]+jote.vy[i]*t
-      jote.z[i]=jote.z[i]+jote.vz[i]*t
-    }
-  }
-  
-  function joteqclear()
-  { for(var i=0; i<jote.top; i++)
-    { jote.qx[i]=jote.qy[i]=jote.qz[i]=-0 }
-  } 
-  
-  function joteqtovel(p)
-  { 
-    //~ var cllv=0,cllq=0  //dis stuff for debug determinizies
-    p=p||1
-    for(var i=0; i<jote.top; i++)
-    { 
-      //~ cllv+=jote.vx[i]+jote.vy[i]+jote.vz[i]
-      //~ cllq+=jote.qx[i]+jote.qy[i]+jote.qz[i]
-      
-      jote.vx[i]+=jote.qx[i]*p
-      jote.vy[i]+=jote.qy[i]*p
-      jote.vz[i]+=jote.qz[i]*p
-    }
-    //~ console.log("clvq",cllv,cllq)
-  }
-        
-  function spongeAll(u){
-    u=u||1024
-    for(var i=0; i<jote.top; i++){
-      jote.x[i]=Math.culp(jote.x[i],u)
-      jote.y[i]=Math.culp(jote.y[i],u)
-      jote.z[i]=Math.culp(jote.z[i],u)
-      jote.vx[i]=Math.culp(jote.vx[i],u)
-      jote.vy[i]=Math.culp(jote.vy[i],u)
-      jote.vz[i]=Math.culp(jote.vz[i],u)
-      jote.qx[i]=Math.culp(jote.qx[i],u)
-      jote.qy[i]=Math.culp(jote.qy[i],u)
-      jote.qz[i]=Math.culp(jote.qz[i],u)
-      
-    }
-  }
   
   function recycle(){
     //store on a stack of empties to ressurrect later
   }
   
   return {
-     velmove:velmove
-    ,joteqclear:joteqclear
-    ,joteqtovel:joteqtovel 
-    //~ ,spongeAll:spongeAll
-    ,recycle:recycle
-    ,jote:jote
+     jote:jote
     ,jkind:jkind
     ,jgroup:jgroup
+    
     ,Tau:Tau ,Pi:Pi, hPi:hPi, tPi:tPi
     ,abs:abs ,floor:floor ,Sqrt:Sqrt
-    ,Drand:Drand, Hrand:Hrand, rndu:rndu, rndh:rndh 
+    ,Drand:Drand, Hrand:Hrand, rndu:rndu, rndh:rndh
+    ,recycle:recycle 
   }
 
 }(size))}

@@ -21,6 +21,7 @@ var vplay = {
    //~ ,10:{name:"47 Tuc X9",desc:""}
    //~ ,11:{name:"Point Cloud",desc:""}
    ,12:{name:"Bloop",desc:""}
+   //~ ,13:{name:"XXX",desc:""}
   }
     
   ,seed:0 ,world:3, seespots:-1
@@ -44,7 +45,7 @@ var vplay = {
     ,model_pace: 0.2    //(12hr) 0.15 // units of model_clock
     ,max_force:  5      // units of model_clock
     ,max_vel: 0
-    ,nature: 0          //force and collision scheme
+    ,nature: 0          //del
     ,forces: 0          //forces function
     
     ,runcycle_step: 1   // units of model_pace 
@@ -102,30 +103,48 @@ function setupfigview(fig){
   if(Fgm){ Fgm.recycle() } 
   Fgm=newFigment(vplay.particles)
   
-  addConstruct(Fgm)  //adds service functions, doesnt initiate xx..
-  addParanorm(Fgm)  //adds service function
-  addSpotmap(Fgm,vplay)  //adds service function
-  addSpotlog(Fgm,vplay)  //adds service function
+  //add service functions in order..
+  
+  addSpotmap(Fgm,vplay) 
+  addSpotlog(Fgm,vplay)
+  
+  addFigchore(Fgm,vplay)
+
+  addConstruct(Fgm) 
+  addParanorm(Fgm) 
 
   Tcreate(Fgm,vplay)
-  //~ Fgm.spongeAll()
+  //~ Fgm.spongejotes()
   
   for( var p in vplay.instaprops)
   { vplay[p]=vplay.instaprops[p] }
 
   if(vplay.unpause){ vplay.unpause=vplay.paused=0 }
   
-  addForces(Fgm,vplay)  //adds service function
+  addNbodygrav(Fgm,vplay) 
   addSpotgrav(Fgm,vplay)
   addSpotcollide(Fgm,vplay)
   
-  Fgm.applyforces={
-   0:Fgm.nbodygrav_wspots
+  Fgm.domoment={
+   0:Fgm.nbodygrav
   ,1:Fgm.nbodygravelec
-  ,2:Fgm.grav_spots
-  ,3:Fgm.stub_spots
+  ,2:Fgm.spots_grav
+  ,3:Fgm.clump_grav
+  ,4:Fgm.spots_grav2
+  }[vplay.forces] 
+  
+  console.log("moment name:",Fgm.domoment.name)
+  
+  Fgm.doforce={ //moment for temper only
+   0:Fgm.nbodygrav
+  ,1:Fgm.nbodygravelec
+  ,2:Fgm.nbodygrav
+  ,3:Fgm.nbodygrav
+  ,4:Fgm.nbodygrav
   }[vplay.forces]
 
+  console.log("forcename:",Fgm.doforce.name)
+  
   addTemper(Fgm,vplay)  //adds service function
       
   if(Vpr)    //i shouldnt have to recreate this ..
@@ -252,7 +271,7 @@ function liveframe(){
     { //console.log("do")
       var bitstep = vplay.runcycle_trip-vplay.model_clock 
       //~ console.log("bitstep",bitstep)
-      if(bitstep){ Fgm.velmove(bitstep,vplay.max_vel); }
+      if(bitstep){ Fgm.jmovebyvt(bitstep,vplay.max_vel); }
       vplay.model_clock+=bitstep
       if(vplay.gravity){ donature(); vplay.movperframe++ }
       movstep-=bitstep
@@ -264,7 +283,7 @@ function liveframe(){
     { //console.log("do")
       var bitstep = -vplay.runcycle_trip+vplay.model_clock 
       //~ console.log("bitstep",bitstep)
-      if(bitstep){ Fgm.velmove(bitstep,vplay.max_vel) }
+      if(bitstep){ Fgm.jmovebyvt(bitstep,vplay.max_vel) }
       vplay.model_clock+=bitstep
       if(vplay.gravity){ donature(); vplay.movperframe++ }
       movstep-=bitstep
@@ -272,7 +291,7 @@ function liveframe(){
     }
   } 
   //~ console.log("movstep",movstep)
-  if(movstep){ Fgm.velmove(movstep,vplay.max_vel); Vpr.updatefocusxyz() }
+  if(movstep){ Fgm.jmovebyvt(movstep,vplay.max_vel); Vpr.updatefocusxyz() }
   if(vplay.seespots==1){ Fgm.measure_spots() }
   vplay.model_clock+=movstep
   //Fgm.frameshift() 
@@ -280,6 +299,7 @@ function liveframe(){
 
 
 var soltest=1
+
 function donature(){
   
   //~ if(vplay.model_clock>=31536000){ console.log("nbow now") }
@@ -289,15 +309,8 @@ function donature(){
   
   if (vplay.explode){ Fgm.pulsevel(0.0004) }
   
-  if(vplay.nature==0){ 
-    Fgm.applyforces()
-  }else if(vplay.nature==1){ //not used, used for collision or something
-    //~ Fgm.bulk_load()
-    //~ Fgm.measure_spots()
-    //~ Fgm.grav_spots()
-    //~ Fgm.descend_accel()
-    //~ Fgm.acceltovel()
-  }
+  Fgm.domoment()
+    
 }
 
 //~ function toggleStats()

@@ -40,23 +40,25 @@ function addSpotgrav2(fig,vplay) {
   } 
 
   
-  function grav_spots(){  //begin recursive gravitation 
+  function spots_grav2(){  //begin recursive gravitation 
     
-    _tfac=vplay.model_pace, tripper=0.5  //higher tripper is more approx
-    tripper*=_tfac
+    _tfac=vplay.model_pace, 
+    _throt=4*abs(_tfac) //10 - 100
+    tripper=0.5*_tfac  //higher tripper is more approx
+    mingdis=16.0 
+   
     
     //~ tell=tella=logtell=nullfunc
     logspot=0
-    mingdis=16.0, _throt=4*abs(vplay.model_pace) //10 - 100
-    _klev=-1;
+    
+    _klev=-1
+    
     //~ spot.fchild[1]=0 //testing
-    interplyspot(1)
-    //~ infollowspot(1)
+    
+    infollowspot(1)
     
     //~ logtell() /// /// /// /// /// /// /// /// /// /// /// /// /// /// ///
   }
-
-
 
 
   function infollowspot(s){
@@ -173,7 +175,7 @@ function addSpotgrav2(fig,vplay) {
   } 
     
   
-  fig.grav_spots2 = grav_spots
+  fig.spots_grav2 = spots_grav2
   
   return fig
 

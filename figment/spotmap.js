@@ -18,15 +18,20 @@ function addSpotmap(fig,vplay) {
   var epsila=Math.pow(0.5,51)
   var epsilb=Math.pow(0.5,43)
 
-  var _dsui=1    //due sui, 0 is not valid 
+
+  //-------------
+  
+  var spot
  
   function setspotmax(maxsp){
+
     if(!spot){
       spot={}
       spot.deep = 0 
       spot.top  = 0 
       spot.dlntop = 0
     }
+
     spot.max  = maxsp
     
     var
@@ -44,9 +49,10 @@ function addSpotmap(fig,vplay) {
     ,hbx = new Float64Array(maxsp)  //high bound x
     ,hby = new Float64Array(maxsp)
     ,hbz = new Float64Array(maxsp)
-    ,grd = new Float64Array(maxsp)  //spot diagonal
-    
+
+    ,grd = new Float64Array(maxsp)  //spot diagonal 
     ,grm = new Float64Array(maxsp)  //gravity mass
+
     ,grx = new Float64Array(maxsp)  //center gravity x
     ,gry = new Float64Array(maxsp)
     ,grz = new Float64Array(maxsp)
@@ -91,62 +97,164 @@ function addSpotmap(fig,vplay) {
     
   }
 
-  var spot
   setspotmax(100)
+
+  var _dsui=1    //due sui, 0 is not valid 
 
   var _divn=[ -1, -1, -1 ]  //grid division vector
   var	_divm=[ -1, -1, -1 ]  //grid div measure vector
 
   //25 to 45 working best
-  var max_subsect = 40     //max subdivision of space per iteration
+  var max_subspot = 40     //max subdivision of space per iteration
   //5 to 10 working best
   var endsize=7            //endspot must be smaller than this population
     
-  // max_subsect=30,endsize=7 performing best 
-  // making approx 35% many spots as jotes
+  // max_subspot=30,endsize=7 performing best 
+  // making approx 35% many spots as jotes 
+
   
-  ///sect recursion detail object:Survo notes per level*sbvox
-  // caches the recursively used details of sects
-  // approx maxlevel * celln in bulk ~= 256*10 2500
-  // could just use a lev*maxcelln array
-  // but this structure is much less sparse (it minimises levels max celln)
-  
-  function bulk_load(ej)
-  { 
-    var spotfac=0.7
-    var spm=Math.floor( 50+(jote.x.length)*spotfac )
-    if( spot.max<spm*0.9 || spot.max>spm*2 ){
-      setspotmax(spm) 
+  var trunkn=7 , trunksi=makeshuffleix(trunkn)
+  var ctrunk=0,_bmpspot=0
+   
+  function tendto_spotmap(){
+        
+    //~ var trunksi=[ 
+     //~ ,0,-1,8,-1,0,-1,2,-1,0,-1,5,-1,0,-1,1,-1,0,-1,3,-1,0,-1,1,-1,0,-1,7,-1,0,-1,2,-1 
+    //~ ] //0 is the hottest spot, -1 is magic for do spot 0 alone 
+    
+    //~ checkspots("beforebloom")
+            
+    if(spot.top===0){
+      makeroot(jote.top) //makes spot 0 and 1
+      
+      ctrunk=0  //makes trunks 0 to 9 = spots 2 to 11
+      
+      rebudbyvelo( //wpar,akid,xkids,dkidn,dsui
+        1       //wpar
+       ,1       //akid
+       ,0       //xkids
+       ,trunkn  //dkidn
+       ,2       //dsui
+      )
+      
+      spot.fchild[1]=2
+      _bmpspot=spot.top=_dsui
+      //~ console.log("inibump",_dsui)
+       
+      var bui=_dsui
+      for(var t=2; t<2+trunkn; t++){
+        bloombyspace(t)
+        if(t<(1+trunkn)){
+          var trnx=Math.floor(1+(_dsui-bui)*0.125)
+          
+          shovespots(trnx)
+          bui=_dsui+=trnx
+        }
+        //fchilds are by default written to _dsui
+        //which could be fine here 
+      }
+      
+      //after this ,cap the spot sequence
+      spot.top=_dsui
+      spot.parent[_dsui]=0 //parent of top zeroed
+      
+      //~ conlogspots(0,56)
+      //~ console.log("-------------------------")
+    }else{
+      
+      ctrunk=(++ctrunk)%(trunksi.length)
+      var cspot=trunksi[ctrunk], extr=1
+
+      if(cspot===-1){
+        
+        rebudbyvelo(
+          1  //wpar
+         ,2  //akid 
+         ,0  //xkids
+         ,1  //dkidn 
+         ,2  //dsui 
+        )
+
+        _bmpspot = spot.fchild[3]||spot.top
+        _dsui=spot.fchild[2]
+        //~ conlogspot(2) 
+        
+        bloombyspace(2)
+        for( ; _dsui<_bmpspot; _dsui++){ spot.parent[_dsui]=0 }
+
+      }else{ 
+      
+        //~ console.log("redoing these:")
+        //~ conlogspots([cspot,cspot+1])
+        cspot+=2
+        rebudbyvelo( 
+          //2 spots onto 2spots
+          // wpar is not par
+          1        //wpar
+         ,cspot    //akid
+         ,1        //xkids
+         ,2        //dkidn
+         ,cspot    //this SETs _dsui (for budvelo) 
+        )
+        
+        var cbran1= _bmpspot =spot.fchild[cspot+1]
+        
+        _dsui=spot.fchild[cspot]
+        
+        //~ console.log("bloom cspot",cspot,"bmp",_bmpspot,"dsu",_dsui)
+        
+        bloombyspace(cspot)
+        
+        for( ; _dsui<cbran1; _dsui++){ spot.parent[_dsui]=0 }
+        spot.fchild[cspot+1]=_dsui //this may be automatic
+        
+        var cbran2=_bmpspot = (cspot+2<(trunkn+2))? spot.fchild[cspot+2] : spot.top
+        
+        //~ console.log("bloom 2spots:",cspot+1,"due:",_dsui,"bmp",_bmpspot,"top",spot.top)
+        //~ if(spot.parent[6]!==0){ console.log("pazgood") } 
+        
+        //~ console.log("spot:",cspot,"dsui:",_dsui,"bmp:",_bmpspot)
+        
+        bloombyspace(cspot+1)
+        
+        //~ if(spot.parent[6]===0){ console.log("pazbad") } 
+        
+        for( ; _dsui<cbran2; _dsui++){ spot.parent[_dsui]=0 } 
+        //invalidate the duff, or perhaps just the next
+      }
+      
     }
     
-    ej=ej||jote.top
-    ej=makeroot(ej)
-        
-    if(ej < endsize)
-    { endspot( spot.dln_anchor[1], spot.dln_anchor[1]+spot.dln_span[1] ) }
-    else
-    { bloombyspace( 1 )	}  // (lvlnum,cellnum)
+    //~ checkspots("afterbloom")
+    
+    startwatch('measure')
+    measure_spots()
+    stopwatch('measure')
 
-    spot.top=_dsui 
+    //~ checkspots("aftermeasure")
+    //~ logmtrs()
+    //~ meterspots() 
+    return 
   }
+    
   
-  //surveys vox then loops through all subvoxs, calculating their jtpopuls
-  //from their sDls stored in recursivedet.sectanchor[svxi]
+  
+  //surveys spot then loops through all subspots, 
+  //calculating their jtpopuls
   //it recurses into oversized
   //it endcurses smallersized
   
-  function bloombyspace( bsid ) 
+  function bloombyspace( bsi ) 
   { 
-    var bpop=spot.dln_span[ bsid ]
-    //conlog("bcl_lv",bcl_lv,"i",bcelli,"cellsize",bpop)
+    var bpop=spot.dln_span[ bsi ]
     
-    if(spot.depth[bpop]>18){ enddeep(bpop); return }
+    if(spot.depth[bpop]>18){ endtoodeep(bpop); return }
     
-    var celln_trgt= floor(2+(bpop/endsize)*Drand.range(0.5,1))
-    if(celln_trgt>max_subsect) { celln_trgt=max_subsect-1; }
+    var subn_trgt= floor(2+(bpop/endsize)*Drand.range(0.5,1))
+    if(subn_trgt>max_subspot) { subn_trgt=max_subspot-1; }
     
-    budbyspace( bsid, celln_trgt ) //makes ~n spots, 'under' bsid 
-    for(var si=spot.fchild[bsid]; spot.parent[si]===bsid; si++) 
+    budbyspace( bsi, subn_trgt ) //makes ~n spots, 'under' bsi 
+    for(var si=spot.fchild[bsi]; spot.parent[si]===bsi; si++) 
     { 
       
       if(spot.dln_span[si]>endsize)
@@ -155,12 +263,11 @@ function addSpotmap(fig,vplay) {
       { 
         endspot( spot.dln_anchor[si], spot.dln_anchor[si]+spot.dln_span[si] )
         //~ mtlogcn('sngl_end')
-        //nothing happenign here since the transmog 
       }
     }
   }
   
-  function enddeep(bpop){
+  function endtoodeep(bpop){
     //~ mtlogcn("cellsoverdeep")
   
     var ak=spot.dln_anchor[bpop],ek=ak+spot.dln_span[bpop]
@@ -177,17 +284,15 @@ function addSpotmap(fig,vplay) {
   }
 
   var _tfirst=true
+    
   function makeroot(ej)
   { 
-    //~ sect_at_dlsi = new Uint16Array(ej) //warning may need enlarged on increase 
-    //~ cach_dlns    = new Uint16Array(ej)
-    //~ dlns         = new Uint16Array(ej)
-
     _dsui=1  //sui 0 is null
     
     var i=0,en=0
     if(_tfirst){
-      for( i=0; i<ej; i++)
+      
+      for( var i=0; i<ej; i++)
       { if(isFinite(jote.x[i]+jote.y[i]+jote.z[i])){ dlns[en++]=i } }
 
       var spotfac=0.7
@@ -250,11 +355,14 @@ function addSpotmap(fig,vplay) {
     return spot.dlntop=en
   } 
   
+  //
+  
+  
   //workspace of surveying function
-  var sectppl = new Uint16Array(max_subsect) //records quantity of jotes in sects
-  var secfill = new Uint16Array(max_subsect) //counts fill of sects while filling dlsline
+  var sectppl = new Uint16Array(max_subspot) //records quantity of jotes in sects
+  var secfill = new Uint16Array(max_subspot) //counts fill of sects while filling dlsline
   var sect_at_dlsi =[]  //contains sect of jote at [dlsi]
-  var valq_at_dlsi =[]  //contains sect of jote at [dlsi]
+  var velo_at_dlsi =[]  //contains sect of jote at [dlsi]
   var cach_dlns =[]    //contains direct index of jote at [dlsi]
   var dlns =[]  //The full delineation sequence jotes arranged into spot lines,
              //which have st, end pos, properties recorded in spot
@@ -279,9 +387,9 @@ function addSpotmap(fig,vplay) {
     }
           
     //configure loc_to_subcell function with curdets
-    note_loctosubs()
+    prep_loctosub()
      
-    //~ if(celln>max_subsect) { mtlogcn('celln_err') }
+    //~ if(celln>max_subspot) { mtlogcn('celln_err') }
        
     //reset all potential cellppls 
     for(var i=0; i<=celln; i++) { secfill[i]=0; sectppl[i]=0 }
@@ -347,7 +455,7 @@ function addSpotmap(fig,vplay) {
       }else{
         //~ mtlogcn('cellshrink')
         celln=note_bestgrid(cellnb) //sets _divn and _divm
-        note_loctosubs()
+        prep_loctosub()
         //celln=_divn[0]*_divn[1]*_divn[2]
         for(var dli=st; dli<ov; dli++) 
         { cel=Math.abs(loctosubcell(   //redoing subloc with new bounds
@@ -478,7 +586,6 @@ function addSpotmap(fig,vplay) {
         if(spot.parent[si]<gapa&&spot.parent[si]>=clld) spot.parent[si]+=gmv
       }
     }
-    var deek=0
     
     var mvto,mvb=mv,mvby=mv, gnxt=0
     while( mv>0 ){
@@ -521,12 +628,15 @@ function addSpotmap(fig,vplay) {
   }
   
                        //2   1    0    1   2  poor parameteriz
-  function rebudbyvelo( par,wpar,pex,kidn,stk){
+  function rebudbyvelo( wpar,akid,xkids,dkidn,dsui){
     //expand parent
-    while(pex){ spot.dln_span[par]+=spot.dln_span[par+pex--] }
+    
+    //~ console.log("rebud",akid,"and",akid+xkids,"kids",dkidn)
+
+    while(xkids){ spot.dln_span[akid]+=spot.dln_span[akid+xkids--] }
   
-    _dsui=stk
-    budbyvelo( par,kidn,wpar ) //kidns will be written to _dsui
+    _dsui=dsui
+    budbyvelo( akid,dkidn,wpar ) //kidns will be written to _dsui
                                //writen parent can be not real parent
   }
  
@@ -543,24 +653,26 @@ function addSpotmap(fig,vplay) {
     for(var i=st; i<ov; i++){
       var j=dlns[i]; 
       cach_dlns[i]= j
-      valq_at_dlsi[i]=Math.sqrt(
-        jote.x[j]*jote.x[j]+jote.y[j]*jote.y[j]+jote.z[j]*jote.z[j]
-      )
-      if(isNaN(valq_at_dlsi[i])){
+      
+      //activity score of jote, order is inverted by accident
+      //abs sum should be as good as hypotenus
+      velo_at_dlsi[i]=
+        -Math.abs(jote.vx[j])-Math.abs(jote.vy[j])-Math.abs(jote.vz[j])
+      
+      if(isNaN(velo_at_dlsi[i])){
        conlog("bah! NANs!",i,jote.x[j],jote.y[j],jote.z[j])
       }
     }
     
-    //uses:    valq_at_dlsi
+    //uses:    velo_at_dlsi
     //updates: sect_at_dlsi and sectppl
-    //~ histosort(sectn  ,st,ov, sect_at_dlsi ,valq_at_dlsi, sectppl) 
-    //~ histosort(dv,st,ov,secti,Ar,scppl)
+    
     barsort({
       st:st  ,ov:ov 
      ,barnum: sectn 
      ,barfreq:sectppl
      ,keysbar:sect_at_dlsi
-     ,scores: valq_at_dlsi 
+     ,scores: velo_at_dlsi 
      ,burnscore:1
     }) //,scores:,st:,ov:,keysbar:,barfreq:,burnscore:
 
@@ -747,16 +859,6 @@ function addSpotmap(fig,vplay) {
       barndx[i]=destofsub[hpotofi]
     }
     
-    //~ var spa,spb
-    //~ for(var s=0,e=spills.length;s<e;s++){
-      //~ if(spills[s]+1===spills[s+1]){
-        //~ spa=s
-        //~ while(spills[++s]+1===spills[s+1]){
-          //~ spb=s 
-        //~ }
-      //~ }
-    //~ }
-    
   }
 
   function dln_end(sx){
@@ -801,9 +903,12 @@ function addSpotmap(fig,vplay) {
           for(var di=ja+1;di<jb;di++){
             j=dlns[di]
           
-            if(jote.x[j]<lwx){ lwx=jote.x[j] } else if(jote.x[j]>hix){ hix=jote.x[j] }
-            if(jote.y[j]<lwy){ lwy=jote.y[j] } else if(jote.y[j]>hiy){ hiy=jote.y[j] }
-            if(jote.z[j]<lwz){ lwz=jote.z[j] } else if(jote.z[j]>hiz){ hiz=jote.z[j] }	
+            if(jote.x[j]<lwx){ lwx=jote.x[j] } 
+            else if(jote.x[j]>hix){ hix=jote.x[j] }
+            if(jote.y[j]<lwy){ lwy=jote.y[j] } 
+            else if(jote.y[j]>hiy){ hiy=jote.y[j] }
+            if(jote.z[j]<lwz){ lwz=jote.z[j] } 
+            else if(jote.z[j]>hiz){ hiz=jote.z[j] }	
               
             cgx+=jote.x[j]*jote.g[j] //center grav tally
             cgy+=jote.y[j]*jote.g[j]
@@ -885,8 +990,8 @@ function addSpotmap(fig,vplay) {
           var j=dlns[ja] //jote at start of dln span
           
           lwx=hix=jote.x[j]+jote.vx[j]*tms
-         ,lwy=hiy=jote.y[j]+jote.vy[j]*tms
-         ,lwz=hiz=jote.z[j]+jote.vz[j]*tms
+          lwy=hiy=jote.y[j]+jote.vy[j]*tms
+          lwz=hiz=jote.z[j]+jote.vz[j]*tms
           
           for(var di=ja+1;di<jb;di++){
             j=dlns[di]
@@ -920,7 +1025,7 @@ function addSpotmap(fig,vplay) {
         
         spot.hbx[sui]=hix	,spot.hby[sui]=hiy ,spot.hbz[sui]=hiz	
         
-        //spot.grd[sui]=(hix-lwx)*(hix-lwx)+(hiy-lwy)*(hiy-lwy)+(hiz-lwz)*(hiz-lwz)	
+//spot.grd[sui]=(hix-lwx)*(hix-lwx)+(hiy-lwy)*(hiy-lwy)+(hiz-lwz)*(hiz-lwz)	
         
       } 
     }
@@ -936,6 +1041,8 @@ function addSpotmap(fig,vplay) {
     //this works
     var zz,yy=Math.floor(Isec/dvn[0])	
     zsec=Math.floor(yy/dvn[1])
+    //~ var zz,yy=(Isec/dvn[0])>>0	
+    //~ zsec=(yy/dvn[1])>>0
     ysec=yy-(zz=zsec*dvn[1])
     xsec=Isec-(zz+ysec)*dvn[0]
 
@@ -983,18 +1090,19 @@ function addSpotmap(fig,vplay) {
   
   var _lwx,_lwy,_lwz,_idvmx,_idvmy,_idvmz,_dvsx,_dvsxy
   ///
-  function note_loctosubs(){ //0.999999999999999
+  function prep_loctosub(){ //0.999999999999999
     _idvmx=1/_divm[0] //no splodge with this value 
    ,_idvmy=1/_divm[1] //%celln location still advisable 
    ,_idvmz=1/_divm[2]
     _dvsx=_divn[0],_dvsxy=_divn[0]*_divn[1]
   }
   
+
   function loctosubcell(x,y,z)
   { return (
-      floor((x- _lw3[0])*_idvmx)         //*1
-    + floor((y- _lw3[1])*_idvmy)*_dvsx   //*1*x 
-    + floor((z- _lw3[2])*_idvmz)*_dvsxy  //*1*x*y 
+      (((x- _lw3[0])*_idvmx)>>0)      //*1
+    + (((y- _lw3[1])*_idvmy)>>0)*_dvsx   //*1*x 
+    + (((z- _lw3[2])*_idvmz)>>0)*_dvsxy  //*1*x*y 
     ) 
   } 
   
@@ -1057,7 +1165,6 @@ function addSpotmap(fig,vplay) {
     r[0]=2,r[1]=1,r[2]=0 ;return r
   }
 
-  ///helpers
 
   function nextkid(pr,k){
     return (spot.parent[++k]===pr)?k:0
@@ -1160,7 +1267,7 @@ function addSpotmap(fig,vplay) {
     for(var c=spot.dln_anchor[s], e=c+spot.dln_span[s] ; c<e; c++ )
     { 
       if(isNaN(jote.qx[dlns[c]])||isNaN(jote.qy[dlns[c]])||isNaN(jote.qz[dlns[c]])){
-        conlog("precip NANANA LEAF=",s,jote.qx[dlns[c]],jote.qy[dlns[c]],jote.qz[dlns[c]] )
+        conlog("precip: NANs in LEAF=",s,jote.qx[dlns[c]],jote.qy[dlns[c]],jote.qz[dlns[c]] )
         conlogspot(s)
       }
       jote.qx[dlns[c]]+=cx
@@ -1185,9 +1292,7 @@ function addSpotmap(fig,vplay) {
     }
   }
   
-  var ctrunk=0,_bmpspot=0
-
-  function maketrunks(n){
+  function makeshuffleix(n){
     
     if(n==1){ return [-1] }
     
@@ -1199,136 +1304,8 @@ function addSpotmap(fig,vplay) {
     return r
   }
   
-  function tendto_spotmap(){
-        
-    //~ var trunksi=[ 
-      //~ 0,-1,8,-1,0,-1,1,-1,0,-1,3,-1,0,-1,4,-1 ,0,-1,2,-1,0,-1,6,-1,0,-1,1,-1,0,-1,3,-1
-     //~ ,0,-1,8,-1,0,-1,2,-1,0,-1,5,-1,0,-1,1,-1,0,-1,3,-1,0,-1,1,-1,0,-1,7,-1,0,-1,2,-1 
-    //~ ] //0 is the hottest spot, -1 is magic for do spot 0 alone 
-      
-    var pad=0.15, trunkn=7  //trunkn is limited by max_subsect
-    
-    var trunksi=maketrunks(trunkn)
-    
-    //~ checkspots("beforebloom")
-        
-    if(spot.top===0){
-      makeroot(jote.top) //makes spot 0 and 1
-      
-      //~ setspotmax(trunkn+)
-      //init trunk vals
-      ctrunk=0  //makes trunks 0 to 9 = spots 2 to 11
-      
-      rebudbyvelo(
-        //10 buds, from si1 fchild2 par= writepar
-        //wpar is par 
-        1       //parspot   source
-       ,1       //wparspot  foster
-       ,0       //extrapars extrasrc
-       ,trunkn  //kidn
-       ,2       //startkid _dsui
-      )
-      
-      spot.fchild[1]=2
-      _bmpspot=spot.top=_dsui
-      //~ console.log("inibump",_dsui)
-       
-      var bui=_dsui
-      for(var t=2; t<2+trunkn; t++){
-        bloombyspace(t)
-        if(t<(1+trunkn)){
-          var trnx=Math.floor(1+(_dsui-bui)*0.125)
-          
-          shovespots(trnx)
-          bui=_dsui+=trnx
-        }
-        //fchilds are by default written to _dsui
-        //which could be fine here 
-      }
-      
-      //after this ,cap the spot sequence
-      spot.top=_dsui
-      spot.parent[_dsui]=0 //parent of top zeroed
-      
-      //~ conlogspots(0,56)
-      //~ console.log("-------------------------")
-    }else{
-      
-      ctrunk=(++ctrunk)%(trunksi.length)
-      var cspot=trunksi[ctrunk]+2, extr=1
-
-      if(cspot===1){
-        
-        rebudbyvelo(  //crap params  -- this happens just to rebound spot 2?
-          2  //parspot   source
-         ,1  //wparspot  foster
-         ,0  //extrapars extrasrc
-         ,1  //kidn
-         ,2  //dsui for budvelo 
-        )
-
-        _bmpspot = spot.fchild[3]||spot.top
-        _dsui=spot.fchild[2]
-        //~ conlogspot(2) 
-        
-        bloombyspace(2)
-        for( ; _dsui<_bmpspot; _dsui++){ spot.parent[_dsui]=0 }
-
-      }else{ 
-      
-      //~ console.log("redoing these:")
-      //~ conlogspots([cspot,cspot+1])
-      
-      rebudbyvelo( 
-        //2 spots onto 2spots
-        // wpar is not par
-        cspot  //parspot   source
-       ,1      //wparspot  foster
-       ,1      //extrapars extrasrc
-       ,2      //kidn
-       ,cspot  //this SETs _dsui (for budvelo) 
-      )
-      
-      var cbran1= _bmpspot =spot.fchild[cspot+1]
-
-      _dsui=spot.fchild[cspot]
-      
-      //~ console.log("bloom cspot",cspot,"bmp",_bmpspot,"dsu",_dsui)
-      
-      bloombyspace(cspot)
-      
-      for( ; _dsui<cbran1; _dsui++){ spot.parent[_dsui]=0 }
-      spot.fchild[cspot+1]=_dsui //this may be automatic
-      
-      var cbran2=_bmpspot = (cspot+2<(trunkn+2))? spot.fchild[cspot+2] : spot.top
-      
-      //~ console.log("bloom 2spots:",cspot+1,"due:",_dsui,"bmp",_bmpspot,"top",spot.top)
-      //~ if(spot.parent[6]!==0){ console.log("pazgood") } 
-      
-      //~ console.log("spot:",cspot,"dsui:",_dsui,"bmp:",_bmpspot)
-      
-      bloombyspace(cspot+1)
-      
-      //~ if(spot.parent[6]===0){ console.log("pazbad") } 
-      
-      for( ; _dsui<cbran2; _dsui++){ spot.parent[_dsui]=0 } 
-      //invalidate the duff, or perhaps just the next
-      }
-      
-    }
-    
-    //~ checkspots("afterbloom")
-    
-    startwatch('measure')
-    measure_spots()
-    stopwatch('measure')
-
-    //~ checkspots("aftermeasure")
-    //~ logmtrs()
-    //~ meterspots() 
-    return 
-  }
-
+  //------------
+  
   function postfit_spotmap(){ 
     //~ checkspots("beforedistrib")
     distrib_accel()
@@ -1437,7 +1414,7 @@ function addSpotmap(fig,vplay) {
     
   fig.tendto_spotmap  = tendto_spotmap
   fig.postfit_spotmap = postfit_spotmap
-  fig.bulk_load = bulk_load
+  //~ fig.bulk_load = bulk_load
   fig.measure_spots = measure_spots
   fig.bimeasure_spots = bimeasure_spots
   fig.distrib_accel = distrib_accel
