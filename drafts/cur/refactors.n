@@ -1,0 +1,15 @@
+todos deblob spotmap
+
+ toadd
+
+integration.js   - velmove, etc
+figmanage.js   - tandem with construct.js
+  employing jgroup, add and remove jgroups from action..
+   arrange removal of groups of jotes from activity and dln
+   their replacement with a macrojote
+   transform one of the removed to a macro
+   record fact that it is macro, in jkind (?)
+   far goal -
+    recursive packing/un of jotes into macrojotes
+   first goal
+    add and remove jotes in action     

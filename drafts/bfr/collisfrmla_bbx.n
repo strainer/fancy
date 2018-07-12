@@ -1,0 +1,17 @@
+#fanc phys collision formulas?
+dC=sqrt(dT2+dx2+dy2+dz2)
+
+v=sqrt(dx2+dy2+dz2)/dT
+
+sqrt(dT2+dx2+dy2+dz2)/dC = sqrt(dx2+dy2+dz2)/(dT*v) 
+
+sqrt(dT2+dx2+dy2+dz2)/dC * sqrt(dT2+dx2+dy2+dz2)/dC =
+sqrt(dx2+dy2+dz2)/(dT*v) * sqrt(dx2+dy2+dz2)/(dT*v)
+
+sqrt(dT2+dx2+dy2+dz2)/dC * sqrt(dT2+dx2+dy2+dz2)/dC
+(dT2+dx2+dy2+dz2)/dC2  = (dx2+dy2+dz2)/(dT2*v2)
+(dT2+dx2+dy2+dz2)  = dC2*(dx2+dy2+dz2)/(dT2*v2)
+(dx2+dy2+dz2)  = dC2*(dx2+dy2+dz2)/(dT2*v2) -dT2+
+1  = dC2/(dT2*v2) -dT2/(dx2+dy2+dz2)
+
+1  = dC2/(dT2*v2) -dT2/(dx2+dy2+dz2)

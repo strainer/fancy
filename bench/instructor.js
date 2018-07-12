@@ -21,7 +21,7 @@ var vplay = {
    //~ ,10:{name:"47 Tuc X9",desc:""}
    //~ ,11:{name:"Point Cloud",desc:""}
    ,12:{name:"Bloop",desc:""}
-   ,13:{name:"XXX",desc:""}
+   //~ ,13:{name:"XXX",desc:""}
   }
     
   ,seed:0 ,world:3, seespots:-1
@@ -133,6 +133,8 @@ function setupfigview(fig){
   ,4:Fgm.spots_grav2
   }[vplay.forces] 
   
+  console.log("moment name:",Fgm.domoment.name)
+  
   Fgm.doforce={ //moment for temper only
    0:Fgm.nbodygrav
   ,1:Fgm.nbodygravelec
@@ -141,6 +143,8 @@ function setupfigview(fig){
   ,4:Fgm.nbodygrav
   }[vplay.forces]
 
+  console.log("forcename:",Fgm.doforce.name)
+  
   addTemper(Fgm,vplay)  //adds service function
       
   if(Vpr)    //i shouldnt have to recreate this ..

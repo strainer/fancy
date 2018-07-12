@@ -1,0 +1,946 @@
+#slate.n - fancy - tail active
+
+body affect functions, run after motion updates...
+rigid body restore, runs after motion update, revises motion of embodied jotes contrasting with jotes previous motions, it may average them, it may calculate rotation, it may create or involve constraint & vibration notes for the body
+
+grav functions need to tally accelerations for jotes, not to immediately update motions
+jote.x jote.vx jote.ax jote.k 
+
+jote.k may indicate mass details etc as well as kind 
+
+jote.mass can be sparse array available to define unique mass vals for jotes of some kinds
+sometimes jotes mass is implied by kind
+jote.press can be sparse array defining a pressure analoge 
+
+
+
+kinds of jotes:
+ grav include
+ grav source
+ static static
+ static controlled
+ bodie linked
+ no radius
+ small radius
+ large radius
+ has internal structure
+ rendering details: fog, texture, plain etc.
+
+other renderables:
+ overlay
+
+bodie linking
+ link framework, linked to neighbours, linked to all, linked to center
+ linked in skeleton form
+ link types
+  elastic bind
+   elastic function
+  angle bind
+  
+ 
+  
+jote kinds
+ without bodie
+ 
+
+
+creating intresting model 
+ have 4 gbodies
+ 
+waiting to...
+ make small clusters
+  baseG
+ make uplevel clusters
+  upg[0]
+ make uplevel clusters
+  upg[1]
+ 
+ use clusters to make accelerated multigbody
+ use clusters to do collision
+ 
+complication
+  a collision update, can need to jump origin positions
+  and ignore backtime interaction if/when updated course is retested
+  it may retemper to remainder of tock?
+  not retempering is however consistent with accepting the computational futility of
+  sub tock refinement
+  
+10,000 travs /4 small clust ave size = 2500 small clusts
+2500/10 ave size =250 
+250/10 = 25 
+
+//
+
+
+developements to do...
+
+improve keyboard controls,
+flying option
+
+indirect indexing of tacks by type, separate lists for involved behaviours
+behaviors: 
+ maj_gravity, min_gravity, chop_crush
+ 
+ tack types 0 - free, 1-3 disabled/grav ignore ignore, 
+ 
+model renderer by tack type info and static draft options/overlay/underlay
+
+panel telemetry dash dom, modals, keyhelp, stats, controls 
+
+basic group processing for maj_gravity
+ 20k split into groups approx 100 large - 200 groups
+ calculates 
+  group grav center 
+  weight
+  group bound (+sep?)
+ 
+ group impulse tallied by (200x200)/2
+ 200 groups = 6*6*6
+ each group contacts approx 26 neighbours= 1/10th of total groups
+
+enhanced group processing
+
+
+image the arrangement of 
+
+jotes
+ into wisps
+jotes, unlinked or linked into a body
+
+abody jotes
+embodied jotes
+
+jotes of a body
+jotes of a part, loose part, tight part
+parts of a thing
+
+jotes within wisps
+
+wisps within loci
+ wisp maybe viewed as a jote
+ 
+  //---------------
+ 
+ #next physics scheme:
+ 
+ shift position from t0 to t1, where mov relates +0.5t then -0.5t
+ 
+ at t1, gravity is calculated in the tree
+ then extracted from the tree and *applied to mov*
+  -the application of accel to mov can be managed 
+  with reference to bonded_groups and contact_mechanisms.
+  
+ mov then relates to +0.5t
+ 
+ then treebounds are recalced for collision processing
+ a collision list is generated
+ for haste this list can be applied naively
+ in time, 
+  the earliest collision is played,
+  altering spot bounds as necessary
+   it is retested from playtime,
+   and placed in list/queue again if re-hit
+   the next collision is then played as neccessary...
+   this is the secure collision requirement
+   
+ acceleration - has a list of contacting leaf spots for each leaf
+ 
+ 
+ 
+ ephen.js - ecmascript physics engine
+ 
+ versatile high quality physics processing for 
+ virtual and real spacetime applications
+ 
+ violet, viola, geola
+ 
+ particulate based, bonds, mechanism
+ 
+ 
+ 
+//----------------------------------
+//
+
+Things to do:
+
+A new creation and alter....
+ port existing functions to new scheme
+  
+ new alter system has insert.parms object
+  with 
+    insert x,y,x vx,vy,vz, number, basecolor, groupui, 
+    
+    insetpos(x,y,z)
+    insetvel(vx,vy,vz)
+    insetbasecol(r,g,b)
+    insetgroup(g)
+    insetorient(quaternion)
+    
+    addspinring(num,rad, raddist, spacing)
+    addblob(num,rad, raddist, spacing)
+    
+
+stop playing df....
+
+  concieving a game...
+  drawing a self particle, pink/purple shimmering
+   particle has velocity and mass like a normal jote
+   particle may have collision detect /eat other particles
+   
+   need flying controls 
+   - boost and retro, incremental on duration, scaled by local
+     gravity
+     
+   need panels, display/disable on key press
+    help panel
+    detail panel - speed, local grav, nearest neighbour
+    
+   
+   instructor
+   chop > 
+   
+   atree
+    bulkload
+     builds a tree of 'spots' which recursively delineate the 
+     positions and qualities of jotes
+    updatebounds
+     updates stored details of spots spatial bounds
+    updateall 
+     updates spots mass
+     
+     
+     
+    emptyaccel
+   
+    gravity
+     nbodygravity
+     rtreegravity
+
+    multiply
+    interply
+    multifect
+    interfect
+    
+    multicord
+    intercord
+    
+//
+
+nbodygrav_bulk
+nbodygrav_map
+nbodygrav_nearmap
+
+collide_map
+
+nbodyelectrograv_bulk
+
+_map
+ if nomap or badmapstat redo map
+ 
+#name concept 
+wherever 
+ a general purpose 3d physics engine
+ 
+ a library to run queries on physical models
+ for real time following, interepreation and reaction to 
+ sensor data.  
+ 
+ droid control software which uses this engine can be
+ developed and tested by simulated reality and sensor data
+ hosted by this engine.
+ 
+ 'facsimilie server'
+  figment server
+ scenation server
+ scenation server
+ lucination js
+ lucinogen js
+ hallucene
+ 
+ luc,illusion, allusion, hallucination
+ 
+ provident
+ providere js - to see forward
+ 
+ phantasm, phantasmagoria
+ 
+ fantasia,phyntasm,fanta js
+ fancy enfancy
+ 
+ halluciflex,halflex
+ spacebase,matterbase
+ basefancy
+ nalspace
+ premonition
+ premonitor
+ simagine
+ bulker
+ fanbulk
+ forestance
+ physter
+ fancy 
+ 
+# Fancy fellicitous physics function for friendly futuroids 
+
+Figment  physics functions for futuroids
+
+codebase terminology:
+ 
+ figm - a figment: a running model instance 
+ jote - particles|iota of model detail
+ spotmap - data tree addressing jotes in recursively nested boxes|spots
+   
+ naturals.js - actions like gravitation, friction, bonds, movement
+ paranormals.js - actions like... add, destroy...
+   
+ helpers.js - framework and demo source helper functions
+ 
+ instructor.js (becomes initbench)
+ 
+ according to gplay:
+  inits creation of model
+  
+  inits viewport controller
+
+  inits keysys for viewport/s to 
+   keysys for over
+   
+   run update functions which the guiding viewport calls
+   ( non-guiding/ambient viewports are possible ) 
+   
+#mess here
+
+.gitignore
+licence
+readme.md
+index.html
+
+\bench
+ qpane
+ threeset
+ creations
+ showbench
+ 
+\figment
+ base , helper, alter ,tree, measure, natural, paranorm
+
+\ext
+ fdrandom three
+  
+\drafts 
+\doc
+ 
+
+how to arrange....
+
+ fancy library:
+  new figment
+  alter functions
+  etc..
+   
+ bench framework
+  index
+  pre_init
+  
+  loaddefaults:
+   fplay contains all bench making vars
+   creation.js contains constructors for scenarios
+    on figments with keysys
+   keysys
+  viewport   
+  keysys
+  
+  viewport/figm progress loop/s
+  
+  bendat - viewport & figm init and run data:
+   
+# instructor becomes benchmain
+  
+   object
+   benfo (gplay)
+    figm
+     jote
+     bond
+     face 
+  
+   functions
+   
+    figm creation,
+    qpanels creation
+    play_process_loop
+     nat_process   
+     para_process
+    keysys
+
+  
+  
+  current instructor is a little cludgey but working efficiently because
+  
+  
+//------------
+
+ index.html 
+ 
+ viewserve.js
+ 
+ helpers.js
+ base.js
+ alter.js
+ //insert.js
+ creations.js
+ 
+ paranormals.js
+ naturals.js
+  linkages
+  stressholds
+  impactsurfaces
+  exception listing
+ 
+ measures.js
+  makes and maintains and updates a spotmap of jtspace
+   make new spotmap
+   resolve spot bounds for grav (space)
+   resolve spot bounds for coll (space by time interval)
+    log spot bound efficiencies while resolving, 
+     for triggering remakes or rearrangement of spotoak
+     
+  querie all jote in area - sphere, cuboid, cylinder
+  all jote contacting anothers travel
+ 
+ query
+  might backup, run, measure a model, to discern things
+   like average distance between two jots
+   or destination of jot
+   
+ actionschedules.js
+  nbody influence (gravity, elstatic)
+ 
+  spotbody influence (sparse cluster grav, elstat)
+  
+  map collision detect and queue
+  collision responses
+  
+   
+
+
+
+space time or
+time space
+
+
+rate of progression of property change at present position
+= full rate - rate of progression of movement to adjacent position
+
+movement is progression of property to adjacent position
+particulation is packetisation phenomenon of localised property
+
+location context map
+
+
+gravity, location of matter unifies if it is not held separate by travel
+to be near in space is to grow nearer in space through time
+that is spatial attraction
+
+
+//-----------
+Issue that was to be done:
+
+upload fancy to git:
+sanitise fancy files and make presentable the readmes
+
+fancy developements: 
+  swipe control
+  remake qpane
+   sphere renderer
+   fps readout
+   github div slider
+  
+Inspection of repo structure
+ gh-pages branch is nested into master
+ i must commit dev to master, for visibility
+ copy to gh-pages and commit gh-pages
+ but must dev in gh-pages to get it basic working
+ before copying to master for standard deving
+ dev as much in master as possible and script.cp to gh-pages
+ 
+ 
+ 
+#bench dom layout
+
+ features to have
+  header bar
+   containging github link, 
+  openbutton figment > figments
+  choicelist > figments
+  
+  
+  
+[fancy physics demo: [help]]   [figments]      [fork on github]
+
+readings
+settings
+figment select
+help
+fork on github
+
+/*fancy* - View on Github
+select figment - Sol system
+settings
+readings
+start
+
+keys
+notes
+
+
+This is a Javascript Physics Simulation Demo
+
+
+
+
+//
+// - \\ - // - \\ - // - \\ - // - \\ - // - \\ - // - \\ -
+//\\ - //\\ - //\\ - //\\ - //\\ - //\\ - //\\ - //\\ - 
+//-\\\ - ///-\\ - //-\\\ - ///-\\ - //-\\\ - ///-\\ - //-\\\ - ///-\\ - 
+// -///- // -///- // -///- // -///- // -///- // -///-
+//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//
+// - /-/ - // - /-/ - // - /-/ - // - /-/ - // - /-/ - // - /-/ -
+//                          //          //               //          /
+//
+//
+// blapanel - html dash providing object 
+//
+// add readoutbox, controlbox to display on page
+// 
+// dashelements
+//  readouts
+//  inputs
+// 
+// containers
+//  nestable
+//  modalable
+//  stylable
+// 
+// dashmethods
+//  destroy
+//  pause
+//
+// -                    \\ -            // - \\ - // - \\ -
+//\\ - /  /\\ -  - //\\ - //\\     \\ - //\\ - //\\ - 
+//-\\\ - ///-\\ - //-\\\ - ///-\   \ - //-\\\ - ///-\\ - //-\\\ - ///-\\ - 
+// -//  ||/- // -///- // -//|/- // -||///- // -///-    // -||///-
+//-//-//-//-//     -//-//-//-//-  //-//-//-//-/||/-//-/|/-//-//-//
+// - /-/  - // -| /-/ - //| - /-/ -    // - /-/ - // - /-/ - // - /-/ -
+//                          //          //               //          /
+
+
+recaps.n
+readme.md  - split off into drafts
+
+viewport
+
+on remake viewport:
+  if no renderer, create renderer
+  if no scene, create scene  
+  clear scene()
+
+  
+  
+recap sat 18 mar
+ quite good collection of demos completed
+ missing: 
+  control opportuntiys, such as iota number or
+  world settings
+  by way of
+   modal gui form
+   figment specific dash elements
+   
+ things i want to proceed
+  socialising and refining the codebase
+  figment/condition specific dash elements
+   eg to display debug info
+   
+   
+#figbase design
+ concieving the way objects are added to figs and organised
+ jotes have groups and kinds
+ kinds have kinfo
+  details like name, mass, reactivity,
+  groups inclusion in grav, collision 
+ 
+ groups have ginfo
+  a list of groups with
+  details like group handle
+  groups inclusion in grav, collision, movement?
+   not movement - totally nonfig jota belong only in view-base
+   members inclusions are already set by their kind
+   group details are more for extranature functionality
+   eg attaching function to group which constrains it
+       or deletes it, or animates it
+      another function might be attached to group to
+      constrain it - to maintain bonds within it..
+   
+ eg. when jotes are added they have a kind and group
+ or assume 0 kind and group, which has default properties
+ 
+ set is better term than group at the moment
+ 
+ not necessary to maintain dlns of kinds, is it?
+ well, knd defines how jota react to proximities
+ such as collision, gravitation, magnetic, closequarter spacing
+ 
+ 
+ process of timestep
+  move / move with collision
+  min proximity actions
+   liquid bond
+   collision
+   gravity 
+   *collision checking occurs 
+    from 0t to 1t pos, 0.5t mov 
+    requires spot bounds expansion for movement
+    may be done in conjuction with move
+   *gravity application is done
+    at 0t pos, -0.5t mov > 0.5t mov
+  
+  
+kinfo  , sinfo 
+kind info
+ phase pertaining to solid/liquid/gas
+  strength and type of close proximity function 
+ mass
+ radius
+ 
+set info
+ the other members of set
+ set function
+  
+  solidifiy
+   simple independant
+   elaborated multiset algorithm
+   solid map of set, rotation axis, 
+   ang.momentum
+  
+  watch
+  
+where jkind and jgroup info is relevent to multiplex calculations
+the info is to be refreshed/extracted/(cached) to formula workspace   
+   
+make a renderer which has
+ particle feild
+ array of cuboid frames for drawing bounds
+ debug coloring of particles,
+ eg color particles by ... spotmap test
+ 
+imagining sets as higher order objects.
+ sets positions and vels 
+ are corrected after modification
+ rigid sets ,shouldnt intercollide
+ rigid sets should get their own leaf
+ rigid sets, could be eclipsed with a jote
+ the movement of a rigid set 
+ is always summarised by 
+  angular momentum
+  velocity
+ processes which affect movement:
+  gravity
+  proxima influence
+  collision
+ #special treatments of rigidjotes will need to be arranged...
+  elastic set   -  soft/alt frame  
+  inelastic set -  rigid frame
+  fixed set     -  unnat fixed object
+ 
+eventual situation:
+ most jotes are grouped
+ most groups are linked and static
+ freejotes represent gases and liquids
+ 
+ jotes embody the lowlevel mechanisms of molecular interaction
+ for resolving proximity and collision interactions
+ 'higher level wisps and forms', ride throughout jotes of a group
+ manipulates jotes of their group, or in special case, position
+
+
+//---------
+spotgrav2  has better optimised grav routine
+
+make 
+spotprox - which only does leafmating and interleafing
+for special function
+
+make timer function
+//-------------
+spotmap maintenance
+ function addsuigap  //add spot unique index gap
+   
+   for(var c=0;c<spot.top;c++)
+   { if(spot.parent[c]>gapp) spot.parent[c] += gapz
+     if(spot.fchild[c]>gapp) spot.fchild[c] += gapz
+   }
+   //lastchild is determined by last following spot 
+   //which shares parent 
+   //make sure indexing works after the gap ??
+   
+spots can be loaded with lower jote to spot factor
+trunkspots can be reloaded with higher jote to spot factor
+trunkspot will contain suis from selfui to lastchild's lastchild lastchild etc    
+
+spotmap functions
+
+
+next *ancestor* .firstchild - 1
+
+firstchild to
+lastchild of lastchild of lastchild ....
+
+//from firstchild, scan for latest node
+//before a parent lessthan firstchild appears
+
+function scantrunk(trunk,ra)
+  var fc=spot.fchild[trunk] ,di=fc
+
+  while( spot.parent[di]>=fc ){ di++ }
+
+  while( spot.parent[di]>=fc ){
+    di++
+    while( spot.fchild[di] ){ di=spot.fchild[di] }
+  }
+  
+  return {ci:fc , di:di}
+}
+
+
+
+#situation
+
+too much logging in spotmap.js and grav_spot.js
+to try and fully debug the new bud_by_velocity
+fractional tree loading system
+currently puzzled on the reason
+spot[1] produces nans in calcx or qx
+when it is leaf
+
+essentially this is about the early detection and logging of nans
+in the spots and jotes
+
+i may make a spot and jote tester, and call it in positions...
+as i have done
+
+///////////
+Modularise everything using CommonJS modules and SystemJS ??
+whatever modules will allow dev/loading on direct source...
+  The CommonJS format is used in Node.js and 
+  uses require and module.exports to define dependencies 
+  and modules:
+
+  var dep1 = require('./dep1');  
+  var dep2 = require('./dep2');
+
+  module.exports = function(){  
+    // ...
+  }
+
+Or UMD (universal module definition)
+
+
+
+Spotmap is quite optimised and ready to stick on for a bit
+possible extra tweaks > small leaf absorbtion
+future improvements >
+ histosort detatch and publish
+ medium sized spot leaf clusterer
+ 
+neat upcoming stuff
+ close neighbour quest and calculations
+ render clickray query
+ 
+ 
+
+
+jamjamjamjam....
+
+upupupupup...
+
+enabling surfaces.
+ a particles surface, is spherical, is contained within its bounding sphere
+ which is contained within its bounding box
+ 
+ a "recentered surface particle" would be the overlap surface between two spheres
+ producing a curved circle which resides within a 'location jote'
+ 
+ radius of a 'location jote' may be a coordinate box rather than sphere  
+ 
+
+//------------
+
+#fancy structure info collection
+
+structure collection
+
+list record for a bond
+  j_j bond properties:
+    elastic factor
+    slip factor (attatched can rotate)
+    heat factor
+    fatigue state
+    fatigue rate
+    crack level
+  
+meta info, query pointers
+  bonds orderable for contiguous block processing
+  tangles - tangs
+    bundled linked jotes that are rotatable 
+    in bulk, may have resonance
+    tangs can be exempt from inter-action checking  
+    their interlinking will likely need 
+    other maintainence
+    they will be a meta object, a mote
+    that is accomodated by the jote management system
+    but is implemented as optional addon
+
+jote sys  particle soup
+link sys  particle adjust  
+mote sys  meta-object / tangs
+          multi-jote multi-link operations
+          
+render sys
+
+  particle cloud
+  wireframe collection
+  sphere collection
+
+figment
+  jote instant dat
+    pos, mov, mass, etc
+
+  state summary dat
+
+  procession scheduler
+    
+  time procession function schedule
+    eg:
+    apply bounds to vel and pos
+    apply floor to vel and pos
+    apply pressure to vel
+    apply grav to vel
+    apply vel to pos
+  
+  info-collect-and-query agent  
+    track certain jotes
+    draw trail  
+
+  alteration agent
+    add jotes
+    del jotes
+    
+    
+action types
+
+setup empty figment
+fill figment
+modify figment
+destroy or clear figment
+clone figment
+
+do process to figment  
+
+query figment
+
+webworker
+
+//------------
+
+fancy is improved from fancyi, but does not have the physics working as well to produce explosions in blue disk.
+
+Before continuing with fancy, perhaps try to restore explosions
+  bluedisk force in fancyi is ....
+  bluedisk force in fancy is nbodygrav (see forcename log in instructor)
+ -Try to tweak forces to be able to precisely reconstruct fancyi in fancy
+
+between fancyi and fancy - Only minor tweaks and small refactoring 
+But fancy has lost fancyi's physics phenomenon
+This needs reclaimed if possible.
+
+The difference is probably in spotcollide.js:jotenear/jotenearo
+jotenearo doesnt work like it did
+jotenear is a reworking
+
+in fancyi
+  applyforces > stub_spots (almost same as clump_grav)
+
+in fancy, - analysing instructor.js ::
+  domoment: spotgrav.js:clump_grav
+  
+  doforce - nbodygrav
+   is not applied
+  
+  domoment 
+   a sequence of dat and metadat updates,
+   performed in donature
+   
+  donature - missnamed, caller for domoment
+   is perfed in doliveframe,
+   if and when timeframe progress control needs
+   
+   
+  Note for determinacy, do not perform metadat updates out of schedule
+  (do not rerun a spotgraph soon as viewbounds is set.. etc)       
+
+  framemaster
+    keeps itself on requestAnimationFrame
+    calls key and ui upkeep
+    calls lifeframe when not paused
+    calls refreshrender
+
+  liveframe
+   update_timers()
+   inaccordwtimers_update_model
+   update renderframe (for instant between model interval bounds)
+  liveframe - mishmash function
+   basically on render ticks, it can pause,
+   and it updates timers
+    goframe_clock 
+    playframe_clock
+    lastframe, skipframe_trip,skipframe_step,movperfram=0?,
+    movstep=model_pace/runcycle_step
+   and it runs donature and jote pos update ...
+   its an arc function, but a better execution system it prefered
+
+ This all wants revised^
+
+
+//designing,
+
+   framemaster - things to do
+     
+     #check ui input
+     
+     #ifcall ui aparatus ...
+     
+     #ifcall live_figments
+      defined figments, run when, 
+       figuring on, and
+       not paused
+     
+       figment run functions
+        figment can run itself, till goal met
+        can stall itself too
+        
+     #ifcall liverenders
+      attached renders run when
+       uapar has prepared them
+
+
+bench - separable from figment
+
+figment - core and help for running models
+ get everything out of bench that should be in figment
+
+
+bench framemaster
+
+
+refactor job is very large...
+try incremental improvements toward ideal?
+zen guided reworking ?

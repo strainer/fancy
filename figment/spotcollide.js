@@ -87,11 +87,20 @@ function addSpotcollide(fig,vplay) {
     
     spotmatch = spotnear  //qualifier function
     jotematch = jotenear  //action function
+    jotematch = jotenear_bomb  //action function
 
     fig.joteqclear()  //clear joteq (acceleration buffer)
 
+    //~ _prx=Drand.range(0.2,1.0)            //set proximity distance 
+    
+    //for jotenear
+    //_prx=Drand.gteat(0.2,1.3)                //set proximity distance 
+    
+    //for jotenear_bomb
     _prx=Drand.range(0.2,1.0)            //set proximity distance 
     midst=_prx*0.51    //set proximity distance 
+    
+    //~ midst=_prx*0.51    //set proximity distance 
     //~ vplay.dragfac=0.1   //set drag factor
     //~ vplay.pressfac=0.003  //set pressure factor
     
@@ -176,7 +185,89 @@ function addSpotcollide(fig,vplay) {
   //ungroked behavior,
   //mystery that globules split into group 
   
-  function jotenear(a,b){
+  function jotenear_bomb(a,b){
+    
+    a=dlns[a],b=dlns[b]
+    
+    var ag=jote.g[a] , bg=jote.g[b] //maybe swap these
+    
+    var dx = jote.x[a]-jote.x[b]
+      , dy = jote.y[a]-jote.y[b]
+      , dz = jote.z[a]-jote.z[b]
+    
+    var cf = (dx*dx + dy*dy + dz*dz)
+    var hyp=Sqrt(cf)
+    
+    var close=_prx - hyp
+    
+    //~ if(close<-1){ mtlogcn('b_more1'); return  }
+    //~ if(close<0){ mtlogcn('b_more0'); return }   //max close = _nearf
+    //~ if(close<-1){ return  }
+    if(close<0){ return }   //max close = _nearf
+                       //close is 0 to _nearf
+    //~ mtlogcn('a_less0')
+    
+    var dvx = jote.vx[a]-jote.vx[b]
+      , dvy = jote.vy[a]-jote.vy[b]
+      , dvz = jote.vz[a]-jote.vz[b]
+    
+    //2 effects: 
+    // center highest velocity drag  at close =nearf
+    // edge lowest velocity drag at close=0
+    // 
+    
+    vplay.dragfac=0.0008//0.1   //set drag factor
+    vplay.pressfac=0.0014  //set pressure factor
+    
+    var veldragpwr = vplay.dragfac*(midst-Math.abs(midst-hyp))/midst
+    
+    //dp is highest in the middle
+    //
+    
+    /// push/pull toward spacing
+
+    //~ var pressforce= vplay.gravity / cf
+    var fast=1+veldragpwr*9.5 ,pressforce=(midst-hyp)/midst
+    //~ pressforce=pressforce<0?-Math.sqrt(Math.abs(pressforce)):Math.sqrt(pressforce)
+    //more distant. more negative pressforce
+    if(pressforce<0){ //dist is beyond midpt
+      pressforce=pressforce>-0.5?pressforce:-1.0-pressforce
+    }else{  //dist is less than midpoint
+      
+      if((!(bg||ag))&&pressforce>0.87){
+        var aa=-0.025,bb=0.025
+        var rd=Drand.gnorm(aa,bb)
+        jote.x[a]+=rd,jote.x[b]-=rd
+        Drand.gnorm(aa,bb)
+        jote.y[a]+=rd,jote.y[b]-=rd
+        Drand.gnorm(aa,bb)
+        jote.z[a]+=rd,jote.z[b]-=rd
+      }
+    }
+    
+    var cf=(vplay.pressfac*pressforce)/hyp
+    //~ var gravforce= vplay.gravity / cf
+    //~ gravforce=gravforce*pace/hyp
+
+    if(!(ag||bg)){ ag=bg=1 }
+    
+    if(ag>bg){ bg/=ag,ag=1 }else{ ag/=bg,bg=1 }
+    
+    var pf= -cf*ag, qf=cf*bg
+                                   //a-b
+    jote.qx[a] = jote.qx[a]*fast + dx*qf - veldragpwr*dvx*bg
+    jote.qy[a] = jote.qy[a]*fast + dy*qf - veldragpwr*dvy*bg
+    jote.qz[a] = jote.qz[a]*fast + dz*qf - veldragpwr*dvz*bg
+    
+    jote.qx[b] = jote.qx[b]*fast + dx*pf + veldragpwr*dvx*ag
+    jote.qy[b] = jote.qy[b]*fast + dy*pf + veldragpwr*dvy*ag
+    jote.qz[b] = jote.qz[b]*fast + dz*pf + veldragpwr*dvz*ag
+    
+  }
+
+
+
+  function jotenearo(a,b){
     
     a=dlns[a],b=dlns[b]
     
@@ -259,6 +350,156 @@ function addSpotcollide(fig,vplay) {
     jote.qy[b] = jote.qy[b]*fast + dy*pf + veldragpwr*dvy*ag
     jote.qz[b] = jote.qz[b]*fast + dz*pf + veldragpwr*dvz*ag
     
+  }
+   
+  
+  /*
+  
+  1-(abs(x-0.5)*2);
+  
+  (1+ 1-(abs(x-1.5)*2)+1-(abs(x-2.0)*2))  *0.5;
+  
+  
+  
+  
+  
+  */
+  
+  
+  /*
+    condense formula:
+    distance between j is r
+    
+     /\
+    / 
+    
+    1-(abs(r-1)*2);  r 
+    
+    0.0  0.5  1.0   1.5 
+        /   /     \
+    
+    { 0.0: -1.0 } {0.5: 0.0] {1.0: 1.0} {1.5: 0.0} 
+    
+    
+    
+    (1-(abs(r-1)*2) + 1-(abs(r-1.5) * 2))*0.5;
+    
+    (1-(abs(r-1)*2) + 1-(abs(r-1.5) * 2))*0.5;
+    
+    r =
+     0 to fa :
+    fa to fb :
+    fb to fc : 
+  
+  
+    r=2.5 here at edge 
+    (3-((abs(r-1.5)+abs(r-2.0))*2)) * 0.5;
+    
+    {0:-2} {1:0} {1.5:1} {2:1} {2.5:0}
+    
+         _1 
+        / \
+       /`0 0
+      /
+    -2
+    
+    attraction or repulsion in the short line
+    
+    r = hyp dist / edge_dist *2.5
+    mo = (3-((abs(r-1.5)+abs(r-2.0))*2)) * 0.5; 
+    //mo will -2 to 1
+      
+  */
+  
+  
+  /*
+  
+  var ct=vplay.model_pace
+  
+  var dvx = jote.vx[a]-jote.vx[b]
+    , dvy = jote.vy[a]-jote.vy[b]
+    , dvz = jote.vz[a]-jote.vz[b]
+
+  var ex = dx+dvx*ct
+    , ey = dy+dvy*ct
+    , ez = dz+dvz*ct
+
+            
+  
+  var hypd=Math.sqrt( ex*ex + ey*ey + ez*ez)
+  var puls=(hypd*2)/(hyp+hypd) // 0 for closing to 0
+                               // 1 for stay same
+                               // 2 for leaving to inf 
+  puls=1.333-puls   //[+ive on getting closer]
+  
+  //pressforce can repels jotes for being too close
+  //by opposing their closing or leaving vector 
+  //more the closer they get.
+  
+  //this opposition burns energy, that is recorded 
+  //and generates sound
+  
+  //dragforce would synchronise jotes by averaging mov
+  //but this would remove rotation 
+  
+  */
+  
+  
+  function jotenear(a,b){
+    
+    a=dlns[a],b=dlns[b]
+    
+    var ag=jote.g[a] , bg=jote.g[b] //maybe swap these
+    
+    if(ag&&bg){ return } //returning if both have gravity
+    
+    var dx = jote.x[a]-jote.x[b]
+      , dy = jote.y[a]-jote.y[b]
+      , dz = jote.z[a]-jote.z[b]
+    
+    var cf = (dx*dx + dy*dy + dz*dz)
+    
+    var r=Sqrt(dx*dx + dy*dy + dz*dz)  //sep dist
+    
+    if(r > _prx) return
+    
+    r *= 2.5 / _prx
+    
+    var mo = (3-((Math.abs(r-1.5)+Math.abs(r-2.0))*2)) * 0.5; 
+    
+    mo=mo/r
+    
+    //mo will be -2 to 1
+    //
+    
+    //~ if(close<-1){ mtlogcn('b_more1'); return }
+    //~ if(close< 0){ mtlogcn('b_more0'); return }   //max close = _nearf
+    //~ if(close<-1){ return  }
+    
+                      //close is 0 to _nearf
+    //~ mtlogcn('a_less0')
+    var repel = 0.1
+    
+    var conden = 0.003 * (mo - repel)
+                                   
+    if(!(ag||bg)){ ag=bg=1 }  //mass !
+    
+    var k=ag+bg; ag/=k; bg/=k
+    
+    if(ag<0.01){ ag=0 }  //excepting actual mass bodies 
+    if(bg<0.01){ bg=0 } 
+    
+    var ed=-0,ee=-0
+    
+    jote.qx[a] -= ( ed=conden*dx*bg ) ; ee+=ed
+    jote.qy[a] -= ( ed=conden*dy*bg ) ; ee+=ed
+    jote.qz[a] -= ( ed=conden*dz*bg ) ; ee+=ed
+                                        
+    jote.qx[b] += ( conden*dx*ag )
+    jote.qy[b] += ( conden*dy*ag )
+    jote.qz[b] += ( conden*dz*ag )
+    
+    //~ _burnt+=ee
   }
    
 

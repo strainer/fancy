@@ -1,0 +1,87 @@
+#fancy root digest
+
+js for converting satellite orbit data
+https://github.com/shashwatak/satellite-js
+
+fancy/
+fancyi/ - the served gh-pages branch
+        - modestly developed from fancy/
+
+fancyw/ - the wiki
+        
+///////////////////////////////////  
+
+figment
+  template.js
+  figbase.js       
+  figchore.js 
+  construct.js
+  temper.js
+
+  spotlog.js
+  spotmap.js
+
+  spotcollide.js
+
+  nbodygrav.js 
+  spotgrav.js
+  spotgrav2.js
+
+  paranorm.js
+
+  forces.js > out of lead
+  
+bench
+  instructor.js
+    methods to sequence initialisation and time 
+    run and rendering of figment 
+  creation.js   
+    functions which use construct.js to load jotes into figment
+  planetdat.js
+    solarsystem data used by a fig load in craetion
+
+  setdash.js
+    sets up and executes document display and input blocks
+  qpane.js
+    a component for managing document ui
+  keysys.js
+    a component for running callbacks and adjusting
+    state data on keypresses
+
+  viewport.js
+    sets up rendering and renders fig data
+  helpers.js
+    isolated helper facilitons
+
+
+O:\hub\ven\lead\fancy\.git\config
+O:\hub\ven\lead\fancy\readme.md
+
+O:\hub\ven\lead\fancy\index.html
+O:\hub\ven\lead\fancy\dep\three.js
+
+O:\hub\ven\lead\fancy\bench\creation.js
+O:\hub\ven\lead\fancy\bench\instructor.js
+O:\hub\ven\lead\fancy\bench\helpers.js
+
+O:\hub\ven\lead\fancy\figment\figchore.js
+O:\hub\ven\lead\fancy\figment\figbase.js
+O:\hub\ven\lead\fancy\figment\spotgrav.js
+O:\hub\ven\lead\fancy\figment\spotgrav2.js
+O:\hub\ven\lead\fancy\figment\spotcollide.js
+O:\hub\ven\lead\fancy\figment\spotmap.js
+O:\hub\ven\lead\fancy\figment\temper.js
+
+O:\hub\ven\lead\fancy\drafts\grav_y.n
+o:\hub\ven\lead\fancy\drafts\spot2.n
+o:\hub\ven\lead\fancy\drafts\ffc_test.lua
+o:\hub\ven\lead\fancy\drafts\collisfrmla.n
+o:\hub\ven\lead\fancy\drafts\root.n
+o:\hub\ven\lead\fancy\drafts\cut.n
+o:\hub\ven\lead\fancy\drafts\triggerformula.n
+o:\hub\ven\lead\fancy\drafts\charges.n
+O:\hub\ven\lead\fancy\drafts\warn.n
+
+O:\hub\ven\lead\fancy\exd\reposync.py
+O:\hub\ven\lead\fancy\exd\vertexshade.html
+O:\hub\ven\lead\fancy\exd\test.py

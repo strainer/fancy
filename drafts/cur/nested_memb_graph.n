@@ -1,0 +1,47 @@
+#compax - compartment index
+
+compax builds and maintains a compartment index of data
+
+organise by degree of relation between datums
+
+1st level - all related
+2nd level - related to parent and maybe parents neighbours
+
+compax could compartmentalise according to 
+/folder/
+
+geospatial index - radius query
+all dat within range
+
+REDIS GEOADD KEY
+Adds the specified geospatial items (latitude, longitude, name) to the specified key. Data is stored into the key as a sorted set, in a way that makes it possible to later retrieve items using a query by radius with the GEORADIUS or GEORADIUSBYMEMBER commands.
+
+#nested membership graph
+compartment is a nested category,
+the nesting is compartmentalising context
+
+tree graph storage can be data efficient
+because of the trees constraint
+
+an index can key data
+a tree can key data
+a graph can key data
+referencing systems which help find related info quickly
+
+nested member graph  dnmg  meg
+dynamic nested set graph  
+volitile nested volitile set graph
+the sets are arbitrary,
+nested membership graph meg nmeg  
+
+meg = nested mship graph
+
+meg.appendj
+meg.appendjbuffer
+meg.insertj
+meg.insert.jbuffer
+meg.trunk
+meg.retrunk
+meg.grow
+meg.regrow
+meg.setpackfactor

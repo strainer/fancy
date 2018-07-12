@@ -35,7 +35,7 @@ function emptyElement(elem) {
 
 //-------------
 
-function zap(Ai,f){ //map
+function mapfn(Ai,f){ //map
   
   var Ao=new Array(Ai.length)
   for(var j=0,e=Ai.length;j<e;j++){
@@ -44,7 +44,7 @@ function zap(Ai,f){ //map
   return Ao
 }
 
-function reduce(Ai){
+function sumarray(Ai){ //reduce~
   
   var s=0
   for(var j=0,e=Ai.length;j<e;j++){
@@ -56,7 +56,8 @@ function reduce(Ai){
 
 //----------------
 
-function floorix(A,v,b){  //small arrays floorex
+function floorix(A,v,b){  //searchsorted
+                          //small arrays floorex
                           //faster until around n>30
   var c=A.length-1
 
@@ -86,10 +87,11 @@ function floorix(A,v,b){  //small arrays floorex
 }
 
 
-function floorixb(A,v,b){ 
+function floorixb(A,v,b){ //srtdsrch
   
-  //return elem in A with value less than or equal v
-  //returns -1 if A[0] is more than v
+  //A is sorted ascending 1,2,3...
+  //return first elem in A with value less than or equal v
+  //returns -1 if A[0] is more than v (no value less or equal)
   //skips undefs and nans, param b is optional hint
    
   var an=0, en=A.length-1, c=0 //anchor , end 

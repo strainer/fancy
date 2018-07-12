@@ -86,7 +86,8 @@ function newFigment(size){ return (function(size){
     
     ,Tau:Tau ,Pi:Pi, hPi:hPi, tPi:tPi
     ,abs:abs ,floor:floor ,Sqrt:Sqrt
-    ,Drand:Drand, Hrand:Hrand, rndu:rndu, rndh:rndh 
+    ,Drand:Drand, Hrand:Hrand, rndu:rndu, rndh:rndh
+    ,recycle:recycle 
   }
 
 }(size))}
