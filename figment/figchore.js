@@ -4,21 +4,29 @@
  *  terms of the FSF GNU AGPLv3 - see License.md for details  * 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ** */ 
 
-/// moment.js - time update physics schemes
+/// figchore.js - wotevers here now
 
-function addFigchore(fig,vplay) { 
+function addFigchore(fig) { 
   'use strict'
   
-  var jote=fig.jote, spot=fig.spot 
-     ,Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
-     ,Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
-     ,Drand=fig.Drand ,Hrand=fig.Hrand
-     ,rndu=fig.rndu, rndh=fig.rndh
-     ,dlns=fig.dlns
+  var fgs=fig.state
+     ,Tau=2*Math.PI ,Pi=Math.PI ,hPi=Pi/2 ,tPi=Pi/3
+     ,abs=Math.abs ,floor=Math.floor ,Sqrt=Math.sqrt 
      
-  var epsila=Math.pow(0.5,52)
-  var epsilb=Math.pow(0.5,43)
+  var jote=fgs.jote ,jkind=fgs.jkind ,bkind=fgs.bkind 
+     ,Drand=fgs.Drand ,Hrand=fgs.Hrand
+     ,rndu=fgs.rndu ,rndh=fgs.rndh
+   
+  function takestate() //keys to local as required
+  { 
+    fgs=fig.state
+    jote=fgs.jote ,jkind=fgs.jkind ,bkind=fgs.bkind 
+    Drand=fgs.Drand ,Hrand=fgs.Hrand
+    rndu=fgs.rndu, rndh=fgs.rndh
+  } 
   
+  fig.statefncs.push( takestate ) //add to list of state refreshers
+
   /// // // // // // // // // // // // / 
   
   function joteqclear()
@@ -27,7 +35,7 @@ function addFigchore(fig,vplay) {
   } 
 
   
-  function jmovebyvt(t,maxv)
+  function jotemovebyVT(t,maxv)
   {
     //~ fuzzjotes(0.001)
     
@@ -71,7 +79,7 @@ function addFigchore(fig,vplay) {
     //~ console.log("clvq",cllv,cllq)
   }
         
-  function spongejotes(u){
+  function joteclearulp(u){ //unused
     u=u||1024
     for(var i=0; i<jote.top; i++){
       jote.x[i]=Math.culp(jote.x[i],u)
@@ -117,10 +125,10 @@ function addFigchore(fig,vplay) {
     }
   }
     
-  fig.jmovebyvt=jmovebyvt
+  fig.jotemovebyVT=jotemovebyVT
   fig.joteqclear=joteqclear
   fig.joteqtovel=joteqtovel 
-  fig.spongejotes=spongejotes
+  fig.joteclearulp=joteclearulp
   fig.fuzzjotes=fuzzjotes
   //~ fig.recycle=recycle
 

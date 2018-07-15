@@ -6,26 +6,91 @@
 
 /// tree data index, recursively linked nested spatial groups of jotes
  
-function addSpotmap(fig,vplay) { 
-  'use strict'
-    
-  var jote=fig.jote 
+function addSpotmap(fig) { 
+  'use strict' 
+   
+  var fgs =fig.state
      ,Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
      ,Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
-     ,Drand=fig.Drand ,Hrand=fig.Hrand
-     ,rndu=fig.rndu, rndh=fig.rndh
+   
+  var jote=fgs.jote ,jkind=fig.jkind ,vplay=fgs.vplay 
+     ,Drand=fgs.Drand ,Hrand=fgs.Hrand
+     ,rndu=fgs.rndu, rndh=fgs.rndh
+     ,spot={} ,dlns=[]
   
+  function takestate() //keys to local as required
+  { 
+    fgs=fig.state
+    jote=fgs.jote ,jkind=fgs.jkind ,vplay=fgs.vplay
+    
+    Drand=fgs.Drand ,Hrand=fgs.Hrand
+    rndu=fgs.rndu, rndh=fgs.rndh
+    
+    sectppl      = fgs.sectppl 
+    secfill      = fgs.secfill 
+    sect_at_dlsi = fgs.sect_at_dlsi
+    velo_at_dlsi = fgs.velo_at_dlsi
+    cach_dlns    = fgs.cach_dlns 
+    dlns         = fgs.dlns 
+    spot         = fgs.spot
+    trunkn  = fgs.trunkn
+    trunksi = fgs.trunksi
+    ctrunk  = fgs.ctrunk
+    _bmpspot= fgs._bmpspot
+
+  } 
+     
+  fig.statefncs.push( takestate ) //add to list of state refreshers
+
+  //25 to 45 working best
+  var max_subspot = 40     //max subdivision of space per iteration
+  //5 to 10 working best
+  var endsize=7            //endspot must be smaller than this population
+
+  //workspace of surveying function
+  var sectppl = new Uint16Array(max_subspot) //records quantity of jotes in sects
+  var secfill = new Uint16Array(max_subspot) //counts fill of sects while filling dlsline
+  var sect_at_dlsi =[]  //contains sect of jote at [dlsi]
+  var velo_at_dlsi =[]  //contains sect of jote at [dlsi]
+  var cach_dlns =[]    //contains direct index of jote at [dlsi]
+  var dlns =[]  //The full delineation sequence jotes arranged into spot lines,
+             //which have st, end pos, properties recorded in spot
+  
+  fgs.sectppl = sectppl 
+  fgs.secfill = secfill
+  fgs.sect_at_dlsi = sect_at_dlsi 
+  fgs.velo_at_dlsi = velo_at_dlsi
+  fgs.cach_dlns = cach_dlns
+  fgs.dlns = dlns
+
+  var trunkn=7 , trunksi=makeshuffleix(trunkn)
+  var ctrunk=0 , _bmpspot=0
+  
+  fgs.trunkn=trunkn , fgs.trunksi=trunksi
+  fgs.ctrunk=ctrunk , fgs._bmpspot=_bmpspot
+  
+  // max_subspot=30,endsize=7 performing best 
+  // making approx 35% many spots as jotes 
+
   var epsila=Math.pow(0.5,51)
   var epsilb=Math.pow(0.5,43)
 
+  var _dsui=1    //due sui, 0 is not valid 
+
+  var _divn=[ -1, -1, -1 ]  //grid division vector
+  var	_divm=[ -1, -1, -1 ]  //grid div measure vector	
+
+  /// // // // // // // // // // // // / 
+
+  spotsizeprep(100)
 
   //-------------
   
-  var spot
- 
-  function setspotmax(maxsp){
+  function spottostate(){ fgs.spot=spot }
+  
+  function spotsizeprep(maxsp){
 
-    if(!spot){
+    if(!spot.max){
       spot={}
       spot.deep = 0 
       spot.top  = 0 
@@ -80,11 +145,11 @@ function addSpotmap(fig,vplay) {
       */
     }
     
-    spot.depth=depth
-    spot.dln_anchor=dln_anchor 
-    spot.dln_span=dln_span
-    spot.parent=parent
-    spot.fchild=fchild
+    spot.depth      =depth
+    spot.dln_anchor =dln_anchor 
+    spot.dln_span   =dln_span
+    spot.parent     =parent
+    spot.fchild     =fchild
      
     spot.lbx =lbx ,spot.lby =lby  ,spot.lbz =lbz
     spot.hbx =hbx ,spot.hby =hby  ,spot.hbz =hbz
@@ -92,29 +157,12 @@ function addSpotmap(fig,vplay) {
     spot.grd =grd ,spot.grm =grm  ,spot.grx =grx
     spot.gry =gry ,spot.grz =grz 
            
-    spot.calcx=calcx ,spot.calcy =calcy
-    spot.calcz=calcx
+    spot.calcx =calcx ,spot.calcy =calcy
+    spot.calcz =calcx
     
+    spottostate()
   }
 
-  setspotmax(100)
-
-  var _dsui=1    //due sui, 0 is not valid 
-
-  var _divn=[ -1, -1, -1 ]  //grid division vector
-  var	_divm=[ -1, -1, -1 ]  //grid div measure vector
-
-  //25 to 45 working best
-  var max_subspot = 40     //max subdivision of space per iteration
-  //5 to 10 working best
-  var endsize=7            //endspot must be smaller than this population
-    
-  // max_subspot=30,endsize=7 performing best 
-  // making approx 35% many spots as jotes 
-
-  
-  var trunkn=7 , trunksi=makeshuffleix(trunkn)
-  var ctrunk=0,_bmpspot=0
    
   function tendto_spotmap(){
         
@@ -298,7 +346,7 @@ function addSpotmap(fig,vplay) {
       var spotfac=0.7
       var spm=Math.floor( 50+(en)*spotfac )
       if( spot.max<spm*0.9 || spot.max>spm*2 ){
-        setspotmax(spm) 
+        spotsizeprep(spm) 
       }
 
       spot.depth[0]=0
@@ -357,16 +405,6 @@ function addSpotmap(fig,vplay) {
   
   //
   
-  
-  //workspace of surveying function
-  var sectppl = new Uint16Array(max_subspot) //records quantity of jotes in sects
-  var secfill = new Uint16Array(max_subspot) //counts fill of sects while filling dlsline
-  var sect_at_dlsi =[]  //contains sect of jote at [dlsi]
-  var velo_at_dlsi =[]  //contains sect of jote at [dlsi]
-  var cach_dlns =[]    //contains direct index of jote at [dlsi]
-  var dlns =[]  //The full delineation sequence jotes arranged into spot lines,
-             //which have st, end pos, properties recorded in spot
-
   function budbyspace( psi, cellnb ) // 
   { 
     var st = spot.dln_anchor[psi] 
@@ -539,7 +577,7 @@ function addSpotmap(fig,vplay) {
         
     if(clld===spot.top){
       //~ conlog("shoving the end",spot.top,"by",mv)
-      if(clld+mv>spot.max){ setspotmax(Math.floor((clld+mv)*1.25)) }
+      if(clld+mv>spot.max){ spotsizeprep(Math.floor((clld+mv)*1.25)) }
       for(var si=spot.top,se=si+mv; si<se; si++){ spot.parent[si]=spot.fchild[si]=0 }
       spot.top=clld+mv
       return
@@ -568,7 +606,7 @@ function addSpotmap(fig,vplay) {
       }
     } 
     
-    if(spot.top>=spot.max){ setspotmax(Math.floor(1+spot.top*1.1)) }
+    if(spot.top>=spot.max){ spotsizeprep(Math.floor(1+spot.top*1.1)) }
     
     //~ conlog("shove gaps are:",gaps)
         

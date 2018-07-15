@@ -8,11 +8,13 @@
 
 function newViewport(fig,vplay){ 
   
-  var jote=fig.jote, jkind=fig.jkind 
-     ,Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
+  var Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
      ,Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
-     ,Drand=fig.Drand ,Hrand=fig.Hrand
-     ,rndu=fig.rndu, rndh=fig.rndh
+
+  var fgs=fig.state, vplay=fgs.vplay
+     ,jote=fgs.jote, jkind=fgs.jkind 
+     ,Drand=fgs.Drand ,Hrand=fgs.Hrand
+     ,rndu=fgs.rndu, rndh=fgs.rndh
   //-------------------------------------------------------//
   
   var vport={},thrLc,thrCl  //three arrays
@@ -602,8 +604,8 @@ function newViewport(fig,vplay){
     vplay.nowfocus="obj "+jd
     if(jd===-1)
     { vplay.nowfocus="free tracking" }
-    else if(isFinite(Fgm.jote.knd[jd])&&Fgm.jkind.nom[Fgm.jote.knd[jd]])
-    { vplay.nowfocus=jd+" "+Fgm.jkind.nom[Fgm.jote.knd[jd]] }
+    else if(isFinite(fgs.jote.knd[jd])&&fgs.jkind.nom[fgs.jote.knd[jd]])
+    { vplay.nowfocus=jd+" "+fgs.jkind.nom[fgs.jote.knd[jd]] }
         
     if('dash' in vplay){ vplay.dash.redrawDash()} 
   }

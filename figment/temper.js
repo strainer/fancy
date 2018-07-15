@@ -12,10 +12,26 @@
 
 function addTemper(fig){ 
   
-  var jote=fig.jote 
-     ,Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
+  var Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
      ,aforce=fig.doforce
-  //-------------------------------------------------------// 
+
+  var fgs=fig.state
+     ,jote=fgs.jote 
+     ,Drand=fgs.Drand ,Hrand=fgs.Hrand
+     ,rndu=fgs.rndu, rndh=fgs.rndh
+  
+  function takestate() //keys to local as required
+  { 
+    fgs=fig.state
+    jote=fgs.jote
+    
+    Drand=fgs.Drand ,Hrand=fgs.Hrand
+    rndu=fgs.rndu, rndh=fgs.rndh
+  } 
+     
+  fig.statefncs.push( takestate ) //add to list of state refreshers
+
+  /// // // // // // // // // // // // / 
 
   function gtemperall(cvfac,dvfac)  //current temp, due temp
   {
@@ -105,7 +121,7 @@ function addTemper(fig){
       rig.push(jote.z[i]) }
     
     for(var i=0;i<n;i++)
-    { fig.jmovebyvt(-ts)
+    { fig.jotemovebyVT(-ts)
       aforce(-ts)
     }
     

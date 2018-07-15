@@ -7,15 +7,35 @@
 /// template.js - file module template
 
 function addTemplate(fig){ 
-  
-  var jote=fig.jote 
+  'use strict' 
+   
+  var fgs =fig.state
      ,Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
      ,Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
-     ,Drand=fig.Drand ,Hrand=fig.Hrand
-     ,rndu=fig.rndu, rndh=fig.rndh
-  //-------------------------------------------------------//
+   
+  var jote=fgs.jote ,jkind=fgs.jkind ,vplay=fgs.vplay 
+     ,spot=fgs.spot ,dlns=fgs.dlns
+     ,Drand=fgs.Drand ,Hrand=fgs.Hrand
+     ,rndu=fgs.rndu, rndh=fgs.rndh
   
-  fig.functions            = functions
+  function takestate() //keys to local as required
+  { 
+    fgs=fig.state
+    
+    jote=fgs.jote ,jkind=fgs.jkind ,vplay=fgs.vplay
+    spot=fgs.spot ,dlns=fgs.dlns
+    
+    Drand=fgs.Drand ,Hrand=fgs.Hrand
+    rndu=fgs.rndu, rndh=fgs.rndh
+  } 
+     
+  fig.statefncs.push( takestate ) //add to list of state refreshers
+
+  /// // // // // // // // // // // // / 
+
+  function fun(){}
+      
+  fig.fun = fun
 
   return fig
 

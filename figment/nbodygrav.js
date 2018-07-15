@@ -4,19 +4,35 @@
  *  terms of the FSF GNU AGPLv3 - see License.md for details  * 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ** */ 
 
-/// forces.js - processes: gravity, friction, etc
+/// nbodygrav.js - processes: gravity, friction, etc
 
-function addNbodygrav(fig,vplay) { 
-  'use strict'
-  
-  var jote=fig.jote, spot=fig.spot 
+function addNbodygrav(fig) { 
+  'use strict' 
+   
+  var fgs=fig.state
      ,Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
      ,Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
-     ,Drand=fig.Drand ,Hrand=fig.Hrand
-     ,rndu=fig.rndu, rndh=fig.rndh
-     ,dlns=fig.dlns 
-               
-                 
+
+  var jote=fgs.jote, vplay=fgs.vplay 
+     ,Drand=fgs.Drand ,Hrand=fgs.Hrand
+     ,rndu=fgs.rndu, rndh=fgs.rndh
+  
+  function takestate() //keys to local as required
+  { 
+    fgs=fig.state
+    
+    jote=fgs.jote, vplay=fgs.vplay
+    
+    Drand=fgs.Drand ,Hrand=fgs.Hrand
+    rndu=fgs.rndu, rndh=fgs.rndh
+  } 
+     
+  fig.statefncs.push( takestate ) //add to list of state refreshers
+
+  /// // // // // // // // // // // // / 
+   
+  var pace,throt
+             
   function nbodygrav(p)
   { 
     pace=p||vplay.model_pace; 
@@ -89,9 +105,8 @@ function addNbodygrav(fig,vplay) {
     if(vplay.seespots>0){ fig.tendto_spotmap() }
 
   }
-          
-          
-  var pace,throt,_cpx=-1,_cpy=-1,_cpz=-1,_cqx=-1,_cqy=-1,_cqz=-1
+              
+  var _cpx=-1,_cpy=-1,_cpz=-1,_cqx=-1,_cqy=-1,_cqz=-1
   
   function _pnt_accel(px,py,pz,pg,qx,qy,qz,qg)
   { 

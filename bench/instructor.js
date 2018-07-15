@@ -5,76 +5,10 @@
  * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * */ 
 /// instructor.js - hanging together 
 
-var vplay = {
- 
-  worlds:{
-    0:{name:"Solar System",desc:""}
-   ,1:{name:"Near Earths",desc:""}
-   ,2:{name:"TRAPPIST-1",desc:""}
-   ,3:{name:"Blue Disk",desc:""}
-   ,4:{name:"3Planets",desc:""}
-   ,5:{name:"MassRing",desc:""}
-   //~ ,6:{name:"Cymball",desc:""}
-   //~ ,7:{name:"QuasiMags",desc:""}
-   ,8:{name:"Pattern",desc:""}
-   ,9:{name:"4MassRing",desc:""}
-   //~ ,10:{name:"47 Tuc X9",desc:""}
-   //~ ,11:{name:"Point Cloud",desc:""}
-   ,12:{name:"Bloop",desc:""}
-   //~ ,13:{name:"XXX",desc:""}
-  }
-    
-  ,seed:0 ,world:3, seespots:-1
-  ,geometry:{}, camera:{}, scene:{} ,focus:{}
-  ,renderer:{}, displaybugi:20 //avoiding scrollbar
-  
-  ,instaprops:{}
-  
-  ,defaults:{
-     //timing datums
-     allframe_clock:0
-    ,rendermode:0
-    ,goframe_clock:0
-    ,skipframe_step:1   // units of allframes
-    ,skipframe_trip:0   // units of allframes
-    ,lastframe:10000
-    ,playedframe_clock:0 //units of played animframes
-    ,rendermark:0        //time of last renderscope
-
-    ,model_clock:0     // units of innate
-    ,model_pace: 0.2    //(12hr) 0.15 // units of model_clock
-    ,max_force:  5      // units of model_clock
-    ,max_vel: 0
-    ,nature: 0          //del
-    ,forces: 0          //forces function
-    
-    ,runcycle_step: 1   // units of model_pace 
-    ,runcycle_trip: 0   // units of model_clock
-    
-    ,movperframe:0
-    
-    ,particles:32000    // max particles 
-    ,iota:0
-
-    ,driftCount:0, camDrift:0.03, camRad:250, camRadd:0
-    ,camThet:0, camPhi:Math.PI/1.5, spincam:0, firstfocus:0  //phi 
-    ,nowfocus:0
-    
-    ,keyUD:0, keyLR:0, keyR:0 ,keyUDd:0, keyLRd:0, keyRd:0, keyCtrl:0
-    
-    ,paused:1, explode:0, pausetime:0 
-    ,gravityoff:0
-    ,gravity:1
-    ,Gtweak:1 
-    ,gravqual:0.005
-    ,colorfac:0.5
-    ,pradius:2
-    ,printtime:function(a){ return (a).toFixed(2) }
-    ,fps:0
-  }
-}
+var vplay = benchdat()
 
 var urlpar=[]
+
 if(window.location.hash) {
   var patt=/#[^\d]*(\d{1,2})?[^ps]*(pau)?s?[^s]*(spots)?/
   urlpar=window.location.hash.match(patt)
@@ -82,7 +16,7 @@ if(window.location.hash) {
   if(isFinite(urlpar[1])){ vplay.world=parseInt(urlpar[1]) }
 }
 
-var Fgm,Vpr
+var Fgm,Fgs,Vpr
 
 console.log(Math.hasTrigfills())
 
@@ -99,31 +33,33 @@ function setupfigview(fig){
   
   for( var p in vplay.defaults)
   { vplay[p]=vplay.defaults[p] }
+   
+  Fgs=newFigstate(vplay)
   
-  if(Fgm){ Fgm.recycle() } 
-  Fgm=newFigment(vplay.particles)
+  if(!Fgm){ Fgm=newFigbase(Fgs) }
+  else    { Fgm.infusestate(Fgs) } //maybe destroy the old state
   
   //add service functions in order..
   
-  addSpotmap(Fgm,vplay) 
-  addSpotlog(Fgm,vplay)
+  addSpotmap(Fgm) 
+  addSpotlog(Fgm)
   
-  addFigchore(Fgm,vplay)
+  addFigchore(Fgm)
 
   addConstruct(Fgm) 
   addParanorm(Fgm) 
 
   Tcreate(Fgm,vplay)
-  //~ Fgm.spongejotes()
+  //~ Fgm.joteclearulp()
   
   for( var p in vplay.instaprops)
   { vplay[p]=vplay.instaprops[p] }
 
   if(vplay.unpause){ vplay.unpause=vplay.paused=0 }
   
-  addNbodygrav(Fgm,vplay) 
-  addSpotgrav(Fgm,vplay)
-  addSpotcollide(Fgm,vplay)
+  addNbodygrav(Fgm) 
+  addSpotgrav(Fgm)
+  addSpotcollide(Fgm)
   
   Fgm.domoment={
    0:Fgm.nbodygrav
@@ -145,7 +81,7 @@ function setupfigview(fig){
 
   console.log("forcename:",Fgm.doforce.name)
   
-  addTemper(Fgm,vplay)  //adds service function
+  addTemper(Fgm)  //adds service function
       
   if(Vpr)    //i shouldnt have to recreate this ..
   { //console.log("aheyho")
@@ -170,7 +106,7 @@ function setupfigview(fig){
   Vpr.ctrlcam()
   
   vplay.renderer.render( vplay.scene, vplay.camera )
-  vplay.iota = Fgm.jote.top
+  vplay.iota = Fgs.jote.top
   //setfocusname(vplay.firstfocus)
   
   if(adash)adash.redrawDash()
@@ -204,7 +140,7 @@ function refreshrender(){
   
   vplay.renderer.render( vplay.scene, vplay.camera )
   
-  vplay.iota = Fgm.jote.top
+  vplay.iota = Fgs.jote.top
 }
 
 var stilltime=300,waspau=0
@@ -271,7 +207,7 @@ function liveframe(){
     { //console.log("do")
       var bitstep = vplay.runcycle_trip-vplay.model_clock 
       //~ console.log("bitstep",bitstep)
-      if(bitstep){ Fgm.jmovebyvt(bitstep,vplay.max_vel); }
+      if(bitstep){ Fgm.jotemovebyVT(bitstep,vplay.max_vel); }
       vplay.model_clock+=bitstep
       if(vplay.gravity){ donature(); vplay.movperframe++ }
       movstep-=bitstep
@@ -283,7 +219,7 @@ function liveframe(){
     { //console.log("do")
       var bitstep = -vplay.runcycle_trip+vplay.model_clock 
       //~ console.log("bitstep",bitstep)
-      if(bitstep){ Fgm.jmovebyvt(bitstep,vplay.max_vel) }
+      if(bitstep){ Fgm.jotemovebyVT(bitstep,vplay.max_vel) }
       vplay.model_clock+=bitstep
       if(vplay.gravity){ donature(); vplay.movperframe++ }
       movstep-=bitstep
@@ -291,7 +227,7 @@ function liveframe(){
     }
   } 
   //~ console.log("movstep",movstep)
-  if(movstep){ Fgm.jmovebyvt(movstep,vplay.max_vel); Vpr.updatefocusxyz() }
+  if(movstep){ Fgm.jotemovebyVT(movstep,vplay.max_vel); Vpr.updatefocusxyz() }
   if(vplay.seespots==1){ Fgm.measure_spots() }
   vplay.model_clock+=movstep
   //Fgm.frameshift() 
@@ -405,15 +341,15 @@ function reverseTime2()
 function solarlog(){
   console.log("Comparing positions at time:",vplay.model_clock)
   //~ console.log("SunPos: x,y,z")
-  //~ console.log( Fgm.jote.x[0],Fgm.jote.y[0],Fgm.jote.z[0])
+  //~ console.log( Fgs.jote.x[0],Fgs.jote.y[0],Fgs.jote.z[0])
   
-  var ex=Fgm.jote.x[3] - Fgm.jote.x[0] //earth pos - sun pos
-     ,ey=Fgm.jote.y[3] - Fgm.jote.y[0]
-     ,ez=Fgm.jote.z[3] - Fgm.jote.z[0]
+  var ex=Fgs.jote.x[3] - Fgs.jote.x[0] //earth pos - sun pos
+     ,ey=Fgs.jote.y[3] - Fgs.jote.y[0]
+     ,ez=Fgs.jote.z[3] - Fgs.jote.z[0]
       
-  var mx=Fgm.jote.x[3]-Fgm.jote.x[4] //moon dists
-     ,my=Fgm.jote.y[3]-Fgm.jote.y[4]
-     ,mz=Fgm.jote.z[3]-Fgm.jote.z[4]
+  var mx=Fgs.jote.x[3]-Fgs.jote.x[4] //moon dists
+     ,my=Fgs.jote.y[3]-Fgs.jote.y[4]
+     ,mz=Fgs.jote.z[3]-Fgs.jote.z[4]
      
   var moondist=Math.sqrt(mx*mx+my*my+mz*mz)
   
@@ -433,9 +369,9 @@ function solarlog(){
   
   console.log("Earth Vel m/s Offset From JPL Earth: dx,dy,dz")
   console.log( 
-   Fgm.jote.vx[3]- (-2.978321979483584e+01) -Fgm.jote.vx[0]
-  ,Fgm.jote.vy[3]- (-5.419948414057951e+00) -Fgm.jote.vy[0]
-  ,Fgm.jote.vz[3]- (-4.395459903603349e-04) -Fgm.jote.vz[0]
+   Fgs.jote.vx[3]- (-2.978321979483584e+01) -Fgs.jote.vx[0]
+  ,Fgs.jote.vy[3]- (-5.419948414057951e+00) -Fgs.jote.vy[0]
+  ,Fgs.jote.vz[3]- (-4.395459903603349e-04) -Fgs.jote.vz[0]
   )
 
 /*

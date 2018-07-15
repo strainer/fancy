@@ -13,3 +13,55 @@ figmanage.js   - tandem with construct.js
     recursive packing/un of jotes into macrojotes
    first goal
     add and remove jotes in action     
+
+bench 
+ vplay
+  all state for framing and displaying and rendering a fig
+  
+  
+ fig
+ 
+ 
+figstate
+ dynamic state of a figment
+ including metadata and seeded prgs
+
+figcommon
+ common static variables and abbreviated functions
+  
+figlive
+ extends figbase with methods in modules: construct, temper, spotmap etc
+ contains method to swap figbase
+  so multiple figs can be advanced, without duplicating method code
+
+figstate[0] = newfig(blankspacenature)
+figstate[1] = newfig(blankspacenature)
+livefig[0] = newFigCommon(figstate[0])
+livefig[0] = addFigConstruct(livefig[0])
+livefig[0] = addFigTemper(livefig[0]) //....
+
+livefig[0].addorbitalcluster(details) //
+
+livefig[0].changestate(figstate[1])
+
+This would allow a few states to be evolved
+quickly (without duplicated code)
+to find eg throwing solutions
+
+we can deepclone a figstate
+addedModules can add to the figstate object, distinct from the livefig obj
+metadate like spotmap ?
+
+
+FigConstruct
+FigRemove
+FigObserve
+
+state will contain
+ jote data
+ jote set data
+ - both altered by construct and remove
+ 
+ spotmap data
+ 
+mv figbase.js figstate.js
