@@ -1,27 +1,36 @@
-// Fdrandom.js - Fast deterministic random lib
+ // Fdrandom.js - Fast deterministic random methods
 /** @author Andrew Strain
  ** This is free and unencumbered software released into the public domain 
- ** in homage to human ingenuity against greed and hatred.
+ ** in homage to human ingenuity against greed and destruction.
  */
 
-var newFdrPot = function(){ return (function(sd){ //factory
+var newFdrandom = function(){ //factory
+  
+  var FdrHotPot    //a static instance for indeterminables
+
+  return (function(sd){ 
   'use strict'
   
-  var va,vl,vs,qr,us,rb,ju,U,sv,i,ar
+  var nml,va,vl,qr,rb,ga,gb,ua,ub,us,ju,U,sv,i
   plant(sd) 
   
   sv=getstate()
     
-  function plant(sd) {           //constructor
+  function plant(sd) {   //constructor
     
-    va=1000, vl=1, vs=1, qr=0.0, us=0.0, rb=2.0e+15
+    va=1000, vl=1, ga=-1, gb=0, nml=qr=ua=ub=-0, us=-0.1, rb=2.0e+15
     ju=1, U=[ 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 ]
 
     sow(sd)
     
     for( i=0;i<98;i++ ) f48()    //warms up state to hide seed
     va=irange(3206324,3259829)   //ishr2's seed
-
+    
+    // fillr constants coordinated for r2 ? check these ?
+    ua=0.5+U[0]*0.75487766624669
+    ub=0.5+U[0]*0.56984029099805
+    ua=ua-(ua>>>0) ; ub=ub-(ub>>>0) 
+    
     function sow(sd) {      //digests seed objects recursively
       var t=typeof(sd) , r 
       
@@ -32,7 +41,7 @@ var newFdrPot = function(){ return (function(sd){ //factory
         return 
       }
       
-      if(va<0){ return }    //va is count limiting the process
+      if(va<0){ return }    //va used to count limit the process
       
       if(t === 'object')
       { va--
@@ -40,19 +49,19 @@ var newFdrPot = function(){ return (function(sd){ //factory
         { U[0]*=0.95; for( r=0; r<sd.length; r++ ){ sow(sd[r]) } return }
         if(sd === null) { U[0]*=0.97; return }
         U[0]*=0.93;
-        for(r in sd) { sow(r);sow(sd[r]) } 
+        for(r in sd) if(sd.hasOwnProperty(r)){ sow(r);sow(sd[r]) } 
         return 
       }
       
+      if(t === 'boolean') { U[0]*=0.93; if(sd){ f48() } return }
+
       if(isFinite(sd)){
-        r= (sd<=0)? Math.abs(sd)+1.234 : sd 
-        while(r>16)     r=r*0.0019560471624266144
-        while(r<1.0e-4) r=r*511.11110111111111111
+        r= sd<=0? 1.234020348919-sd : sd 
+        r= modp(r,15.034271450894242661)
         U[0]=U[0]*0.1 + r*0.8999999; f48() 
         return
       }
    
-      if(t === 'boolean') { U[0]*=0.93; if(sd){ f48() } return }
       if(t === 'function'){ U[0]*=0.91; sow(sd.name); return }
       if(t === 'symbol')  { U[0]*=0.89 }
 
@@ -61,32 +70,31 @@ var newFdrPot = function(){ return (function(sd){ //factory
   }
 
   function checkfloat() 
-  { var p=newFdrPot([3,2],2450,"~fez",{c:0.1})
-    for( i=0;i<1000000;i++,p.dbl() ){}
-    return p.dbl() === 0.8410126021290781
+  { var p=newFdrandom([3,2],2450,"~fez",{c:0.1})
+    for( i=0;i<1000000;i++ ){ p.dbl() }
+    return p.dbl() === 0.6630336428202791
   }
-  
-  function version() { return "v2.2.0" }
 
   function getstate() {
     return [ U[0],U[1],U[2],U[3],U[4],U[5],U[6],U[7] 
-            ,ju, va, vl, vs, qr, us, rb ] 
+            ,ju, va, vl, qr, rb, ga, gb, ua, ub, us, nml ] 
   } 
   
   function setstate(s) {
     for( i=0;i<8;i++ ) U[i]=s[i]
-    ju=s[8];  va=s[9];  vl=s[10] 
-    vs=s[11]; qr=s[12]; us=s[13]; rb=s[14]; sv=s
+    ju=s[8];  va=s[9];  vl=s[10]; qr=s[11]; rb=s[12]; 
+    ga=s[13]; gb=s[14]; ua=s[15]; ub=s[16]; us=s[17];
+    nml=s[18]; sv=s
   }
 
-  function pot() { return newFdrPot(arguments) }
+  function pot() { return newFdrandom(arguments) }
   
   function repot(s) { 
-    if (s) { plant({"0":{"0":s}}) } else { setstate(sv) }
+    if (s===undefined) { setstate(sv) } else { plant({"0":{"0":s}}) }
     return this 
   }
   
-  function hot() {
+  function hotpot() {
     if(typeof(window)!=='undefined' 
      && (window.crypto||window.msCrypto)){ 
       var cO = window.crypto||window.msCrypto
@@ -95,10 +103,15 @@ var newFdrPot = function(){ return (function(sd){ //factory
       ag=[(new Date()).getTime()-1.332e+12, Math.random()] 
     }
     ag.push(arguments)
-    return newFdrPot(ag)
+    return newFdrandom(ag)
   }
 
-  ///A redesign of J.Baagoe's Alea; a float-cut dual-lcg prng
+  function hot(){
+    if(!FdrHotPot){ FdrHotPot=hotpot() }
+    return FdrHotPot
+  }
+    
+  ///A redesign of J.Baagoe's Alea; a float cast dual lcg prng
   function f48() { 
     var c= 0.12810301030196883 * U[0] +
            15.378612015061215 * (1.0000000000000037-(U[ju=(ju===7?1:ju+1)]))
@@ -121,7 +134,7 @@ var newFdrPot = function(){ return (function(sd){ //factory
   function ui32() { return (f48()*0x1700000000)>>>0 }
   
   function rbit() { 
-    if( rb<2147483648 ) return (rb*=2)&1  //25% faster with rb<31 bits
+    if( rb<2147483648 ) return (rb*=2)&1 
     return (rb= dbl() +0.5) &1 
   }
 
@@ -141,14 +154,60 @@ var newFdrPot = function(){ return (function(sd){ //factory
     return vl^((vl<<7)+1498916339) 
   }
 
-  function uigless() 
+  function uigless()
   { return (( ui32()&ui32() )>>>0)  }
-  function uigmore() 
+  function uigmore()
   { return (( ui32()|ui32() )>>>0)  }
-  function igbrist() 
+  function igbrist()
   { return (( ui32()&ui32() )>>1) + (( ui32()|ui32() )>>1)  }
-  function igmmode() 
+  function igmmode()
   { return (( ui32()&ui32() )>>1) - (( ui32()|ui32() )>>1)  }
+  
+  
+  function zrange(b,d,c){ //a fluctuating combination of distributions 
+                             
+    var dists=[gbowl,range,gtrapez,gnorm,gcauchy,gspire]
+        
+    c= (c===undefined)?1:c; b= (b===undefined)?-1:b; d= (d===undefined)?1:d
+   
+    var e=f48() 
+    
+    if(us>1000){ //gb was strong, becomes ga
+      us-=1000 ,ga=gb ,ua=ub
+      if(ga>7){gb=irange(0,7)}else{gb=irange(0,9)}
+      ub=f48()	
+    }else{      //ga was strong
+      if( us<0 ){
+        if(ga<0){ ga=irange(0,8); ua=f48() }
+        us+=1000 ,gb=ga ,ub=ua
+        if(gb>7){ga=irange(0,7)}else{ga=irange(0,9)}
+        ua=f48()
+      }
+    }
+
+    var x=us*0.001 ,cf=Math.sqrt(c*0.002)  //us is 0>1000
+
+    us+=(e-0.3333)*c
+    
+    ua+=(f48()-0.5)*cf
+    ua=ua>1?1:ua<0?0:ua
+    ub-=(f48()-0.5)*cf
+    ub=ub>1?1:ub<0?0:ub
+
+    if(ga<6){ var gaa=dists[ga](-1+ua,ua) }
+    else{
+      if(ga<8){ gaa=gskip(0,-1+ua,ua) }
+      else{ gaa=lrange(ub*0.7,-1+ua*0.85,ua*0.85+0.15) }
+    }
+    
+    if(gb<6){ var gbb=dists[gb](-1+ub,ub) }
+    else{
+      if(gb<8){ gbb=gskip(0,-1+ub,ub) }
+      else{ gbb=lrange(ua*0.7,-1+ub*0.85,ub*0.85+0.15) }
+    }
+ 
+    return b+ (d-b)*((gbb*x -gaa*x + gaa)*0.5+0.5) 
+  }
   
   function gbowl(b,d){ 
     b= (b===undefined)?-1:b; d= (d===undefined)?1:d; var c=f48()
@@ -171,7 +230,11 @@ var newFdrPot = function(){ return (function(sd){ //factory
     b= (b===undefined)?-1:b; d= (d===undefined)?1:d
     return b+ (d-b)* 0.2* (f48()+f48()+f48()+f48()+f48())
   } 
-  function lrange(a,b,d){
+  function gcauchy(b,d){
+    b= (b===undefined)?-1:b; d= (d===undefined)?1:d
+    return b+ (d-b)*(0.5+((f48()+f48()+f48()-1.5)/(0.1+Math.abs(f48()+f48()+f48()-1.5)))*0.03333333333)
+  } 
+  function lrange(a,b,d){ //default -1 to 1
     a= (a===undefined)?0.5:a; b= (b===undefined)?-1:b; d= (d===undefined)?1:d
     
     if(a>0.5){  //load middle of dist
@@ -198,32 +261,64 @@ var newFdrPot = function(){ return (function(sd){ //factory
     d= (d===undefined)?1:d
     return (b||0)+(d-(b||0))*(qr-= qr>>>0) 
   }
+ 
+  /// fill sequences of Martin Roberts. extremelearning.com.au
+  function fillr1(b,d){
+    ua+=0.61803398874989 ; ua-=ua>>>0
+    
+    b=(b===undefined)?-1:b; d=(d===undefined)?1:d; 
+    return (ua*(d-b))+b 
+  }
+  
+  function fillr2(b,d){
+    ua+=0.75487766624669 ; ua-=ua>>>0
+    ub+=0.56984029099805 ; ub-=ub>>>0
+    
+    b=(b===undefined)?-1:b; d=(d===undefined)?1:d;
+    return [ (ua*(d-b))+b , (ub*(d-b))+b ]
+  }
+
+  function fillr3(b,d){
+    if(us==-0.1){ //must init state for 3d
+      
+      ua=U[0]+U[1]*0.81917251339616
+      ub=U[0]+U[1]*0.67104360670379
+      us=U[0]+U[1]*0.54970047790197
+      ua=ua-(ua>>>0) ; ub=ub-(ub>>>0) ; us=us-(us>>>0) 
+    }
+    
+    ua+=0.81917251339616 ; ua-=ua>>>0
+    ub+=0.67104360670379 ; ub-=ub>>>0
+    us+=0.54970047790197 ; us-=us>>>0
+    
+    b=(b===undefined)?-1:b; d=(d===undefined)?1:d;
+    return [ (ua*(d-b))+b, (ub*(d-b))+b, (us*(d-b))+b ]
+  } 
   
   var psig,csig
-  function usum(n,sig,mu) { 
+  function usum(n,scale,mean) { 
     var sum= (((n=n||2)&1)==1)? 0.5 : 0
     for( var i=0;i<n;i++ ) sum=f48()-sum 
     
-    if(sig === undefined) return sum
-    if(sig !== psig) 
-    {  psig=sig; csig= sig*2/n*Math.sqrt(n) } //doesnt nail it
-    //sig wants converted to equivalent gaus for large n
+    if(scale === undefined) return sum
+    if(scale !== psig) //cache csig value for scale 
+    {  psig=scale; csig= scale*3.47/Math.sqrt(n) } //approx 1/100th accurate
     
-    return (mu||0)+ sum*csig 
+    return (mean||0)+ sum*csig 
   }
 
-  function gaus(sig,mu) { return nrml(f48,sig,mu) }
+  function gaus(scale,mean) { return nrml(f48,scale,mean) }
   
-  function gausx(sig,mu){ return nrml(dbl,sig,mu) }
+  function gausx(scale,mean){ return nrml(dbl,scale,mean) }
   
-  var nml=0
+  function cauchy(scale,mean){ return (mean||0)+(scale||1)*nrml(f48)/nrml(f48) }
   
-  function nrml(func,sig,mu) /// G Marsaglias box muller polar method
+  function nrml(func,scale,mean) /// G Marsaglias box muller polar method
   { var p,q,w
   
     if(nml){ 
       q = nml ; nml=0
-      if(sig) return q *sig +(mu||0)
+      if(scale) return q *scale +(mean||0)
       return q
     }else{
       do {
@@ -234,7 +329,7 @@ var newFdrPot = function(){ return (function(sd){ //factory
       w = Math.sqrt(( -2.0*Math.log(w) ) /w)
       nml = p*w;
       
-      if(sig) return q*w*sig+(mu||0)
+      if(scale) return q*w*scale+(mean||0)
       return q*w 
     }
   }
@@ -304,7 +399,7 @@ var newFdrPot = function(){ return (function(sd){ //factory
     var Av,i
     if( typeof mx !=='boolean')
     { x=lim,lim=sep,sep=sq,sq=Ai,Ai=mx,mx=true }
-    if( typeof Ai !=='object' || !isFinite(Ai[0])
+    if( typeof Ai !=='object' || (isNaN(parseFloat(Ai[0])) || !isFinite(Ai[0]))
      ||(typeof sep ==='string' && sep==="pos")){ 
       Av= new Array((Ai>0)?Ai:Ai.length)
       if( typeof sq ==='undefined') sq=1
@@ -341,8 +436,8 @@ var newFdrPot = function(){ return (function(sd){ //factory
     
     while( ch>0 && ti>0 ) { 
       
-      var ib=(c=c<0?c+ne:c)%ne, ic=ib+1, id=ib+2, ie=ib+3
-      if(ie>=ne){ ie=ie-ne,id=id%ne,ic=ic%ne }
+      var ib=modp((c=c<0?c+ne:c),ne), ic=ib+1, id=ib+2, ie=ib+3
+      if(ie>=ne){ ie=ie-ne,id=modp(id,ne),ic=modp(ic,ne) }
       
       var stick=0 ,d=1 
       
@@ -351,7 +446,7 @@ var newFdrPot = function(){ return (function(sd){ //factory
       if(Math.abs(Av[Ax[ic]]-Av[Ax[id]]+sq)<sep){  //1-away collision 
         jm=irange(2,nd)+ic, jr=jm+nc, stick=1, d=-2, lw=ti<te
         while ( stick && jm<jr ){ 
-          j=jm%ne 
+          j=modp(jm,ne) 
           if( Math.abs(Av[Ax[id]]-Av[Ax[j]]+sq)>=sep 
            && Math.abs(Av[Ax[(j+1)%ne]]-Av[Ax[ic]]+sq)>=sep
            && (lw || Math.abs(Av[Ax[ie]]-Av[Ax[j]]+sq)>=csep) 
@@ -369,7 +464,7 @@ var newFdrPot = function(){ return (function(sd){ //factory
         if( ti>te && Math.abs(Av[Ax[ic]]-Av[Ax[ie]]+sq)<csep ) 
         { stick=1, jm=irange(2,nd)+ic, jr=jm+nc 
           while ( stick && jm<jr ){ 
-            j=jm%ne
+            j=modp(jm,ne)
             if(Math.abs(Av[Ax[id]]-Av[Ax[j]]+sq)>=sep
              &&Math.abs(Av[Ax[(j+1)%ne]]-Av[Ax[ie]]+sq)>=sep
              &&Math.abs(Av[Ax[ic]]-Av[Ax[j]]+sq)>=csep)
@@ -385,14 +480,14 @@ var newFdrPot = function(){ return (function(sd){ //factory
       c=c+d, ch=ch-d, ti-- 
     }
     
-    if(autosep){ ar=(ti>te)?bsep*0.81:(ti<1)?0:-bsep*0.8 }
-    else{ ar=(ti>te)?bsep:(ti<1)?0:-bsep }
+    if(autosep){ us=(ti>te)?bsep*0.81:(ti<1)?0:-bsep*0.8 }
+    else{ us=(ti>te)?bsep:(ti<1)?0:-bsep }
     
     return Ax
   }
   
   function aresult(A,Av,sq){ 
-    if(!A) { return ar }
+    if(!A) { return us }
     var c, n=A.length, df=Infinity
     if( typeof Av !=='object' ){
       for(i=0;i<n;i++)
@@ -401,7 +496,7 @@ var newFdrPot = function(){ return (function(sd){ //factory
       for(i=0;i<n;i++)
       { c=Math.abs(Av[A[i]]-Av[A[(i+1)%n]]+(sq||0)); if(c<df)df=c }
     }
-    return (ar>0||ar==="zero")?df:-df 
+    return (us>0||us==="zero")?df:-df 
   }
 
   function antisort(mx,Ai,A,sq,sep,lim,x){
@@ -419,53 +514,57 @@ var newFdrPot = function(){ return (function(sd){ //factory
     return Ao
   }
     
+  function modp(a,b){ return a-Math.floor(a/b)*b }
+  
   function bulk(A,f,b,c,d){
-    if( typeof A !=='object' ){ A=new Array( isFinite(A)?A:1 )  }
+    if( typeof A !=='object' ){ A=new Array( parseInt(A)||1 )  }
     var i=0,n=A.length; f=f||f48 
     while( i<n ) A[i++]=f(b,c,d);
     return A
   }
+
+  function within(a,e,fn,n){
+    var r; n=n||5
+    while(n--){
+      r =fn()
+      if(r>=a&&r<=e){ return r }
+    }
+    return range(a,e)
+  }
   
   return{
-     pot: pot   ,hot: hot  ,repot: repot  ,reset: repot
-    ,getstate: getstate    ,setstate:   setstate
-    ,version: version      ,checkfloat: checkfloat 
-    
+     pot: pot   ,hot: hot  ,hotpot: hotpot
+    ,repot: repot          ,reset: repot
+    ,getstate: getstate    ,setstate: setstate 
+    ,checkfloat: checkfloat	
+   
     ,next: f48  ,f48: f48  ,dbl: dbl
     ,f24: f24   ,fxs: dbl 
     ,i32: i32   ,ui32: ui32
     
-    ,rbit: rbit ,rndbit:rbit  ,rpole: rpole  ,rndsign:rpole
-    ,range: range  ,irange: irange ,lrange:lrange
+    ,rbit: rbit ,rpole: rpole
+    ,range: range  ,irange: irange 
+    ,lrange:lrange ,zrange: zrange
     
-    ,gaus: gaus    ,gausx: gausx   ,usum: usum
-    
-    ,mixup: mixup  ,mixof: mixof    ,bulk:bulk
-    ,aindex:aindex ,aresult:aresult ,antisort:antisort 
-    ,ilcg: ilcg   ,ishr2: ishr2    ,ishp:  ishp
+    ,cauchy:cauchy  ,gaus: gaus  ,gausx: gausx  ,usum: usum
     
     ,uigless: uigless  ,uigmore: uigmore 
     ,igbrist: igbrist  ,igmmode: igmmode 
-    
-    ,fgwedge: gwedge  ,fgtrapez: gtrapez  ,fgnorm:gnorm
-    ,fgthorn: gthorn  ,fgskip:   gskip    ,fgteat:gteat
-    
-    ,gbowl: gbowl     ,gspire: gspire  ,gthorn: gthorn 
-    ,gwedge: gwedge   ,gnorm: gnorm 
-    ,gteat: gteat     ,gtrapez: gtrapez 
-    ,gskip: gskip
+    ,ilcg: ilcg      ,ishr2: ishr2    ,ishp: ishp
+        
+    ,gbowl: gbowl    ,gspire: gspire  ,gthorn: gthorn 
+    ,gwedge: gwedge  ,gnorm: gnorm    ,gcauchy: gcauchy 
+    ,gskip: gskip    ,gteat: gteat    ,gtrapez: gtrapez 
+        
+    ,mixup: mixup    ,mixof: mixof
+    ,aindex: aindex  ,aresult: aresult  ,antisort: antisort 
+    ,fillr1: fillr1  ,fillr2: fillr2    ,fillr3: fillr3
+
+    ,bulk:bulk  ,within:within
+    ,version: function(){ return "v2.8.0" } 
   }
-
 }(arguments))}
-
-//Hopefuly exports to node, amd, commonjs or global object
-if (typeof exports !== 'undefined') 
-{ if (typeof module !== 'undefined' && module.exports)
-  { exports = module.exports = newFdrPot({}) }
-  else { exports.Fdrandom = newFdrPot({}) }
-} else {
-  if (typeof define === 'function' && define.amd) 
-  { define( 'Fdrandom',[],function(){return newFdrPot({})} ) }
-  else
-  { (1,eval)('this').Fdrandom = newFdrPot({}) } 
-}
+  
+if(typeof module!=='undefined' && module.exports) module.exports = newFdrandom()
+else if(typeof window!=='undefined') window.Fdrandom = newFdrandom()
+else console.log("Fdrandom.js did not import")
