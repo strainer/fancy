@@ -5,7 +5,13 @@ compax builds and maintains a compartment index of data
 organise by degree of relation between datums
 
 1st level - all related
-2nd level - related to parent and maybe parents neighbours
+2nd level - related to parent and maybe parents siblings
+nth level - related to parent and maybe parents siblings
+
+
+[    ][      ][  ][      ]
+[][][][][][][][][][][][][]
+
 
 compax could compartmentalise according to 
 /folder/

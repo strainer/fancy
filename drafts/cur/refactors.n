@@ -65,3 +65,80 @@ state will contain
  spotmap data
  
 mv figbase.js figstate.js
+
+//
+model state has been made replaceable
+
+fig.functions()
+fig.static
+fig.state.jote etc
+fig.state.spot
+fig.state.uncontainedspotvars
+fig.state.vplay
+
+instructor.js has been changed to arch
+
+arch will root state
+
+states:
+
+  uicontrols-overall
+
+  uielements
+    of script input
+    of script menu : save,load,run
+    of program menu : hublink, help, about
+    of figment viewport
+    
+  keymouse input
+    of keys pressed, released etc
+
+  keymouse response functions
+    these change for element focus
+      script input
+      menu nav
+      viewport
+      dial element
+      
+  figments
+
+  figment generator, watcher, maintainer
+    gen figment from script
+    measure jot relations
+      call function on condition 
+     
+  figment renderer and dial display
+    translate figment data to three renderer
+    translate figment data to dial elements
+    
+arch
+  init ui elements
+  
+  
+
+viewport renders fig according to fig and vplay
+  it currently 
+
+viewport factoring
+  a viewport can not render multiple figs
+  a fig can be rendered by multiple viewports
+  
+figment
+board pane vision appear sight show paint draw display
+
+fdisplay
+  a dom canvas element
+  a 3j renderer 
+    of a 3j scene
+      of 3j geometrys with 3j materials
+    renderer renders 1 scene with 1 camera
+    
+translate figs to 3j geometrys and materials
+ 
+ jote to a geo, or into a geo
+ 
+ jote
+ 
+fdisplay.js
+
+replicate functions of viewport
