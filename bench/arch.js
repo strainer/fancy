@@ -3,7 +3,7 @@
  *  This program can be redistributed and modified under the  * 
  *  terms of the FSF GNU AGPLv3 - see License.md for details  * 
  * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * */ 
-/// instructor.js - hanging together 
+/// arch.js - hanging together 
 
 var vplay = benchdat()
 

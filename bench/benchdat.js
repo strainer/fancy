@@ -25,10 +25,7 @@ return{
    //~ ,13:{name:"XXX",desc:""}
   }
     
-  ,seed:0 ,world:3, seespots:-1
-  ,geometry:{}, camera:{}, scene:{} ,focus:{}
-  ,renderer:{}, displaybugi:20 //avoiding scrollbar
-  
+  ,seed:0 ,world:3 
   ,instaprops:{}
   
   ,defaults:{  //these are copied into vplay
@@ -42,8 +39,8 @@ return{
     ,skipframe_trip:0   // units of allframes
     ,lastframe:10000
     ,playedframe_clock:0 //units of played animframes
-    ,runcycle_step: 1   // units of model_pace 
-    ,runcycle_trip: 0   // units of model_clock
+    ,runcycle_step: 1    // units of model_pace 
+    ,runcycle_trip: 0    // units of model_clock
     ,rendermark:0        //time of last renderscope
     ,movperframe:0
 
@@ -70,13 +67,17 @@ return{
     ,driftCount:0, camDrift:0.03, camRad:250, camRadd:0
     ,camThet:0, camPhi:Math.PI/1.5, spincam:0, firstfocus:0  //phi 
     ,nowfocus:0 
+    ,seespots:-1
+    ,geometry:{}, camera:{}, scene:{} ,focus:{}
+    ,renderer:{}, displaybugi:20 //avoiding scrollbar
+
+    //display
+    ,printtime:function(a){ return (a).toFixed(2) }
+    ,fps:0
     
     //uicontrols
     ,keyUD:0, keyLR:0, keyR:0 ,keyUDd:0, keyLRd:0, keyRd:0, keyCtrl:0 
     
-    //display
-    ,printtime:function(a){ return (a).toFixed(2) }
-    ,fps:0
   
     //lint
     ,Gtweak:1
