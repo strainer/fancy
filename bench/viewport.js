@@ -6,7 +6,7 @@
 
 /// viewport.js - viewport for figments
 
-function newViewport(fig,vplay){ 
+function newViewport(fig){ 
   
   var Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
      ,Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
@@ -19,6 +19,8 @@ function newViewport(fig,vplay){
   
   var vport={},thrLc,thrCl  //three arrays
   
+
+  /// uevents
   function onMouseDown(e){ 
         
     var dm=vplay.renderer.domElement  ,camera=vplay.camera
@@ -68,9 +70,13 @@ function newViewport(fig,vplay){
     document.removeEventListener('mousedown', onMouseDown)
   }
    
+
+
+  ///instance display and uevents
+
   function initview(container) {
+        
     if(!vplay.renderer.domElement){
-      
       vplay.renderer = new THREE.WebGLRenderer( { 
         antialias: true
        ,logarithmicDepthBuffer: true 
@@ -84,11 +90,11 @@ function newViewport(fig,vplay){
         window.innerWidth-vplay.displaybugi   //set to container size
        ,window.innerHeight-vplay.displaybugi 
       )
-
-      vplay.scene = new THREE.Scene()
       
     }
-    
+
+    vplay.scene = new THREE.Scene()
+        
     document.addEventListener('mousedown', onMouseDown, false)
    
     vplay.camspan=18
@@ -99,8 +105,8 @@ function newViewport(fig,vplay){
     vport.camup=new THREE.Vector3(0,1,0)
 
     //clear scene 
-    for(var kid=vplay.scene.children.length-1;kid>=0;kid--)
-    { vplay.scene.remove(vplay.scene.children[kid]) } 
+    //~ for(var kid=vplay.scene.children.length-1;kid>=0;kid--)
+    //~ { vplay.scene.remove(vplay.scene.children[kid]) } 
  
     focus.ring={ 
       x:ringbuff(5)
@@ -372,12 +378,12 @@ function newViewport(fig,vplay){
       var material = new THREE.MeshLambertMaterial( { overdraw: 0.5 } );
       //~ var material = new THREE.MeshNormalMaterial( {depthTest: false} )
       //~ console.log(vplay.scene)
-      material.color.r=jote.bcolor[j*3]  *0.5
-      material.ambient.r=jote.bcolor[j*3]  *0.5
-      material.color.g=jote.bcolor[j*3+1]*0.5
-      material.ambient.g=jote.bcolor[j*3+1]*0.5
-      material.color.b=jote.bcolor[j*3+2]*0.5
-      material.ambient.b=jote.bcolor[j*3+2]*0.5
+      material.color.r   = jote.bcolor[j*3]  *0.5
+      material.ambient.r = jote.bcolor[j*3]  *0.5
+      material.color.g   = jote.bcolor[j*3+1]*0.5
+      material.ambient.g = jote.bcolor[j*3+1]*0.5
+      material.color.b   = jote.bcolor[j*3+2]*0.5
+      material.ambient.b = jote.bcolor[j*3+2]*0.5
       
       var sphere = new THREE.Mesh( geometry, material )
       

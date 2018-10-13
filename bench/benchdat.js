@@ -27,6 +27,7 @@ return{
     
   ,seed:0 ,world:3 
   ,instaprops:{}
+  ,renderer:{}
   
   ,defaults:{  //these are copied into vplay
 
@@ -69,7 +70,7 @@ return{
     ,nowfocus:0 
     ,seespots:-1
     ,geometry:{}, camera:{}, scene:{} ,focus:{}
-    ,renderer:{}, displaybugi:20 //avoiding scrollbar
+    , displaybugi:20 //avoiding scrollbar
 
     //display
     ,printtime:function(a){ return (a).toFixed(2) }

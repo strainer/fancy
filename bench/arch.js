@@ -18,8 +18,6 @@ if(window.location.hash) {
 
 var Fgm,Fgs,Vpr
 
-console.log(Math.hasTrigfills())
-
 setupfigview(vplay.world)
 
 if(urlpar[1]){ vplay.paused=0 }
@@ -36,7 +34,7 @@ function setupfigview(fig){
    
   Fgs=newFigstate(vplay)
   
-  if(!Fgm){ Fgm=newFigbase(Fgs) }
+  if(!Fgm){ Fgm=newFigbase(Fgs)}
   else    { Fgm.infusestate(Fgs) } //maybe destroy the old state
   
   //add service functions in order..
@@ -89,7 +87,7 @@ function setupfigview(fig){
   }
   
   Vpr=newViewport(Fgm,vplay)
-    
+ 
   Vpr.initview( document.getElementById( 'threediv' ), vplay)
 
   //~ Fgm.gtemperall(0, vplay.model_pace)
