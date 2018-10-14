@@ -8,15 +8,14 @@
 
 function addConstruct(fig) {
   'use strict'
-  
-  //~ for(var prop in fig) this.prop=fig[prop]  //pull in all scope from mbase
-
-  var jote=fig.jote, jkind=fig.jkind 
-     ,Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
+  var Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
      ,Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
-     ,Drand=fig.Drand ,Hrand=fig.Hrand
-     ,rndu=fig.rndu, rndh=fig.rndh
-    
+     ,fgs =fig.state
+
+  var jote=fgs.jote, jkind=fgs.jkind 
+     ,Drand=fgs.Drand ,Hrand=fgs.Hrand
+     ,rndu=fgs.rndu, rndh=fgs.rndh
+     
   var ins={
        x:-0, y:-0, z:-0
      ,vx:-0,vy:-0,vz:-0
@@ -29,6 +28,21 @@ function addConstruct(fig) {
      ,mdsta:function(){return 1}
     }
   
+  fgs.ins=ins
+  
+  function takestate() //keys to local as required
+  { 
+    fgs=fig.state
+    jote=fgs.jote ,jkind=fgs.jkind ,ins=fgs.ins 
+    
+    Drand=fgs.Drand ,Hrand=fgs.Hrand
+    rndu=fgs.rndu ,rndh=fgs.rndh
+  } 
+  
+  fig.statefncs.push( takestate ) //add to list of state refreshers
+
+  /// // // // // // // // // // // // / 
+ 
   function setpos(x,y,z){ ins.x=x,ins.y=y,ins.z=z}
   function setvel(vx,vy,vz){ ins.vx=vx,ins.vy=vy,ins.vz=vz }
   function setaslast(jt)

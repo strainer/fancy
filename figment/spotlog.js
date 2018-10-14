@@ -7,9 +7,29 @@
 /// logging functions to global scope
  
 function addSpotlog(fig,vplay) { 
-  'use strict'
+  'use strict' 
+   
+  var fgs=fig.state
+     ,jote=fgs.jote ,jkind=fgs.jkind ,vplay=fgs.vplay 
+     ,spot=fgs.spot ,dlns=fgs.dlns
+     ,Drand=fgs.Drand ,Hrand=fgs.Hrand
+     ,rndu=fgs.rndu, rndh=fgs.rndh
   
-  var jote =fig.jote, spot=fig.spot
+  function takestate() //keys to local as required
+  { 
+    fgs=fig.state
+    jote=fgs.jote ,jkind=fgs.jkind ,vplay=fgs.vplay
+    spot=fgs.spot ,dlns=fgs.dlns
+    
+    Drand=fgs.Drand ,Hrand=fgs.Hrand
+    rndu=fgs.rndu, rndh=fgs.rndh
+  } 
+     
+  fig.statefncs.push( takestate ) //add to list of state refreshers
+
+  /// // // // // // // // // // // // / 
+  
+  // var jote =fig.jote, spot=fig.spot  //only these used
    
   function dmcheckspot(sui){
       

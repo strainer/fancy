@@ -6,17 +6,21 @@
 
 /// viewport.js - viewport for figments
 
-function newViewport(fig,vplay){ 
+function newViewport(fig){ 
   
-  var jote=fig.jote, jkind=fig.jkind 
-     ,Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
+  var Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
      ,Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
-     ,Drand=fig.Drand ,Hrand=fig.Hrand
-     ,rndu=fig.rndu, rndh=fig.rndh
+
+  var fgs=fig.state, vplay=fgs.vplay
+     ,jote=fgs.jote, jkind=fgs.jkind 
+     ,Drand=fgs.Drand ,Hrand=fgs.Hrand
+     ,rndu=fgs.rndu, rndh=fgs.rndh
   //-------------------------------------------------------//
   
   var vport={},thrLc,thrCl  //three arrays
   
+
+  /// uevents
   function onMouseDown(e){ 
         
     var dm=vplay.renderer.domElement  ,camera=vplay.camera
@@ -66,9 +70,13 @@ function newViewport(fig,vplay){
     document.removeEventListener('mousedown', onMouseDown)
   }
    
+
+
+  ///instance display and uevents
+
   function initview(container) {
+        
     if(!vplay.renderer.domElement){
-      
       vplay.renderer = new THREE.WebGLRenderer( { 
         antialias: true
        ,logarithmicDepthBuffer: true 
@@ -82,11 +90,11 @@ function newViewport(fig,vplay){
         window.innerWidth-vplay.displaybugi   //set to container size
        ,window.innerHeight-vplay.displaybugi 
       )
-
-      vplay.scene = new THREE.Scene()
       
     }
-    
+
+    vplay.scene = new THREE.Scene()
+        
     document.addEventListener('mousedown', onMouseDown, false)
    
     vplay.camspan=18
@@ -97,8 +105,8 @@ function newViewport(fig,vplay){
     vport.camup=new THREE.Vector3(0,1,0)
 
     //clear scene 
-    for(var kid=vplay.scene.children.length-1;kid>=0;kid--)
-    { vplay.scene.remove(vplay.scene.children[kid]) } 
+    //~ for(var kid=vplay.scene.children.length-1;kid>=0;kid--)
+    //~ { vplay.scene.remove(vplay.scene.children[kid]) } 
  
     focus.ring={ 
       x:ringbuff(5)
@@ -370,12 +378,12 @@ function newViewport(fig,vplay){
       var material = new THREE.MeshLambertMaterial( { overdraw: 0.5 } );
       //~ var material = new THREE.MeshNormalMaterial( {depthTest: false} )
       //~ console.log(vplay.scene)
-      material.color.r=jote.bcolor[j*3]  *0.5
-      material.ambient.r=jote.bcolor[j*3]  *0.5
-      material.color.g=jote.bcolor[j*3+1]*0.5
-      material.ambient.g=jote.bcolor[j*3+1]*0.5
-      material.color.b=jote.bcolor[j*3+2]*0.5
-      material.ambient.b=jote.bcolor[j*3+2]*0.5
+      material.color.r   = jote.bcolor[j*3]  *0.5
+      material.ambient.r = jote.bcolor[j*3]  *0.5
+      material.color.g   = jote.bcolor[j*3+1]*0.5
+      material.ambient.g = jote.bcolor[j*3+1]*0.5
+      material.color.b   = jote.bcolor[j*3+2]*0.5
+      material.ambient.b = jote.bcolor[j*3+2]*0.5
       
       var sphere = new THREE.Mesh( geometry, material )
       
@@ -602,8 +610,8 @@ function newViewport(fig,vplay){
     vplay.nowfocus="obj "+jd
     if(jd===-1)
     { vplay.nowfocus="free tracking" }
-    else if(isFinite(Fgm.jote.knd[jd])&&Fgm.jkind.nom[Fgm.jote.knd[jd]])
-    { vplay.nowfocus=jd+" "+Fgm.jkind.nom[Fgm.jote.knd[jd]] }
+    else if(isFinite(fgs.jote.knd[jd])&&fgs.jkind.nom[fgs.jote.knd[jd]])
+    { vplay.nowfocus=jd+" "+fgs.jkind.nom[fgs.jote.knd[jd]] }
         
     if('dash' in vplay){ vplay.dash.redrawDash()} 
   }

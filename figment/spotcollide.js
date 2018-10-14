@@ -27,19 +27,33 @@
 
 //the basis of this design is implemented:
 
-function addSpotcollide(fig,vplay) { 
-  'use strict'
+function addSpotcollide(fig) { 
+  'use strict' 
    
-  var jote=fig.jote, jkind=fig.jkind ,spot=fig.spot 
+  var fgs =fig.state
      ,Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
      ,Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
-     ,Drand=fig.Drand ,Hrand=fig.Hrand
-     ,rndu=fig.rndu, rndh=fig.rndh
-     ,dlns=fig.dlns
-     
-  var epsila=Math.pow(0.5,52)
-  var epsilb=Math.pow(0.5,43)
+   
+  var jote=fgs.jote ,jkind=fig.jkind ,vplay=fgs.vplay 
+     ,spot=fgs.spot ,dlns=fgs.dlns
+     ,Drand=fgs.Drand ,Hrand=fgs.Hrand
+     ,rndu=fgs.rndu, rndh=fgs.rndh
+  
+  function takestate() //keys to local as required
+  { 
+    fgs=fig.state
     
+    jote=fgs.jote ,jkind=fgs.jkind ,vplay=fgs.vplay
+    spot=fgs.spot ,dlns=fgs.dlns
+    
+    Drand=fgs.Drand ,Hrand=fgs.Hrand
+    rndu=fgs.rndu, rndh=fgs.rndh
+  } 
+     
+  fig.statefncs.push( takestate ) //add to list of state refreshers
+
+  /// // // // // // // // // // // // / 
+
   /* 
     functions: 
      interquestspot   - persue every matching spot in spot

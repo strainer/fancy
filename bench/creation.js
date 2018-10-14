@@ -7,7 +7,7 @@
 
 function Tcreate(Talter,vplay) //Creation Function woooo!
 {
-  var Drand=Talter.Drand.repot(vplay.seed)
+  var Drand=Talter.state.Drand.repot(vplay.seed)
   
   if(vplay.world==0){ createC0() }
   if(vplay.world==1){ createC1() }

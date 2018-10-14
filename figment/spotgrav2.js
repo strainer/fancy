@@ -6,18 +6,33 @@
 
 /// spotgrav2.js - a rewrite to be compared..
 
-function addSpotgrav2(fig,vplay) { 
-  'use strict'
-  
-  var jote=fig.jote, spot=fig.spot 
+function addSpotgrav2(fig) { 
+  'use strict' 
+   
+  var fgs =fig.state
      ,Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
      ,Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
-     ,Drand=fig.Drand ,Hrand=fig.Hrand
-     ,rndu=fig.rndu, rndh=fig.rndh
-     ,dlns=fig.dlns
+   
+  var jote=fgs.jote ,jkind=fgs.jkind ,vplay=fgs.vplay 
+     ,spot=fgs.spot ,dlns=fgs.dlns
+     ,Drand=fgs.Drand ,Hrand=fgs.Hrand
+     ,rndu=fgs.rndu, rndh=fgs.rndh
+  
+  function takestate() //keys to local as required
+  { 
+    fgs=fig.state
+    
+    jote=fgs.jote ,jkind=fgs.jkind ,vplay=fgs.vplay
+    spot=fgs.spot ,dlns=fgs.dlns
+    
+    Drand=fgs.Drand ,Hrand=fgs.Hrand
+    rndu=fgs.rndu, rndh=fgs.rndh
+  } 
      
-  var epsila=Math.pow(0.5,52)
-  var epsilb=Math.pow(0.5,43)
+  fig.statefncs.push( takestate ) //add to list of state refreshers
+
+  /// // // // // // // // // // // // / 
+
   
   var _klev=-1,_kcac=[[],[],[],[],[]] //kid lev cache, kid cache
   _kcac[0]=new Array(200),_kcac[1]=new Array(150),_kcac[2]=new Array(100)

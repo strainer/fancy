@@ -1,0 +1,91 @@
+/* CSS Micro Reset */
+html { box-sizing: border-box; }
+*, *:before, *:after {  box-sizing: inherit;}
+body { margin: 0; }
+h1, h2, h3, h4, h5, h6 { font-weight:normal; }
+table { border-collapse: collapse; border-spacing: 0; }
+th, td { text-align: left; vertical-align: top; }
+img, iframe { border: 0; }
+
+body {
+  
+  color: #8e2;
+  background-color: #000;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Images */
+
+header img {
+  position: relative;
+  top:-3px;
+  opacity: 0.8;
+}
+
+p img {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
+  text-align: center;
+  border: none;
+}
+
+
+/* Header */
+
+.glight{
+	color:#eaf;
+	/*text-shadow: 0 0 5px #b83, 0 0 10px #b83;*/
+	letter-spacing: 3px;
+}
+
+.keyba{
+  color:#eb5;	
+}
+
+.keybb{
+  color:#AEBEFE;	
+}
+
+header {
+  width:640px;
+  float:left;
+  position:absolute;
+  top:10px;
+  z-index:20;
+}
+
+h1.header, a.header, a.name, header a{
+  color:#fa2;
+  text-decoration: none;
+}
+
+a.header {
+  color:#fa2;	
+}
+
+a.name {
+	white-space: nowrap;
+}
+
+a.buttons {
+	-webkit-font-smoothing: antialiased;
+	
+	/*background: url(arrow-down.png) no-repeat;*/
+	font-weight: normal;
+	padding: 2px 22px 2px 2px;
+	/*height: 30px;*/
+}
+
+a.github {
+	background-color: rgba(0, 0, 0, 0.55);
+	/*background: url(octocat-small.png) no-repeat 1px;
+	background-position:top right;*/
+}
+
+a.buttons:hover {
+	/*color: #ffd !important; */
+	text-decoration: underline;
+	text-shadow: 0 0 5px #faa, 0 0 10px #faa;
+}

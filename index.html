@@ -1,39 +1,51 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>JS Physics Demo - Sense of Fancy</title>
+<!doctype html><html>
 
-    <link rel="stylesheet" href="dep/ghpage/styles.css">
-    <!--<link rel="stylesheet" href="dep/ghpage/github-light.css">-->
-    <!--<script src="dep/ghpage/scale.fix.js"></script>-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <title>JS Physics Demo - Sense of Fancy</title>
+
+  <link rel="stylesheet" href="index.css">
+  <!--<link rel="stylesheet" href="dep/ghpage/github-light.css">-->
+  <!--<script src="dep/ghpage/scale.fix.js"></script>-->
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
  
-		<style type="text/css">
-				body { background-color: black; }
-		</style>
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
+  <style type="text/css">
+    /* CSS Micro Reset */   
+    body { background-color: black; }
+  </style>
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
 
-  <body>
-    
-    <header>
-    &nbsp;<a class="buttons github" href="https://github.com/strainer/fancy"><i class="glight">Fancy project </i><i> on GitHub <img src="dep/ghpage/octocat-small.png" alt="*" height="18" width="14"></a></i>
-    </header>
-    
-    <div id="threediv"></div>
-		    
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->		
-  </body>
+<body>
+  
+  <header>
+  &nbsp;<a class="buttons github" href="https://github.com/strainer/fancy"><i class="glight">Fancy project </i><i> on GitHub <img src="dep/ghpage/octocat-small.png" alt="*" height="18" width="14"></a></i>
+  </header>
+  
+  <div id="threediv"></div>
+	    
+  <!--[if !IE]><script>fixScale(document);</script><![endif]-->		
+</body>
+
 </html>
 
 <script src="dep/three.js"></script> 
 <script src="dep/Detector.js"></script>
 <script src="dep/Fdrandom.js"></script>
 
+<script src="dep/trigfills.js"></script>
+<script>trigfills.setmaths()</script>
+
+<script src="tin/helpers.js"></script>
+<script src="tin/timinglogger.js"></script>
+
+<!--<script src="tin/binasearch.js"></script>-->
+<!--<script src="tin/welford_stat.js"></script>-->
+
+<script src="figment/figstate.js"></script>
 <script src="figment/figbase.js"></script>
 <script src="figment/spotmap.js"></script>
 <script src="figment/figchore.js"></script>
@@ -46,11 +58,14 @@
 <script src="figment/spotcollide.js"></script>
 <script src="figment/temper.js"></script>
 
-<script src="bench/helpers.js"></script> 
+<script src="tin/helpers.js"></script> 
+<script src="tin/timinglogger.js"></script> 
+
 <script src="bench/creation.js"></script>
 <script src="bench/viewport.js"></script>
 <script src="bench/keysys.js"></script>
 <script src="bench/qpane.js"></script>
 <script src="bench/setdash.js"></script>
 <script src="bench/planetdat.js"></script> 
-<script src="bench/instructor.js"></script>
+<script src="bench/benchdat.js"></script>
+<script src="bench/arch.js"></script>

@@ -7,13 +7,29 @@
 /// paranorm.js - miscellaneous fanciful processes 
 
 function addParanorm(fig) { 
-  'use strict'
-  
-  //~ for(var prop in fig) this.prop=fig[prop]  //pull in all scope from mbase
+  'use strict' 
+   
+  var fgs=fig.state
+     ,Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
+     ,Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
 
-  var jote=fig.jote, Sqrt=fig.Sqrt ,Tau=fig.Tau ,floor=fig.floor 
-  var Pi=fig.Pi ,Drand=fig.Drand ,Hrand=fig.Hrand ,rndu=fig.rndu ,rndh=fig.rndh
+  var jote=fgs.jote 
+     ,Drand=fgs.Drand ,Hrand=fgs.Hrand
+     ,rndu=fgs.rndu ,rndh=fgs.rndh
+  
+  function takestate() //keys to local as required
+  { 
+    fgs=fig.state
+    jote=fgs.jote
     
+    Drand=fgs.Drand ,Hrand=fgs.Hrand
+    rndu=fgs.rndu, rndh=fgs.rndh
+  } 
+     
+  fig.statefncs.push( takestate ) //add to list of state refreshers
+
+  /// // // // // // // // // // // // // 
+
   var i
     
   var shrinki=0;
