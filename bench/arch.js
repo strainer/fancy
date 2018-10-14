@@ -9,10 +9,15 @@ var vplay = benchdat()
 
 var urlpar=[]
 
-if(window.location.hash) {
+if(window.location.hash) 
+{
   var patt=/#[^\d]*(\d{1,2})?[^ps]*(pau)?s?[^s]*(spots)?/
   urlpar=window.location.hash.match(patt)
+  // urls Array [ "#09pau_spots", "09", "pau", "spots" ]
+  //~ urlpar="#09pau_spots".match(patt)
   //~ console.log("urls",urlpar)
+  //~ #09pau_spots
+  
   if(isFinite(urlpar[1])){ vplay.world=parseInt(urlpar[1]) }
 }
 
@@ -22,7 +27,10 @@ setupfigview(vplay.world)
 
 if(urlpar[1]){ vplay.paused=0 }
 if(urlpar[2]){ vplay.paused=1 }
-if(urlpar[3]){ vplay.seespots=1 }
+if(urlpar[3]){ vplay.seespots=1;vplay.paused=0; } 
+//spots are invisible till running ..fix
+
+vplay.seespots=1
 
 //init make create instantiate
 function setupfigview(fig){
