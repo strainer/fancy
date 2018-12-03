@@ -1,6 +1,7 @@
 
 welfordstat = function(Ai,st,ov){
   
+  st=st||0 , ov=ov||Ai.length
   var minv=Ai[st] ,maxv=minv ,smnm=0, qvl=-0 
   var delt=-0 ,delt2=-0 ,mean=-0 ,me2=-0 
   
@@ -8,9 +9,9 @@ welfordstat = function(Ai,st,ov){
   { 
     qvl=Ai[i]||-0 
     
-    if (qvl>=maxv)
+    if(qvl>=maxv)
     { maxv=qvl ; if(qvl === Infinity) continue } 
-    else if (qvl<=minv)
+    else if(qvl<=minv)
     { minv=qvl ; if(qvl === -Infinity) continue }
         
     //calc variance.. welfords alg

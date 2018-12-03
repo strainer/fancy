@@ -29,12 +29,12 @@
 
 function addSpotcollide(fig) { 
   'use strict' 
-   
+  //~ console.log("addcollide",fig)
   var fgs =fig.state
      ,Tau=fig.Tau, Pi=fig.Pi, hPi=fig.hPi, tPi=fig.tPi 
      ,Sqrt=fig.Sqrt ,abs=fig.abs ,floor=fig.floor
    
-  var jote=fgs.jote ,jkind=fig.jkind ,vplay=fgs.vplay 
+  var jote=fgs.jote ,jkind=fgs.jkind ,vplay=fgs.vplay 
      ,spot=fgs.spot ,dlns=fgs.dlns
      ,Drand=fgs.Drand ,Hrand=fgs.Hrand
      ,rndu=fgs.rndu, rndh=fgs.rndh

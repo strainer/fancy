@@ -5,6 +5,8 @@
  * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * */ 
 /// arch.js - hanging together 
 
+arch={}
+
 var vplay = benchdat()
 
 var urlpar=[]
@@ -23,19 +25,19 @@ if(window.location.hash)
 
 var Fgm,Fgs,Vpr
 
-setupfigview(vplay.world)
+prepfigandview(vplay.world)
 
 if(urlpar[1]){ vplay.paused=0 }
 if(urlpar[2]){ vplay.paused=1 }
 if(urlpar[3]){ vplay.seespots=1;vplay.paused=0; } 
 //spots are invisible till running ..fix
 
-vplay.seespots=1
+//~ vplay.seespots=-1
 
 //init make create instantiate
-function setupfigview(fig){
+function prepfigandview(wrldc){
 
-  vplay.world=fig
+  vplay.world=wrldc
   
   for( var p in vplay.defaults)
   { vplay[p]=vplay.defaults[p] }

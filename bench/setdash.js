@@ -220,7 +220,7 @@ function setdash(cdash,vplay){
   { if(!isFinite(fi)){ continue }
     var leg=vplay.worlds[fi].name
     cdash.button({
-      legend:leg ,param:fi ,callb:setupfigview ,closes:true
+      legend:leg ,param:fi ,callb:prepfigandview ,closes:true
      ,seat:dsselect,style:'mbutts',group:'fu',type:'text1',on:true
     })
   }
