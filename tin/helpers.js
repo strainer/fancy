@@ -15,20 +15,23 @@ function heredoc (f,br) {
   return (f.toString().match(/\/\*\s*([\s\S]*?)\s*\*\//m)[1]).replace(/(?:\r\n|\r|\n)/g, br||'<br />')
 };
 
-// performance.now() polyfill from https://gist.github.com/paulirish/5438650
 (function(){
-  if (typeof window.performance === 'undefined') 
-  {  window.performance = {} }
+  if (!('window' in this)) window ={}
+  if (!('performance' in this)) performance ={}
+  if (typeof(window.performance) === 'undefined') 
+  {  window.performance = {} 
   
-  if (!window.performance.now){
-    var nowOffset = Date.now()
-    if (performance.timing && performance.timing.navigationStart)
-    { nowOffset = performance.timing.navigationStart }
-    
-    window.performance.now = function now(){
-      return Date.now() - nowOffset
-    } 
-}})()
+    if (!window.performance.now){
+      var nowOffset = Date.now()
+      if (performance.timing && performance.timing.navigationStart)
+      { nowOffset = performance.timing.navigationStart }
+      
+      window.performance.now = function now(){
+        return Date.now() - nowOffset
+      }
+    }
+  } 
+})()
 
 function perfnow(){ return window.performance.now() }
 
@@ -39,24 +42,29 @@ function emptyElement(elem) {
 //-------------
 
 function mapfn(Ai,f){ //map
-  
   var Ao=new Array(Ai.length)
-  for(var j=0,e=Ai.length;j<e;j++){
-    Ao[j]=f(Ai[j])
-  }
+  for(var j=0,e=Ai.length;j<e;j++)  Ao[j]=f(Ai[j]) 
   return Ao
 }
 
 function sumarray(Ai){
-  
   var s=0
-  for(var j=0,e=Ai.length;j<e;j++){
-    s+=Ai[j]
-  }
+  for(var j=0,e=Ai.length;j<e;j++)  s+=Ai[j] 
   return s
 }
 
-
+function anarray(n,v){
+  var Ao=new Array(n)
+  if(v!==undefined) {
+    if(typeof (v) ==='function')
+      for(var i=0;i<n;i++) Ao[i]=v(i)
+    else
+      for(var i=0;i<n;i++) Ao[i]=v
+    return Ao
+  }
+  for(var i=0;i<n;i++) Ao[i]=i
+  return Ao
+}
 //-------------
 
 function isNumber(obj) { return !isNaN(parseFloat(obj)) } //stacko, like isfinite
@@ -78,6 +86,12 @@ function zlerp(c, d, u, g ) { //c to d on u, more in 0.2>0.8
   return ( ( c+(d-c)*u)+g )*0.5
 }
 
+function softlimit(v,d,e){
+  if(Math.abs(v)<d) return v 
+  var si=v<0 ? -1:1 ; v*=si
+  return si*(e*v-d*d) /(v+e-2*d)
+}
+
 function ntain(a,b,c){ return a<b?b:c<a?c:a } //contain a by b and c
 function modn(a,b){ return a-Math.round(a/b)*b } //creates neg
 function modp(a,b){ return a-Math.floor(a/b)*b } //removes neg
@@ -88,6 +102,6 @@ function castUlp(c,u){ //powers 2 are most stable for ratios
 }
 
 function nearnuff(a,b,c){
-  c = (a+b)*(c||10) //ulp diff is less than 7 not more than 16
-  return c + (a-b) === c
+  c = (a+b)*(c||10)   //when c=10  equal means diff is at least 16 eps
+  return c + (a-b) === c   //and certainly more than 7 eps
 }

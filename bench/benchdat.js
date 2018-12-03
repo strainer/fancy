@@ -25,8 +25,11 @@ return{
    //~ ,13:{name:"XXX",desc:""}
   }
     
+  //fliteprops set by fig creation script eg gravity
+  //copied to 'vplay' on init
+  ,instaprops:{} 
+
   ,seed:0 ,world:3 
-  ,instaprops:{}
   ,renderer:{}
   
   ,defaults:{  //these are copied into vplay
@@ -70,7 +73,7 @@ return{
     ,nowfocus:0 
     ,seespots:-1
     ,geometry:{}, camera:{}, scene:{} ,focus:{}
-    , displaybugi:20 //avoiding scrollbar
+    ,displaybugi:20 //avoiding scrollbar
 
     //display
     ,printtime:function(a){ return (a).toFixed(2) }
@@ -78,8 +81,7 @@ return{
     
     //uicontrols
     ,keyUD:0, keyLR:0, keyR:0 ,keyUDd:0, keyLRd:0, keyRd:0, keyCtrl:0 
-    
-  
+      
     //lint
     ,Gtweak:1
   }

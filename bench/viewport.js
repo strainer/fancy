@@ -22,7 +22,9 @@ function newViewport(fig){
 
   /// uevents
   function onMouseDown(e){ 
-        
+    
+    e.stopPropagation()
+    
     var dm=vplay.renderer.domElement  ,camera=vplay.camera
     
     var rex= (e.clientX-dm.clientLeft)/dm.clientWidth
@@ -30,7 +32,7 @@ function newViewport(fig){
     
     if(rex>1||rey>1) return
     
-    vplay.maskedAction(1,function(){
+    //~ vplay.maskedAction(1,function(){ //whats this ??
            
     var mpick = new THREE.Vector3(rex*2 - 1  , 1 - rey*2, 0.5)
     var cmx,cmy
@@ -61,16 +63,15 @@ function newViewport(fig){
     )
       if(jpick.n){ reFocusThree(jpick.ar[jpick.closest]) }
       else{ reFocusThree(-1) }
-    })
+    
+    // }) // - masked action !?
   }
      
   // 3pos = (jpos-focp)*focs
   // 3pos/focs+focp=jpos
   function removemouse(){
-    document.removeEventListener('mousedown', onMouseDown)
+    vplay.renderer.domElement.removeEventListener('mousedown', onMouseDown)
   }
-   
-
 
   ///instance display and uevents
 
@@ -95,7 +96,8 @@ function newViewport(fig){
 
     vplay.scene = new THREE.Scene()
         
-    document.addEventListener('mousedown', onMouseDown, false)
+    vplay.renderer.domElement.addEventListener('mousedown', onMouseDown, true) 
+    //capture defers to top level
    
     vplay.camspan=18
     vplay.camera = new THREE.PerspectiveCamera( vplay.camspan
