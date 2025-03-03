@@ -1,9 +1,11 @@
 Fancy - Physics
 ===============
 
-Fancy is a physics computing project developed with fanciful ideas of creating a programmatic sense of *fantasy* for the virtual minds of the coming AI revolution.  :performing_arts:
+Fancy was a physics computing project developed with fanciful ideas of creating a programmatic sense of *fantasy* for the virtual minds of the coming AI revolution.  :performing_arts:
 
-To this end a general purpose physics engine is under developement and is tested on some basic examples in a [Web Demo](http://strainer.github.io/fancy/). 
+![Demo Screenshot](dep/fancy5.jpg)
+
+To this end a general purpose physics engine was developed and tested on some cosmic models in a [Web Demo](http://strainer.github.io/fancy/). 
 
 The physics engine currently involves:
 * Up to 64 thousand objects
